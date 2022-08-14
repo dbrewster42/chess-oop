@@ -1,15 +1,30 @@
-package main.java.brewster.chess.api;
+package brewster.chess.api;
 
 
 import java.util.List;
+import java.util.Optional;
+
+import brewster.chess.exception.GameNotFound;
+import brewster.chess.model.Game;
+import brewster.chess.repository.GameRepository;
+import brewster.chess.service.GameService;
+import org.springframework.web.bind.annotation.*;
+
 
 //@CrossOrigin(origins= "http://localhost:3000")
 @RestController
 @RequestMapping("/game")
 public class Controller {
+    public final GameRepository gameRepository;
+    public final GameService gameService;
+
+    public Controller(GameRepository gameRepository, GameService gameService) {
+        this.gameRepository = gameRepository;
+        this.gameService = gameService;
+    }
 
     @PostMapping("/players")
-    public List<String> createPlayer(@RequestBody PlayerRequest request){
+    public List<String> createPlayer(@RequestBody String request){
 //        game = Manager.createGame(request.getName1(), request.getName2());
 //        board = Manager.getBoard(game.getId());
 //        List<Response> returnValue = board.returnBoard();
@@ -19,6 +34,12 @@ public class Controller {
 //        returnValue.add(statusResponse);
 //        return returnValue;
         return List.of("");
+    }
+
+    @GetMapping("/{id}")
+    public List<String> selectPiece(@PathVariable long id, int position){
+        Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
+        gameService.calculatePossibleMoves(game, position);
     }
 
 //    @PostMapping("/restart")
