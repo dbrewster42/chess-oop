@@ -37,9 +37,9 @@ public class Controller {
     }
 
     @GetMapping("/{id}")
-    public List<String> selectPiece(@PathVariable long id, int position){
+    public int[] selectPiece(@PathVariable long id, int position){
         Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
-        gameService.calculatePossibleMoves(game, position);
+        return gameService.calculatePossibleMoves(game, position);
     }
 
 //    @PostMapping("/restart")
