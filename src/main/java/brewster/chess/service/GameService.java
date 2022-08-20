@@ -5,14 +5,13 @@ import brewster.chess.model.Player;
 import brewster.chess.piece.Piece;
 
 public class GameService {
+
+    public boolean isOccupied(Game game, int location){
+        return game.getAllPieces().anyMatch(piece -> piece.isAtPosition(location));
+    }
     public int[] calculatePossibleMoves(Game game, int position) {
-//        Piece piece = getCurrentPlayer(game).getPieces().stream()
-//                .filter(v -> v.getLocation() == position)
-//                .findAny().orElseThrow();
-//
-//        return piece.calculatePotentialMoves();
         return getCurrentPlayer(game).getPieces().stream()
-                .filter(v -> v.getLocation() == position)
+                .filter(piece -> piece.getLocation() == position)
                 .findAny()
                 .map(Piece::calculatePotentialMoves)
                 .orElseThrow();
