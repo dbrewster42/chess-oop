@@ -4,7 +4,7 @@ import brewster.chess.model.Game;
 import brewster.chess.model.Player;
 import brewster.chess.piece.Piece;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

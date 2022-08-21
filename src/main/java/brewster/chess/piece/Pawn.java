@@ -3,7 +3,7 @@ package brewster.chess.piece;
 import java.awt.Point;
 import java.util.List;
 
-import static brewster.chess.piece.Type.PAWN;
+import static brewster.chess.model.constant.Type.PAWN;
 
 public class Pawn extends Piece {
     private boolean isWhite;
@@ -20,10 +20,17 @@ public class Pawn extends Piece {
     @Override
     public List<Point> calculatePotentialMoves(List<Point> friends, List<Point> foes) {
         if (direction == 1 && spot.y == 2 || direction == -1 && spot.y == 7) {
-
+            return List.of();
         }
 //        int y = isWhite ? 1 : -1;
         return List.of(spot);
+    }
+
+    public boolean hasMoved(){
+        if (direction == 1 && spot.y == 2 || direction == -1 && spot.y == 7) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -2,13 +2,10 @@ package brewster.chess.model;
 
 import brewster.chess.piece.Pawn;
 import brewster.chess.piece.Piece;
-import brewster.chess.piece.Type;
 import lombok.Data;
 
 import javax.persistence.Entity;
 import java.util.List;
-
-import static brewster.chess.piece.Type.PAWN;
 
 @Data
 @Entity

@@ -1,6 +1,7 @@
 package brewster.chess.piece;
 
-import lombok.AllArgsConstructor;
+import brewster.chess.model.constant.Team;
+import brewster.chess.model.constant.Type;
 import lombok.Data;
 
 import java.awt.Point;
@@ -11,7 +12,7 @@ import java.util.List;
 public abstract class Piece {
     Type type;
     Point spot;
-//    Team team
+    Team team;
 
 
     public Piece(Type type, int x, int y) {
