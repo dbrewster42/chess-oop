@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 import java.util.Optional;
 

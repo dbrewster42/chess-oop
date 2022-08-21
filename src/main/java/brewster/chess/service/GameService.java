@@ -10,6 +10,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameService {
+    private final PieceService pieceService;
+
+    public GameService(PieceService pieceService) {
+        this.pieceService = pieceService;
+    }
 
     public Stream<Piece> getAllPieces(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
@@ -22,12 +27,18 @@ public class GameService {
         return getAllPieces(game).anyMatch(piece -> piece.isAtPosition(location));
     }
     public List<Point> calculatePossibleMoves(Game game, int position) {
-//        List<Point> occupiedSpots = getAllPieces(game).map(Piece::getSpot).collect(Collectors.toList());
         return getCurrentPlayer(game).getPieces().stream()
                 .filter(piece -> piece.getLocation() == position)
                 .findAny()
-                .map(piece -> piece.calculatePotentialMoves(convertToSpots(getCurrentPlayer(game)), convertToSpots(game.getPlayer2())))//todo distinguish friend from foe
+                .map(p -> pieceService.calculatePotentialMoves(p, getAllPieces(game)))
                 .orElseThrow();
+        //        List<Point> occupiedSpots = getAllPieces(game).map(Piece::getSpot).collect(Collectors.toList());
+
+//        return getCurrentPlayer(game).getPieces().stream()
+//                .filter(piece -> piece.getLocation() == position)
+//                .findAny()
+//                .map(piece -> piece.calculatePotentialMoves(convertToSpots(getCurrentPlayer(game)), convertToSpots(game.getPlayer2())))//todo distinguish friend from foe
+//                .orElseThrow();
     }
 //    private
 

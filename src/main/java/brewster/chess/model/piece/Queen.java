@@ -1,5 +1,6 @@
-package brewster.chess.model;
+package brewster.chess.model.piece;
 
+import brewster.chess.model.Piece;
 import brewster.chess.model.constant.Team;
 
 public class Queen extends Piece {
