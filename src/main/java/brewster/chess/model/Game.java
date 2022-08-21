@@ -25,8 +25,4 @@ public class Game {
         this.player2 = new Player(user2, false);
     }
 
-    public Stream<Piece> getAllPieces(){
-        return Stream.concat(player1.getPieces().stream(), player2.getPieces().stream());
-//        return player1.getPieces().stream().conc
-    }
 }

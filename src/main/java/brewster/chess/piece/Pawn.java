@@ -1,5 +1,8 @@
 package brewster.chess.piece;
 
+import java.awt.Point;
+import java.util.List;
+
 import static brewster.chess.piece.Type.PAWN;
 
 public class Pawn extends Piece {
@@ -15,12 +18,12 @@ public class Pawn extends Piece {
 
 
     @Override
-    public int[] calculatePotentialMoves() {
-        if (direction == 1 && this.y == 2 || direction == -1 && this.y == 7) {
+    public List<Point> calculatePotentialMoves(List<Point> friends, List<Point> foes) {
+        if (direction == 1 && spot.y == 2 || direction == -1 && spot.y == 7) {
 
         }
 //        int y = isWhite ? 1 : -1;
-        return new int[0];
+        return List.of(spot);
     }
 
 }

@@ -1,6 +1,7 @@
 package brewster.chess.api;
 
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class Controller {
     }
 
     @GetMapping("/{id}")
-    public int[] selectPiece(@PathVariable long id, int position){
+    public List<Point> selectPiece(@PathVariable long id, int position){
         Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
         return gameService.calculatePossibleMoves(game, position);
     }
