@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+//@Entity
 public abstract class Piece {
     private Team team;
     private int x;

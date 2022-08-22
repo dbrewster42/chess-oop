@@ -2,7 +2,10 @@ package brewster.chess.service;
 
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.Piece;
+import brewster.chess.model.piece.Queen;
+
+//import brewster.chess.piece.Piece;
 
 import java.awt.Point;
 import java.util.List;
@@ -10,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameService {
+
     private final PieceService pieceService;
 
     public GameService(PieceService pieceService) {
@@ -20,16 +24,18 @@ public class GameService {
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
 //        return player1.getPieces().stream().conc
     }
-    public List<Point> convertToSpots(Player player){
-        return player.getPieces().stream().map(Piece::getSpot).collect(Collectors.toList());
-    }
-    public boolean isOccupied(Game game, int location){
-        return getAllPieces(game).anyMatch(piece -> piece.isAtPosition(location));
-    }
+//    public List<Point> convertToSpots(Player player){
+//        return player.getPieces().stream().map(Piece::getSpot).collect(Collectors.toList());
+//    }
+//    public boolean isOccupied(Game game, int location){
+//        return getAllPieces(game).anyMatch(piece -> piece.isAtPosition(location));
+//    }
     public List<Point> calculatePossibleMoves(Game game, int position) {
+
         return getCurrentPlayer(game).getPieces().stream()
-                .filter(piece -> piece.getLocation() == position)
+                .filter(piece -> piece.getX() == position / 10 && piece.getY() == position % 10)
                 .findAny()
+                .map(p -> convertToTypeT(p))
                 .map(p -> pieceService.calculatePotentialMoves(p, getAllPieces(game)))
                 .orElseThrow();
         //        List<Point> occupiedSpots = getAllPieces(game).map(Piece::getSpot).collect(Collectors.toList());
@@ -39,6 +45,12 @@ public class GameService {
 //                .findAny()
 //                .map(piece -> piece.calculatePotentialMoves(convertToSpots(getCurrentPlayer(game)), convertToSpots(game.getPlayer2())))//todo distinguish friend from foe
 //                .orElseThrow();
+    }
+
+    private <T extends Piece> T convertToTypeT(Piece p) {
+        if (p.getClass().getTypeName().equals("Queen")){
+            return (T) p;
+        }
     }
 //    private
 

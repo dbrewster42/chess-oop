@@ -1,16 +1,14 @@
 package brewster.chess.model;
 
-import brewster.chess.piece.Piece;
 import lombok.Data;
 
 import javax.persistence.Entity;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.persistence.Id;
 
 @Data
 @Entity
 public class Game {
+    @Id
     private final int id;
     private final Player player1;
     private final Player player2;
