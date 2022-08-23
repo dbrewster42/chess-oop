@@ -32,11 +32,14 @@ public class GameService {
 //    }
     public List<Point> calculatePossibleMoves(Game game, int position) {
 
+
+
         return getCurrentPlayer(game).getPieces().stream()
                 .filter(piece -> piece.getX() == position / 10 && piece.getY() == position % 10)
                 .findAny()
-                .map(p -> convertToTypeT(p))
-                .map(p -> pieceService.calculatePotentialMoves(p, getAllPieces(game)))
+//                .map(p -> convertToTypeT(p, p.getClass()))
+//                .map(p -> pieceService.calculatePotentialMoves(p, getAllPieces(game)))
+                .map(p -> p.calculatePotentialMoves(getAllPieces(game), pieceService))
                 .orElseThrow();
         //        List<Point> occupiedSpots = getAllPieces(game).map(Piece::getSpot).collect(Collectors.toList());
 
@@ -47,10 +50,11 @@ public class GameService {
 //                .orElseThrow();
     }
 
-    private <T extends Piece> T convertToTypeT(Piece p) {
-        if (p.getClass().getTypeName().equals("Queen")){
-            return (T) p;
+    private <T extends Piece> T convertToTypeT(Piece p, Class<T> clazz) {
+        if (clazz.isInstance(p)){
+            return clazz.cast(p);
         }
+        throw new RuntimeException("Cannot convert to subclass");
     }
 //    private
 

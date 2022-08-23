@@ -18,6 +18,7 @@ public class PieceService {
         return potentialMoves;
     }
     public List<Point> calculatePotentialMoves(King piece, Stream<Piece> allPieces){
+
         List<Point> potentialMoves = new ArrayList<>();
         addUpAndDownMoves(piece, allPieces, potentialMoves);
         addDiagonalMoves(piece, allPieces, potentialMoves);
