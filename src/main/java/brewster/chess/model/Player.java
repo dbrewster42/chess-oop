@@ -1,7 +1,7 @@
 package brewster.chess.model;
 
-import brewster.chess.model.Piece;
-import brewster.chess.model.piece.Queen;
+import brewster.chess.piece.Piece;
+import brewster.chess.piece.Queen;
 import lombok.Data;
 
 import javax.persistence.Entity;

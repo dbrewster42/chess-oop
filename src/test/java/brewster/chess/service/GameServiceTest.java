@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 class GameServiceTest {
-    private PieceService pieceService = new PieceService();
-    private GameService sut = new GameService(pieceService);
+    private GameService sut = new GameService();
     @Test
     void asdf(){
 

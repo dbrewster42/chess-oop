@@ -2,23 +2,21 @@ package brewster.chess.service;
 
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
-import brewster.chess.model.Piece;
-import brewster.chess.model.piece.Queen;
+import brewster.chess.piece.Piece;
 
 //import brewster.chess.piece.Piece;
 
 import java.awt.Point;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameService {
 
-    private final PieceService pieceService;
-
-    public GameService(PieceService pieceService) {
-        this.pieceService = pieceService;
-    }
+//    private final PieceService pieceService;
+//
+//    public GameService(PieceService pieceService) {
+//        this.pieceService = pieceService;
+//    }
 
     public Stream<Piece> getAllPieces(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
@@ -35,11 +33,12 @@ public class GameService {
 
 
         return getCurrentPlayer(game).getPieces().stream()
-                .filter(piece -> piece.getX() == position / 10 && piece.getY() == position % 10)
+//                .filter(piece -> piece.getX() == position / 10 && piece.getY() == position % 10)
+                .filter(piece -> piece.isAtPosition(position))
                 .findAny()
 //                .map(p -> convertToTypeT(p, p.getClass()))
 //                .map(p -> pieceService.calculatePotentialMoves(p, getAllPieces(game)))
-                .map(p -> p.calculatePotentialMoves(getAllPieces(game), pieceService))
+                .map(p -> p.calculatePotentialMoves(getAllPieces(game)))
                 .orElseThrow();
         //        List<Point> occupiedSpots = getAllPieces(game).map(Piece::getSpot).collect(Collectors.toList());
 
@@ -50,13 +49,13 @@ public class GameService {
 //                .orElseThrow();
     }
 
-    private <T extends Piece> T convertToTypeT(Piece p, Class<T> clazz) {
-        if (clazz.isInstance(p)){
-            return clazz.cast(p);
-        }
-        throw new RuntimeException("Cannot convert to subclass");
-    }
-//    private
+//    private <T extends Piece> T convertToTypeT(Piece p, Class<T> clazz) {
+//        if (clazz.isInstance(p)){
+//            return clazz.cast(p);
+//        }
+//        throw new RuntimeException("Cannot convert to subclass");
+//    }
+////    private
 
     public Player getCurrentPlayer(Game game){
         return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
