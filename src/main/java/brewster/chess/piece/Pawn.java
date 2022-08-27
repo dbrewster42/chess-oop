@@ -14,7 +14,7 @@ public class Pawn extends Piece {
     private int direction;
 
     public Pawn(Team team, int x, int y) {
-        super(team, x, y);
+        super(team, x, y, PAWN);
         this.direction = y == 2 ? 1 : -1;
     }
 
@@ -26,7 +26,7 @@ public class Pawn extends Piece {
 
 
     @Override
-    public List<Point> calculatePotentialMoves(Stream<Piece> allPieces) {
+    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
         int x = getSpot().x;
         int y = getSpot().y;
         if (direction == 1 && y == 2 || direction == -1 && y == 7) {

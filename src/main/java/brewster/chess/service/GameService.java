@@ -8,6 +8,7 @@ import brewster.chess.piece.Piece;
 
 import java.awt.Point;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameService {
@@ -18,8 +19,8 @@ public class GameService {
 //        this.pieceService = pieceService;
 //    }
 
-    public Stream<Piece> getAllPieces(Game game){
-        return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
+    public List<Piece> getAllPieces(Game game){
+        return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream()).collect(Collectors.toList());
 //        return player1.getPieces().stream().conc
     }
 //    public List<Point> convertToSpots(Player player){

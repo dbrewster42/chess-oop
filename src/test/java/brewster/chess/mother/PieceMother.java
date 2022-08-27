@@ -8,6 +8,7 @@ import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Team.WHITE;
 
 public class PieceMother {
+
     public static Piece getWhiteKing(){
         return new King(WHITE, 4, 1);
     }

@@ -7,7 +7,7 @@ import lombok.Data;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 @Data
 public abstract class Piece {
@@ -15,18 +15,23 @@ public abstract class Piece {
     Type type;
     Point spot;
 
-    public Piece(Team team, int x, int y) {
+//    public Piece(Team team, int x, int y) {
+//        this.team = team;
+//        this.spot = new Point(x, y);
+//    }
+    public Piece(Team team, int x, int y, Type type) {
         this.team = team;
         this.spot = new Point(x, y);
+        this.type = type;
     }
 
-    public abstract List<Point> calculatePotentialMoves(Stream<Piece> allPieces);
+    public abstract List<Point> calculatePotentialMoves(List<Piece> allPieces);
 
-    public boolean isOccupied(int x, int y, Stream<Piece> pieces){
-        return pieces.anyMatch(piece -> piece.isAtPosition(x, y));
+    public boolean isOccupied(int x, int y, List<Piece> pieces){
+        return pieces.stream().anyMatch(piece -> piece.isAtPosition(x, y));
     }
-    public boolean isTeammate(Team team, Stream<Piece> allPieces, int x, int y){
-        return allPieces.filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(team);
+    public boolean isTeammate(Team team, List<Piece> allPieces, int x, int y){
+        return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
     }
 
     public int getLocation(){
@@ -60,7 +65,7 @@ public abstract class Piece {
         return spot;
     }
 
-    List<Point> addDiagonalMoves(Stream<Piece> allPieces){
+    List<Point> addDiagonalMoves(List<Piece> allPieces){
         List<Point> moves = new ArrayList<>();
         addMovesAlongLine(allPieces, moves, -1, -1);
         addMovesAlongLine(allPieces, moves, 1, 1);
@@ -69,7 +74,7 @@ public abstract class Piece {
         return moves;
     }
 
-    List<Point> addUpAndDownMoves(Stream<Piece> allPieces) {
+    List<Point> addUpAndDownMoves(List<Piece> allPieces) {
         List<Point> moves = new ArrayList<>();
         addMovesAlongLine(allPieces, moves, -1, 0);
         addMovesAlongLine(allPieces, moves, 1, 0);
@@ -77,7 +82,7 @@ public abstract class Piece {
         addMovesAlongLine(allPieces, moves, 0, 1);
         return moves;
     }
-    void addMovesAlongLine(Stream<Piece> allPieces, List<Point> moves, int xDirection, int yDirection) {
+    void addMovesAlongLine(List<Piece> allPieces, List<Point> moves, int xDirection, int yDirection) {
         int x = spot.x;
         int y = spot.y;
         while (x > 0 && x < 9 && y > 0 && y < 9){
