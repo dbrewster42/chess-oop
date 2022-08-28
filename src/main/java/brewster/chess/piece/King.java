@@ -28,7 +28,7 @@ public class King extends Piece {
     private void moveOneSpot(List<Piece> allPieces, List<Point> moves, int xDirection, int yDirection){
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
-        if (x > 0 && x < 9 && y > 0 && y < 9){
+        if (isOnBoard(x, y)){
             if (!isOccupied(x, y, allPieces)){
                 moves.add(new Point(x, y));
             } else if (!isTeammate(getTeam(), allPieces, x, y)){

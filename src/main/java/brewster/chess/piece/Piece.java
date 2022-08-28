@@ -15,10 +15,6 @@ public abstract class Piece {
     Type type;
     Point spot;
 
-//    public Piece(Team team, int x, int y) {
-//        this.team = team;
-//        this.spot = new Point(x, y);
-//    }
     public Piece(Team team, int x, int y, Type type) {
         this.team = team;
         this.spot = new Point(x, y);
@@ -32,6 +28,9 @@ public abstract class Piece {
     }
     public boolean isTeammate(Team team, List<Piece> allPieces, int x, int y){
         return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
+    }
+    public boolean isOnBoard(int x, int y){
+        return x > 0 && x < 9 && y > 0 && y < 9;
     }
 
     public int getLocation(){
@@ -83,11 +82,9 @@ public abstract class Piece {
         return moves;
     }
     void addMovesAlongLine(List<Piece> allPieces, List<Point> moves, int xDirection, int yDirection) {
-        int x = spot.x;
-        int y = spot.y;
-        while (x > 0 && x < 9 && y > 0 && y < 9){
-            x += xDirection;
-            y += yDirection;
+        int x = spot.x + xDirection;
+        int y = spot.y + yDirection;
+        while (isOnBoard(x, y)){
             if (!isOccupied(x, y, allPieces)){
                 moves.add(new Point(x, y));
             } else {
@@ -96,6 +93,8 @@ public abstract class Piece {
                 }
                 break;
             }
+            x += xDirection;
+            y += yDirection;
         }
     }
 }

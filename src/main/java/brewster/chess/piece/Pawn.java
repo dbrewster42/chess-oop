@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static brewster.chess.model.constant.Team.WHITE;
 import static brewster.chess.model.constant.Type.PAWN;
 
 public class Pawn extends Piece {
@@ -15,7 +16,7 @@ public class Pawn extends Piece {
 
     public Pawn(Team team, int x, int y) {
         super(team, x, y, PAWN);
-        this.direction = y == 2 ? 1 : -1;
+        this.direction = team == WHITE ? 1 : -1;
     }
 
 //    public Pawn(int x, int y) {
@@ -37,10 +38,7 @@ public class Pawn extends Piece {
     }
 
     boolean hasMoved(){
-        if (direction == 1 && getSpot().y == 2 || direction == -1 && getSpot().y == 7) {
-            return false;
-        }
-        return true;
+        return (direction != 1 || getSpot().y != 2) && (direction != -1 || getSpot().y != 7);
     }
 
 }
