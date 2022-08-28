@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.model.Game;
+import brewster.chess.model.request.PromotionRequest;
+import brewster.chess.model.response.PieceResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.GameService;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,12 @@ public class Controller {
     public List<Point> selectPiece(@PathVariable long id, int position){
         Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
         return gameService.calculatePossibleMoves(game, position);
+    }
+
+    @PostMapping("/{id}/promotion")
+    public List<PieceResponse> selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
+        Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
+        return gameService.implementPromotion(game, request);
     }
 
 //    @PostMapping("/restart")

@@ -16,4 +16,14 @@ class PawnTest {
         pawn.move(17);
         assertThat(pawn.hasMoved()).isTrue();
     }
+
+    @Test
+    void hasMoved2() {
+        Pawn pawn = new Pawn(Team.BLACK, 1, 2);
+        assertThat(pawn.hasMoved()).isTrue();
+        pawn.move(13);
+        assertThat(pawn.hasMoved()).isTrue();
+        pawn.move(17);
+        assertThat(pawn.hasMoved()).isFalse();
+    }
 }

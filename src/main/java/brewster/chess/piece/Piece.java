@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static brewster.chess.model.constant.Team.BLACK;
+import static brewster.chess.model.constant.Team.WHITE;
+import static brewster.chess.model.constant.Type.PAWN;
+
 @Data
 public abstract class Piece {
     Team team;
@@ -17,8 +21,25 @@ public abstract class Piece {
 
     public Piece(Team team, int x, int y, Type type) {
         this.team = team;
-        this.spot = new Point(x, y);
         this.type = type;
+        this.spot = new Point(x, y);
+    }
+
+    public Piece(Team team, int x, Type type) {
+        this.team = team;
+        this.type = type;
+        this.spot = new Point(x, selectY());
+    }
+
+    private int selectY(){
+        int y = 1;
+        if (type.equals(PAWN)){
+            y = 2;
+        }
+        if (team.equals(BLACK)){
+            y = 9 - y;
+        }
+        return y;
     }
 
     public abstract List<Point> calculatePotentialMoves(List<Piece> allPieces);
