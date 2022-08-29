@@ -1,6 +1,7 @@
 package brewster.chess.piece;
 
 import brewster.chess.Factory;
+import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.constant.Team;
 import brewster.chess.model.constant.Type;
 
@@ -11,17 +12,17 @@ public class PieceFactory implements Factory<Piece> {
     private final int y;
     private final Type type;
 
-    public PieceFactory(Team team, int x, int y, Type type) {
-        this.team = team;
-        this.x = x;
-        this.y = y;
-        this.type = type;
-    }
-
     public PieceFactory(Team team, int position, Type type) {
         this.team = team;
         this.x = position / 10;
         this.y = position % 10;
+        this.type = type;
+    }
+
+    public PieceFactory(Team team, int x, int y, Type type) {
+        this.team = team;
+        this.x = x;
+        this.y = y;
         this.type = type;
     }
 
@@ -42,8 +43,17 @@ public class PieceFactory implements Factory<Piece> {
                 piece = new Knight(team, x, y);
                 break;
             default:
-                piece = new Pawn(team, x, y);
-        } //todo pawn or king?
+                throw new PieceNotFound();
+// todo include pawn or king?  // piece = new Pawn(team, x, y);
+        }
         return piece;
     }
+
+//    public Piece getInstance(Piece piece){
+////        this.team = piece.getTeam();
+////        this.x = x;
+////        this.y = y;
+////        this.type = type;
+////    }
+//    }
 }

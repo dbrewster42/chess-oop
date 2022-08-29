@@ -50,6 +50,10 @@ public abstract class Piece {
     public boolean isTeammate(Team team, List<Piece> allPieces, int x, int y){
         return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
     }
+
+//    public boolean isTeammate(Game game, Team team, int x, int y){
+//        return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
+//    }
     public boolean isOnBoard(int x, int y){
         return x > 0 && x < 9 && y > 0 && y < 9;
     }
@@ -87,22 +91,22 @@ public abstract class Piece {
 
     List<Point> addDiagonalMoves(List<Piece> allPieces){
         List<Point> moves = new ArrayList<>();
-        addMovesAlongLine(allPieces, moves, -1, -1);
-        addMovesAlongLine(allPieces, moves, 1, 1);
-        addMovesAlongLine(allPieces, moves, 1, -1);
-        addMovesAlongLine(allPieces, moves, -1, 1);
+        addMovesAlongLine(moves, allPieces, -1, -1);
+        addMovesAlongLine(moves, allPieces, 1, 1);
+        addMovesAlongLine(moves, allPieces, 1, -1);
+        addMovesAlongLine(moves, allPieces, -1, 1);
         return moves;
     }
 
     List<Point> addUpAndDownMoves(List<Piece> allPieces) {
         List<Point> moves = new ArrayList<>();
-        addMovesAlongLine(allPieces, moves, -1, 0);
-        addMovesAlongLine(allPieces, moves, 1, 0);
-        addMovesAlongLine(allPieces, moves, 0, -1);
-        addMovesAlongLine(allPieces, moves, 0, 1);
+        addMovesAlongLine(moves, allPieces,-1, 0);
+        addMovesAlongLine(moves, allPieces,1, 0);
+        addMovesAlongLine(moves, allPieces,0, -1);
+        addMovesAlongLine(moves, allPieces,0, 1);
         return moves;
     }
-    void addMovesAlongLine(List<Piece> allPieces, List<Point> moves, int xDirection, int yDirection) {
+    void addMovesAlongLine( List<Point> moves, List<Piece> allPieces,int xDirection, int yDirection) {
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         while (isOnBoard(x, y)){

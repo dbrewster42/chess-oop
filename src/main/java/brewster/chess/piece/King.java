@@ -19,13 +19,13 @@ public class King extends Piece {
         List<Point> moves = new ArrayList<>();
         for (int i = -1; i <= 1; i++){
             for (int j = -1; j <= 1; j++){
-                moveOneSpot(allPieces, moves, i, j);
+                moveOneSpot(moves, allPieces, i, j);
             }
         }
         return moves;
     }
 
-    private void moveOneSpot(List<Piece> allPieces, List<Point> moves, int xDirection, int yDirection){
+    private void moveOneSpot(List<Point> moves, List<Piece> allPieces, int xDirection, int yDirection){
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         if (isOnBoard(x, y)){
