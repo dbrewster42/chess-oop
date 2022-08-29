@@ -26,22 +26,22 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> pieces) {
+    public List<Point> calculateLegalMoves(List<Point> spots, List<Piece> foes) {
         List<Point> legalMoves = new ArrayList<>();
         int x = spot.x;
         int y = spot.y + direction;
-        if (!isOccupied(x, y, pieces)){
+        if (!isOccupied(x, y, spots)){
             legalMoves.add(new Point(x, y));
             if (!hasMoved()){
-                if (!isOccupied(x, y + direction, pieces)) {
+                if (!isOccupied(x, y + direction, spots)) {
                     legalMoves.add(new Point(x, y + direction));
                 }
             }
         }
-        if (isOccupied(x - 1, y, pieces)){
+        if (isOccupied(x - 1, y, spots)){
             legalMoves.add(new Point(x - 1, y));
         }
-        if (isOccupied(x + 1, y, pieces)){
+        if (isOccupied(x + 1, y, spots)){
             legalMoves.add(new Point(x + 1, y));
         }
 

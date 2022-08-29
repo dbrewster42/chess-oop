@@ -13,9 +13,9 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
-        List<Point> potentialMoves = addUpAndDownMoves(allPieces);
-        potentialMoves.addAll(addDiagonalMoves(allPieces));
+    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
+        List<Point> potentialMoves = addUpAndDownMoves(allSpots, foes);
+        potentialMoves.addAll(addDiagonalMoves(allSpots, foes));
         return potentialMoves;
     }
 

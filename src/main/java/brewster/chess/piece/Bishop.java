@@ -13,7 +13,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
-        return addDiagonalMoves(allPieces);
+    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
+        return addDiagonalMoves(allSpots, foes);
     }
 }

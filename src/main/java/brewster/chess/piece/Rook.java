@@ -13,7 +13,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
-        return addUpAndDownMoves(allPieces);
+    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
+        return addUpAndDownMoves(allSpots, foes);
     }
 }

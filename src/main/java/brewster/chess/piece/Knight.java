@@ -13,7 +13,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
+    public List<Point> calculateLegalMoves(List<Point> allPieces, List<Piece> foes) {
         return null;
     }
 }

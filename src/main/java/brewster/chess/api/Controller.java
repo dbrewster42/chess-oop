@@ -3,7 +3,6 @@ package brewster.chess.api;
 
 import java.awt.Point;
 import java.util.List;
-import java.util.Optional;
 
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.model.Game;
@@ -42,7 +41,7 @@ public class Controller {
     @GetMapping("/{id}")
     public List<Point> selectPiece(@PathVariable long id, int position){
         Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
-        return gameService.calculatePossibleMoves(game, position);
+        return gameService.getLegalMoves(game, position);
     }
 
     @PostMapping("/{id}/promotion")

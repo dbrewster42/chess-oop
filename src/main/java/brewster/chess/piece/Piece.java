@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static brewster.chess.model.constant.Team.BLACK;
-import static brewster.chess.model.constant.Team.WHITE;
 import static brewster.chess.model.constant.Type.PAWN;
 
 @Data
@@ -42,18 +41,16 @@ public abstract class Piece {
         return y;
     }
 
-    public abstract List<Point> calculatePotentialMoves(List<Piece> allPieces);
+    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
 
-    public boolean isOccupied(int x, int y, List<Piece> pieces){
-        return pieces.stream().anyMatch(piece -> piece.isAtPosition(x, y));
+    public boolean isOccupied(int x, int y, List<Point> spots){
+        return spots.contains(new Point(x, y));
+//        return pieces.stream().anyMatch(piece -> piece.isAtPosition(x, y));
     }
-    public boolean isTeammate(Team team, List<Piece> allPieces, int x, int y){
-        return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
+    public boolean isOpponent(List<Piece> foes, int x, int y){
+        return foes.stream().anyMatch(p -> p.isAtPosition(x, y));
     }
 
-//    public boolean isTeammate(Game game, Team team, int x, int y){
-//        return allPieces.stream().filter(p -> p.isAtPosition(x, y)).findAny().map(Piece::getTeam).equals(Optional.of(team));
-//    }
     public boolean isOnBoard(int x, int y){
         return x > 0 && x < 9 && y > 0 && y < 9;
     }
@@ -89,31 +86,31 @@ public abstract class Piece {
         return spot;
     }
 
-    List<Point> addDiagonalMoves(List<Piece> allPieces){
+    List<Point> addDiagonalMoves(List<Point> allSpots, List<Piece> foes) {
         List<Point> moves = new ArrayList<>();
-        addMovesAlongLine(moves, allPieces, -1, -1);
-        addMovesAlongLine(moves, allPieces, 1, 1);
-        addMovesAlongLine(moves, allPieces, 1, -1);
-        addMovesAlongLine(moves, allPieces, -1, 1);
+        addMovesAlongLine(moves, allSpots, foes, -1, -1);
+        addMovesAlongLine(moves, allSpots, foes, 1, 1);
+        addMovesAlongLine(moves, allSpots, foes, 1, -1);
+        addMovesAlongLine(moves, allSpots, foes, -1, 1);
         return moves;
     }
 
-    List<Point> addUpAndDownMoves(List<Piece> allPieces) {
+    List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes)  {
         List<Point> moves = new ArrayList<>();
-        addMovesAlongLine(moves, allPieces,-1, 0);
-        addMovesAlongLine(moves, allPieces,1, 0);
-        addMovesAlongLine(moves, allPieces,0, -1);
-        addMovesAlongLine(moves, allPieces,0, 1);
+        addMovesAlongLine(moves, allSpots, foes,-1, 0);
+        addMovesAlongLine(moves, allSpots, foes,1, 0);
+        addMovesAlongLine(moves, allSpots, foes,0, -1);
+        addMovesAlongLine(moves, allSpots, foes,0, 1);
         return moves;
     }
-    void addMovesAlongLine( List<Point> moves, List<Piece> allPieces,int xDirection, int yDirection) {
+    void addMovesAlongLine(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection) {
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         while (isOnBoard(x, y)){
-            if (!isOccupied(x, y, allPieces)){
+            if (!isOccupied(x, y, allSpots)){
                 moves.add(new Point(x, y));
             } else {
-                if (!isTeammate(team, allPieces, x, y)){
+                if (isOpponent(foes, x, y)){
                     moves.add(new Point(x, y));
                 }
                 break;

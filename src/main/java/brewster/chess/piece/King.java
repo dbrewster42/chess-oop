@@ -15,23 +15,23 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Point> calculatePotentialMoves(List<Piece> allPieces) {
+    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
         List<Point> moves = new ArrayList<>();
         for (int i = -1; i <= 1; i++){
             for (int j = -1; j <= 1; j++){
-                moveOneSpot(moves, allPieces, i, j);
+                moveOneSpot(moves, allSpots, foes, i, j);
             }
         }
         return moves;
     }
 
-    private void moveOneSpot(List<Point> moves, List<Piece> allPieces, int xDirection, int yDirection){
+    private void moveOneSpot(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection){
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         if (isOnBoard(x, y)){
-            if (!isOccupied(x, y, allPieces)){
+            if (!isOccupied(x, y, allSpots)){
                 moves.add(new Point(x, y));
-            } else if (!isTeammate(getTeam(), allPieces, x, y)){
+            } else if (isOpponent(foes, x, y)){
                 moves.add(new Point(x, y));
             }
         }
