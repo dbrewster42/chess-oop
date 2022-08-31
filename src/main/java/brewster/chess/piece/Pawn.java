@@ -18,8 +18,10 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void move(int x, int y) {
-        if (y == 0 || y == 8){
+    public void move(int newSpot) {
+        int x = newSpot / 10;
+        int y = newSpot % 10;
+        if (y == 1 || y == 8){
             throw new Promotion(spot, x, y);
         }
         spot.move(x, y);
@@ -32,24 +34,26 @@ public class Pawn extends Piece {
         int y = spot.y + direction;
         if (!isOccupied(x, y, spots)){
             legalMoves.add(new Point(x, y));
-            if (!hasMoved()){
+            if (hasNotMoved()){
                 if (!isOccupied(x, y + direction, spots)) {
                     legalMoves.add(new Point(x, y + direction));
                 }
             }
         }
-        if (isOccupied(x - 1, y, spots)){
-            legalMoves.add(new Point(x - 1, y));
-        }
-        if (isOccupied(x + 1, y, spots)){
-            legalMoves.add(new Point(x + 1, y));
-        }
+        addIfAttackPossible(legalMoves, spots, foes, x - 1, y);
+        addIfAttackPossible(legalMoves, spots, foes, x + 1, y);
 
         return legalMoves;
     }
 
-    boolean hasMoved(){
-        return (direction != 1 || getSpot().y != 2) && (direction != -1 || getSpot().y != 7);
+    private void addIfAttackPossible(List<Point> moves, List<Point> spots, List<Piece> foes, int x, int y){
+        if (isOccupied(x, y, spots) && isOpponent(foes, x, y)){
+            moves.add(new Point(x, y));
+        }
+    }
+
+    boolean hasNotMoved(){
+        return (direction == 1 && getSpot().y == 2) || (direction == -1 && getSpot().y == 7);
     }
 
 }

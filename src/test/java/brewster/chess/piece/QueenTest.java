@@ -18,6 +18,7 @@ class QueenTest {
     List<Point> allSpots;
     List<Piece> foes;
 
+
     @BeforeEach
     void setup(){
         queen = getWhiteQueen();
@@ -38,8 +39,14 @@ class QueenTest {
         assertThat(legalMoves.size()).isEqualTo(11);
     }
 
-//    private void moveQueen(int x, int y){
-//        queen.move(x, y);
-//        allSpots.add(new Point(x, y));
-//    }
+    @Test
+    void calculatePotentialMovesEmptyBoard() {
+        List<Point> legalMoves = queen.calculateLegalMoves(List.of(new Point(4, 1)), List.of());
+        assertThat(legalMoves.size()).isEqualTo(21);
+
+        queen.move(54);
+        legalMoves = queen.calculateLegalMoves(List.of(new Point(5, 4)), List.of());
+        assertThat(legalMoves.size()).isEqualTo(27);
+    }
+
 }

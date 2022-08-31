@@ -18,3 +18,14 @@
 //        this.y = y;
 //        this.type = type;
 //    }
+
+
+
+
+
+//        if (isOccupied(x - 1, y, spots) && isOpponent(foes, x - 1, y)){
+//            legalMoves.add(new Point(x - 1, y));
+//        }
+//        if (isOccupied(x + 1, y, spots)){
+//            legalMoves.add(new Point(x + 1, y));
+//        }
