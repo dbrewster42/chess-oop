@@ -1,6 +1,7 @@
 package brewster.chess.mother;
 
 import brewster.chess.piece.King;
+import brewster.chess.piece.Knight;
 import brewster.chess.piece.Pawn;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.Queen;
@@ -57,5 +58,8 @@ public class PieceMother {
 
     public static Piece getBlackQueen(){
         return new Queen(BLACK, 4, 8);
+    }
+
+    public static Piece getWhiteKnight() { return new Knight(WHITE, 2, 1);
     }
 }
