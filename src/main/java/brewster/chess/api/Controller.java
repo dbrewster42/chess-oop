@@ -8,8 +8,11 @@ import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.UserNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.User;
+import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.PromotionRequest;
+import brewster.chess.model.request.UserRequest;
+import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.PieceResponse;
 import brewster.chess.repository.GameRepository;
@@ -24,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 public class Controller {
     public final GameRepository gameRepository;
     public final UserRepository userRepository;
-
     public final GameService gameService;
 
     public Controller(GameRepository gameRepository, UserRepository userRepository, GameService gameService) {
@@ -34,16 +36,10 @@ public class Controller {
     }
 
     @PostMapping("/user")
-    public List<String> createUser(@RequestBody String request){
-//        game = Manager.createGame(request.getName1(), request.getName2());
-//        board = Manager.getBoard(game.getId());
-//        List<Response> returnValue = board.returnBoard();
-//        Player player1= game.players[0];
-//        Status status = game.getStatus();
-//        StatusResponse statusResponse = new StatusResponse(status.isActive(), status.isCheck(), player1, game.getId());
-//        returnValue.add(statusResponse);
-//        return returnValue;
-        return List.of("");
+    public String createUser(@RequestBody UserRequest request){
+        User user = userRepository.save(new User(request.getName(), request.getEmail()));
+//        if (isValid)
+        return user.getName();
     }
 
 //    @PostMapping
@@ -60,16 +56,26 @@ public class Controller {
 
     @GetMapping("/{id}")
     public List<Point> selectPiece(@PathVariable long id, int position){
-        Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
-        return gameService.getLegalMoves(game, position);
+        return gameService.getLegalMoves(findGame(id), position);
+    }
+
+    @PostMapping("/{id}")
+    public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
+        return gameService.movePiece(findGame(id), request);
+//        StatusResponse status = game.run(boardRequest, board);
+//        List<Response> returnValue = board.returnBoard();
+//        returnValue.add(status);
+//        return returnValue;
     }
 
     @PostMapping("/{id}/promotion")
     public List<PieceResponse> selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
-        Game game = gameRepository.findById(id).orElseThrow(GameNotFound::new);
-        return gameService.implementPromotion(game, request);
+        return gameService.implementPromotion(findGame(id), request);
     }
 
+    private Game findGame(long id){
+        return gameRepository.findById(id).orElseThrow(GameNotFound::new);
+    }
 //    @PostMapping("/restart")
 //    public List<Response> restart(@PathVariable int id){
 //        game = Manager.getGame(id);

@@ -12,9 +12,9 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    private final String email;
-
     private final String name;
+
+    private final String email;
     @OneToMany //(mappedBy="User")
     private List<Player> players = new ArrayList<>();
 

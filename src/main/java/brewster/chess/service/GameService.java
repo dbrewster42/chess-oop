@@ -4,7 +4,9 @@ import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
 import brewster.chess.model.User;
+import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
+import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.PieceResponse;
 import brewster.chess.piece.Piece;
@@ -89,4 +91,8 @@ public class GameService {
                 .findAny();
     }
 
+    public GameResponse movePiece(Game game, MoveRequest request) {
+        //todo
+        return null;
+    }
 }
