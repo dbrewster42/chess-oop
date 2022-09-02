@@ -3,10 +3,13 @@ package brewster.chess.service;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
+import brewster.chess.model.User;
 import brewster.chess.model.request.PromotionRequest;
+import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.PieceResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.PieceFactory;
+import brewster.chess.repository.GameRepository;
 
 import java.awt.Point;
 import java.util.List;
@@ -15,7 +18,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GameService {
+    private final GameRepository repository;
 
+    public GameService(GameRepository repository) {
+        this.repository = repository;
+    }
+
+    public NewGameResponse startGame(User user1, User user2) {
+        Game newGame = repository.save(new Game(user1, user2));
+
+        return new NewGameResponse(newGame.getId(), newGame.getPlayer1(), newGame.getPlayer2());
+    }
+
+//    private Player createPlayer(User user){
+//
+//    }
 
     public List<Piece> getAllPieces(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream()).collect(Collectors.toList());
@@ -71,4 +88,5 @@ public class GameService {
                 .filter(piece -> piece.isAtPosition(position))
                 .findAny();
     }
+
 }

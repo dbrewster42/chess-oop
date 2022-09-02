@@ -5,10 +5,15 @@ import java.awt.Point;
 import java.util.List;
 
 import brewster.chess.exception.GameNotFound;
+import brewster.chess.exception.UserNotFound;
 import brewster.chess.model.Game;
+import brewster.chess.model.User;
+import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.PromotionRequest;
+import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.PieceResponse;
 import brewster.chess.repository.GameRepository;
+import brewster.chess.repository.UserRepository;
 import brewster.chess.service.GameService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,15 +23,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/game")
 public class Controller {
     public final GameRepository gameRepository;
+    public final UserRepository userRepository;
+
     public final GameService gameService;
 
-    public Controller(GameRepository gameRepository, GameService gameService) {
+    public Controller(GameRepository gameRepository, UserRepository userRepository, GameService gameService) {
         this.gameRepository = gameRepository;
+        this.userRepository = userRepository;
         this.gameService = gameService;
     }
 
-    @PostMapping("/players")
-    public List<String> createPlayer(@RequestBody String request){
+    @PostMapping("/user")
+    public List<String> createUser(@RequestBody String request){
 //        game = Manager.createGame(request.getName1(), request.getName2());
 //        board = Manager.getBoard(game.getId());
 //        List<Response> returnValue = board.returnBoard();
@@ -36,6 +44,18 @@ public class Controller {
 //        returnValue.add(statusResponse);
 //        return returnValue;
         return List.of("");
+    }
+
+//    @PostMapping
+//    public List<String> startNewGame(@RequestBody String email){
+//        return gameService.startGame();
+//    }
+    @PostMapping
+    public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
+        User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
+        User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
+
+        return gameService.startGame(user1, user2);
     }
 
     @GetMapping("/{id}")

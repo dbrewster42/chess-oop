@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -12,10 +13,16 @@ import java.util.List;
 public class User {
     @Id
     private final String email;
+
     private final String name;
-    @OneToMany
-    private List<Player> players;
+    @OneToMany //(mappedBy="User")
+    private List<Player> players = new ArrayList<>();
+
     private int wins;
     private int losses;
     private int draws;
+
+    public void addPlayer(Player player){
+        players.add(player);
+    }
 }

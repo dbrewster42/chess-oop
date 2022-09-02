@@ -21,10 +21,6 @@ public class Knight extends Piece {
                 makeJump(moves, allSpots, foes, i, j);
             }
         }
-//        makeJump(moves, allSpots, foes, -1, -1);
-//        makeJump(moves, allSpots, foes, -1, 1);
-//        makeJump(moves, allSpots, foes, 1, -1);
-//        makeJump(moves, allSpots, foes, 1, 1);
         return moves;
     }
 
