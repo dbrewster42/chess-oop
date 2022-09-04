@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 import brewster.chess.model.Game;
-import brewster.chess.player.Player;
+import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;

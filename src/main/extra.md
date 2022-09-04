@@ -48,3 +48,15 @@ makeJump(moves, allSpots, foes, i, j);
 }
 }
 ####
+
+
+
+
+#### sockets
+    public NewGameResponse startGame(User user) {
+        //todo sockets find 2nd player
+        Game newGame = repository.save(new Game(user1, user2));
+
+        return new NewGameResponse(1, null, null);
+    }
+##

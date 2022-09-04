@@ -2,7 +2,7 @@ package brewster.chess.service;
 
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
-import brewster.chess.player.Player;
+import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
@@ -25,12 +25,7 @@ public class GameService {
         this.repository = repository;
     }
 
-    public NewGameResponse startGame(User user1) {
-        //todo sockets find 2nd player
-//        Game newGame = repository.save(new Game(user1, user2));
-
-        return new NewGameResponse(1, null, null);
-    }
+//
     public NewGameResponse startGame(User user1, User user2) {
         Game newGame = repository.save(new Game(user1, user2));
 

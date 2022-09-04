@@ -41,10 +41,11 @@ public class Controller {
         return user.getName();
     }
 
-    @PostMapping
-    public NewGameResponse startNewGame(@RequestBody String name){
-        return gameService.startGame(userRepository.findById(name).orElseThrow(UserNotFound::new));
-    }
+//    @PostMapping
+//    public NewGameResponse startNewGame(@RequestBody String name){
+//        //todo sockets
+////        return gameService.startGame(userRepository.findById(name).orElseThrow(UserNotFound::new));
+//    }
     @PostMapping
     public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
