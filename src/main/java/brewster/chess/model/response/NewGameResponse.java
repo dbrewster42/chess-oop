@@ -1,7 +1,7 @@
 package brewster.chess.model.response;
 
 import brewster.chess.model.Game;
-import brewster.chess.model.Player;
+import brewster.chess.player.Player;
 import brewster.chess.piece.Piece;
 import lombok.Data;
 

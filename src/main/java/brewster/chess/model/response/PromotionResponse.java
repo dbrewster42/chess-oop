@@ -1,6 +1,6 @@
 package brewster.chess.model.response;
 
-import brewster.chess.piece.Promotion;
+import brewster.chess.exception.Promotion;
 import lombok.Getter;
 
 import java.awt.Point;

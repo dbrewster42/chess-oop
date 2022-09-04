@@ -1,5 +1,6 @@
 package brewster.chess.piece;
 
+import brewster.chess.exception.Promotion;
 import brewster.chess.model.constant.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

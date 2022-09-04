@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 import brewster.chess.model.Game;
-import brewster.chess.model.Player;
+import brewster.chess.player.Player;
 import brewster.chess.model.User;
 import brewster.chess.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ControllerTest {

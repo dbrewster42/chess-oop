@@ -1,5 +1,6 @@
 package brewster.chess.model;
 
+import brewster.chess.player.Player;
 import lombok.Data;
 
 import javax.persistence.Entity;

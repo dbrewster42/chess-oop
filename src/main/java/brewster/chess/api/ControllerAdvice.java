@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 import brewster.chess.model.response.PromotionResponse;
-import brewster.chess.piece.Promotion;
+import brewster.chess.exception.Promotion;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

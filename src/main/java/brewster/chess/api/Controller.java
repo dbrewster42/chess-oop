@@ -14,7 +14,6 @@ import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.model.response.PieceResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import brewster.chess.service.GameService;
@@ -42,10 +41,10 @@ public class Controller {
         return user.getName();
     }
 
-//    @PostMapping
-//    public List<String> startNewGame(@RequestBody String email){
-//        return gameService.startGame();
-//    }
+    @PostMapping
+    public NewGameResponse startNewGame(@RequestBody String name){
+        return gameService.startGame(userRepository.findById(name).orElseThrow(UserNotFound::new));
+    }
     @PostMapping
     public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
@@ -69,7 +68,7 @@ public class Controller {
     }
 
     @PostMapping("/{id}/promotion")
-    public List<PieceResponse> selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
+    public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
         return gameService.implementPromotion(findGame(id), request);
     }
 

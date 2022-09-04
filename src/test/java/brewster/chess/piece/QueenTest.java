@@ -49,4 +49,14 @@ class QueenTest {
         assertThat(legalMoves.size()).isEqualTo(27);
     }
 
+    @Test
+    void calculatePotentialMovesFullBoard() {
+        List<Point> legalMoves = queen.calculateLegalMoves(List.of(new Point(4, 1)), List.of());
+        assertThat(legalMoves.size()).isEqualTo(21);
+
+        queen.move(54);
+        legalMoves = queen.calculateLegalMoves(List.of(new Point(5, 4)), List.of());
+        assertThat(legalMoves.size()).isEqualTo(27);
+    }
+
 }

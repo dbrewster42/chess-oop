@@ -1,4 +1,4 @@
-package brewster.chess.piece;
+package brewster.chess.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

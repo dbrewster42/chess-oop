@@ -1,5 +1,6 @@
-package brewster.chess.model;
+package brewster.chess.player;
 
+import brewster.chess.model.User;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.Queen;
 import lombok.Data;
@@ -15,9 +16,7 @@ import static brewster.chess.model.constant.Team.WHITE;
 
 @Data
 @Entity
-public class Player {
-//    @Id
-//    private String id;
+public abstract class Player {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
@@ -33,10 +32,8 @@ public class Player {
         this.name = user.getName();
         this.isWhite = isWhite;
         this.pieces = generatePieces();
-//        this.id = UUID.randomUUID().toString();
     }
 
-    private List<Piece> generatePieces() {
-        return List.of(new Queen(WHITE, 2, 2));
-    }
+    abstract List<Piece> generatePieces();
+
 }
