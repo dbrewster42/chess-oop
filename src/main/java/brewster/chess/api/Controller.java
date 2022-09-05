@@ -38,7 +38,7 @@ public class Controller {
     public String createUser(@RequestBody UserRequest request){
         User user = userRepository.save(new User(request.getName(), request.getEmail()));
 //        if (isValid)
-        return user.getName();
+        return user.getName() + " has been saved in the db";
     }
 
 //    @PostMapping

@@ -1,5 +1,6 @@
 package brewster.chess.service;
 
+import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
@@ -20,9 +21,11 @@ import java.util.stream.Stream;
 
 public class GameService {
     private final GameRepository repository;
+    private final CheckService checkService;
 
-    public GameService(GameRepository repository) {
+    public GameService(GameRepository repository, CheckService checkService) {
         this.repository = repository;
+        this.checkService = checkService;
     }
 
 //
@@ -38,13 +41,23 @@ public class GameService {
     }
 
     public GameResponse movePiece(Game game, MoveRequest request) {
+        if (checkService.movedIntoCheck(game, request)) {
+            throw new InvalidMoveException("You may not move into check");
+        }
         removeFoeIfCaptured(game, request.getEnd());
 
         Piece piece = findPiece(game, request.getStart());
         piece.move(request.getEnd());
-        game.setWhitesTurn(!game.isWhitesTurn());
+        if (checkService.didCheck(game)){
+            game.setCheck(true);
+            if (checkService.didCheckMate(game)){
+                game.setActive(false);
+                return getGameOverResponse(game);
+            }
+            //todo stalemate? own method maybe
+        }
 
-        //todo 1. validate that it doesn't move into check 2. validate if created check 3. special moves?
+        game.setWhitesTurn(!game.isWhitesTurn());
         return getGameResponse(game);
     }
 
@@ -61,6 +74,11 @@ public class GameService {
     private GameResponse getGameResponse(Game game) {
         //todo
         return new GameResponse(game, "generatedMessage");
+    }
+
+    private GameResponse getGameOverResponse(Game game) {
+        //todo declare winner
+        return new GameResponse(false, "generatedMessage");
     }
 
     public List<Piece> getAllPieces(Game game){

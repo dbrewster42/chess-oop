@@ -9,7 +9,10 @@ import static org.mockito.Mockito.mock;
 
 class GameServiceTest {
     private GameRepository repository = mock(GameRepository.class);
-    private GameService sut = new GameService(repository);
+    private CheckService checkService = mock(CheckService.class);
+
+    private GameService sut = new GameService(repository, checkService);
+
     @Test
     void asdf(){
 
