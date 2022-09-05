@@ -60,3 +60,14 @@ makeJump(moves, allSpots, foes, i, j);
         return new NewGameResponse(1, null, null);
     }
 ##
+
+
+##### player.java
+    public Piece getKing(){
+        //todo remove check if unnecessary
+        Piece piece = pieces.get(0);
+        if (piece instanceof King){
+            return pieces.get(0);
+        }
+        throw new PieceNotFound();
+    }

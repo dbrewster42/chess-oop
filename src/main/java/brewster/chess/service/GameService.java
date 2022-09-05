@@ -41,6 +41,9 @@ public class GameService {
     }
 
     public GameResponse movePiece(Game game, MoveRequest request) {
+        if (game.isCheck()){
+//todo            if (checkService.didDefeatCheck(game))
+        }
         if (checkService.movedIntoCheck(game, request)) {
             throw new InvalidMoveException("You may not move into check");
         }
@@ -48,7 +51,7 @@ public class GameService {
 
         Piece piece = findPiece(game, request.getStart());
         piece.move(request.getEnd());
-        if (checkService.didCheck(game)){
+        if (checkService.didCheck(getCurrentTeam(game), getFoesPieces(game), getAllSpots(game))){
             game.setCheck(true);
             if (checkService.didCheckMate(game)){
                 game.setActive(false);
@@ -62,7 +65,7 @@ public class GameService {
     }
 
     public GameResponse implementPromotion(Game game, PromotionRequest request) {
-        List<Piece> pieces = getCurrentPlayer(game).getPieces();
+        List<Piece> pieces = getCurrentTeam(game);
         Piece piece = findPiece(pieces, request.getOldPosition());
         pieces.remove(piece);
         pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
@@ -78,16 +81,24 @@ public class GameService {
 
     private GameResponse getGameOverResponse(Game game) {
         //todo declare winner
-        return new GameResponse(false, "generatedMessage");
+        return new GameResponse(false, game.getPlayer1().getName() + " wins!");
     }
 
     public List<Piece> getAllPieces(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream()).collect(Collectors.toList());
     }
     public List<Piece> getFoesPieces(Game game){
-        return getOpponent(game).getPieces();
+        return game.isWhitesTurn() ? game.getPlayer2().getPieces() : game.getPlayer1().getPieces();
     }
-
+    public List<Piece> getCurrentTeam(Game game){
+        return game.isWhitesTurn() ? game.getPlayer1().getPieces() : game.getPlayer2().getPieces();
+    }
+    public Player getCurrentPlayer(Game game){
+        return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
+    }
+    public Player getOpponent(Game game){
+        return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
+    }
     public Stream<Piece> getAllPiecesStream(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
     }
@@ -105,15 +116,8 @@ public class GameService {
 //    }
 
 
-    public Player getCurrentPlayer(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
-    }
-    public Player getOpponent(Game game){
-        return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
-    }
-
     private Piece findPiece(Game game, int position) {
-        return getCurrentPlayer(game).getPieces().stream()
+        return getCurrentTeam(game).stream()
                 .filter(piece -> piece.isAtPosition(position))
                 .findAny().orElseThrow(PieceNotFound::new);
     }

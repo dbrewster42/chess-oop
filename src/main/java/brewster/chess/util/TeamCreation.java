@@ -25,7 +25,12 @@ public class TeamCreation {
             pawnY = 2;
             team = WHITE;
         }
+        return getNewTeam(y, pawnY, team);
+    }
+    public static List<Piece> getNewTeam(int y, int pawnY, Team team) {
         List<Piece> allPieces = new ArrayList<>();
+
+        allPieces.add(new King(team, 5, y));
         for (int x = 1; x < 9; x++){
             allPieces.add(new Pawn(team, x, pawnY));
         }
@@ -33,7 +38,6 @@ public class TeamCreation {
         allPieces.add(new Knight(team,2, y));
         allPieces.add(new Bishop(team, 3, y));
         allPieces.add(new Queen(team, 4, y));
-        allPieces.add(new King(team, 5, y));
         allPieces.add(new Bishop(team, 6, y));
         allPieces.add(new Knight(team, 7, y));
         allPieces.add(new Rook(team, 8, y));
