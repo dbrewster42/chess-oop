@@ -1,4 +1,4 @@
-package brewster.chess.piece;
+package brewster.chess.model.constant;
 
 import lombok.Getter;
 
