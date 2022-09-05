@@ -12,6 +12,7 @@ import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.PieceFactory;
 import brewster.chess.repository.GameRepository;
+import brewster.chess.service.model.GamePiecesDto;
 
 import java.awt.Point;
 import java.util.List;
@@ -41,27 +42,31 @@ public class GameService {
     }
 
     public GameResponse movePiece(Game game, MoveRequest request) {
+        GamePiecesDto dto = getGamePiecesDto(game);
         if (game.isCheck()){
 //todo            if (checkService.didDefeatCheck(game))
         }
-        if (checkService.movedIntoCheck(game, request)) {
+        if (checkService.movedIntoCheck(dto, request)) {
             throw new InvalidMoveException("You may not move into check");
         }
         removeFoeIfCaptured(game, request.getEnd());
 
         Piece piece = findPiece(game, request.getStart());
         piece.move(request.getEnd());
-        if (checkService.didCheck(getCurrentTeam(game), getFoesPieces(game), getAllSpots(game))){
+        if (checkService.didCheck(dto)){
             game.setCheck(true);
-            if (checkService.didCheckMate(game)){
+            if (checkService.didCheckMate(dto)){
                 game.setActive(false);
                 return getGameOverResponse(game);
             }
-            //todo stalemate? own method maybe
         }
 
         game.setWhitesTurn(!game.isWhitesTurn());
         return getGameResponse(game);
+    }
+
+    private GamePiecesDto getGamePiecesDto(Game game){
+        return new GamePiecesDto(getAllSpots(game), getCurrentTeam(game), getFoesPieces(game));
     }
 
     public GameResponse implementPromotion(Game game, PromotionRequest request) {
@@ -73,6 +78,12 @@ public class GameService {
         return getGameResponse(game);
     }
 
+    public GameResponse requestDraw(Game game) {
+        if (checkService.isStaleMate(getGamePiecesDto(game))){
+            return getGameOverResponse(game);
+        }
+        return null;
+    }
 
     private GameResponse getGameResponse(Game game) {
         //todo

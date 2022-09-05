@@ -31,7 +31,7 @@ public class Knight extends Piece {
 
     private void addLegalMove(List<Point> moves, List<Point> spots, List<Piece> foes, int x, int y){
         if (isOnBoard(x, y)){
-            if (!(isOccupied(x, y, spots) && !isOpponent(foes, x, y))){
+            if (!isOccupied(x, y, spots) || isOpponent(foes, x, y)){
                 moves.add(new Point(x, y));
             }
         }

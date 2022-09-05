@@ -68,6 +68,10 @@ public class Controller {
 //        return returnValue;
     }
 
+    @GetMapping("/{id}/draw")
+    public GameResponse requestDraw(@PathVariable long id){
+        return gameService.requestDraw(findGame(id));
+    }
     @PostMapping("/{id}/promotion")
     public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
         return gameService.implementPromotion(findGame(id), request);

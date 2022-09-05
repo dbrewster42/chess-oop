@@ -31,6 +31,8 @@ return new Pawn(team, x, y);
 
 
 ### Knight.java
+            if (!isTeammate()){ moves.add(new Point(x, y));}
+
 int x = 2 * xDirection + spot.x;
 int y = yDirection + spot.x;
 if (isOnBoard(x, y)){
