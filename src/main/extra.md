@@ -73,3 +73,10 @@ makeJump(moves, allSpots, foes, i, j);
         }
         throw new PieceNotFound();
     }
+
+
+##### gameService.java
+not needed because irrelevant if already in check
+//        if (game.isCheck()){
+////todo            if (checkService.didDefeatCheck(game))
+//        }

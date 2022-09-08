@@ -17,7 +17,14 @@ import static brewster.chess.model.constant.Team.WHITE;
 public class PieceMother {
 
     public static List<Piece> getAllPieces() {
-        return Stream.of(getWhiteKing(), getBlackKing(), getWhitePawn(), getBlackPawn(), getWhiteQueen(), getBlackQueen()).collect(Collectors.toList());
+        return Stream.of(getWhiteKing(), getBlackKing(), getWhitePawn2(), getBlackPawn2(), getWhiteQueen(), getBlackQueen()).collect(Collectors.toList());
+    }
+
+    public static List<Piece> getWhitePieces() {
+        return Stream.of(getWhiteKing(), getWhitePawn(), getWhitePawn2(), getWhiteQueen(), getWhiteBishop(), getWhiteKnight()).collect(Collectors.toList());
+    }
+    public static List<Piece> getBlackPieces() {
+        return Stream.of(getBlackKing(), getBlackPawn(), getBlackPawn2(), getBlackQueen(), getBlackRook()).collect(Collectors.toList());
     }
 
     public static List<Piece> getFoes(){
@@ -32,6 +39,10 @@ public class PieceMother {
         return Stream.of(new Point(4, 1), new Point(5, 1), new Point(5, 8), new Point(8, 2), new Point(8, 7), new Point(4, 8)).collect(Collectors.toList());
     }
 
+    public static List<Point> getSpots3(){
+        return Stream.of(new Point(4, 1), new Point(5, 1), new Point(5, 8), new Point(5, 2), new Point(5, 7), new Point(4, 8)).collect(Collectors.toList());
+    }
+
     public static Piece getWhiteKing(){
         return new King(WHITE, 5, 1);
     }
@@ -44,8 +55,23 @@ public class PieceMother {
         return new Pawn(WHITE, 8, 2);
     }
 
+    public static Piece getWhitePawn2(){
+        return new Pawn(WHITE, 5, 2);
+    }
+
     public static Piece getBlackPawn(){
         return new Pawn(BLACK, 8, 7);
+    }
+    public static Piece getBlackPawn2(){
+        return new Pawn(BLACK, 5, 7);
+    }
+
+    public static Piece getBlackRook(){
+        return new Pawn(BLACK, 8, 8);
+    }
+
+    public static Piece getWhiteBishop(){
+        return new Pawn(WHITE, 3, 1);
     }
 
     public static Piece getEnterprisingBlackPawn(){

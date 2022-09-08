@@ -13,6 +13,7 @@ import brewster.chess.piece.Piece;
 import brewster.chess.piece.PieceFactory;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.model.GamePiecesDto;
+import org.springframework.stereotype.Service;
 
 import java.awt.Point;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service
 public class GameService {
     private final GameRepository repository;
     private final CheckService checkService;
@@ -43,16 +45,18 @@ public class GameService {
 
     public GameResponse movePiece(Game game, MoveRequest request) {
         GamePiecesDto dto = getGamePiecesDto(game);
-        if (game.isCheck()){
-//todo            if (checkService.didDefeatCheck(game))
-        }
-        if (checkService.movedIntoCheck(dto, request)) {
+        Piece piece = findPiece(game, request.getStart());
+        piece.move(request.getEnd());
+
+        if (checkService.isInCheckAfterMove(dto)) {
+            piece.move(request.getStart());
+            if (game.isCheck()){
+                throw new InvalidMoveException("You must defeat check");
+            }
             throw new InvalidMoveException("You may not move into check");
         }
         removeFoeIfCaptured(game, request.getEnd());
 
-        Piece piece = findPiece(game, request.getStart());
-        piece.move(request.getEnd());
         if (checkService.didCheck(dto)){
             game.setCheck(true);
             if (checkService.didCheckMate(dto)){
@@ -139,7 +143,7 @@ public class GameService {
                 .findAny().orElseThrow(PieceNotFound::new);
     }
 
-    private void removeFoeIfCaptured(Game game, int end) {
+    void removeFoeIfCaptured(Game game, int end) {
         getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny()
                 .ifPresent(foe -> getFoesPieces(game).remove(foe));
     }
