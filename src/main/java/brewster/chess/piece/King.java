@@ -35,6 +35,5 @@ public class King extends Piece {
                 moves.add(new Point(x, y));
             }
         }
-
     }
 }

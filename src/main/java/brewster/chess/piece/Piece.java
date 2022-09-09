@@ -30,6 +30,8 @@ public abstract class Piece {
         this.spot = new Point(x, selectY());
     }
 
+    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
+
     private int selectY(){
         int y = 1;
         if (type.equals(PAWN)){
@@ -40,8 +42,6 @@ public abstract class Piece {
         }
         return y;
     }
-
-    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
 
     public boolean isOccupied(int x, int y, List<Point> spots){
         return spots.contains(new Point(x, y));
@@ -118,5 +118,20 @@ public abstract class Piece {
             x += xDirection;
             y += yDirection;
         }
+    }
+
+    boolean isLegalMove(Point destination, List<Point> allSpots, int xDirection, int yDirection) {
+        int x = spot.x + xDirection;
+        int y = spot.y + yDirection;
+        while (isOnBoard(x, y)){
+            if (x == destination.x && y == destination.y){
+                return true;
+            } else if (isOccupied(x, y, allSpots)){
+                return false;
+            }
+            x += xDirection;
+            y += yDirection;
+        }
+        return false;
     }
 }

@@ -7,11 +7,11 @@ import java.util.List;
 
 public class UserMother {
     public static User createUser(){
-        return new User("rainmaker@gmail.com", "rainmaker");
+        return new User("rainmaker", "rainmaker@gmail.com");
 
     }
     public static User createUser2(){
-        return new User("bob@gmail.com", "Bobby");
+        return new User("Bobby", "bob@gmail.com");
     }
 
 

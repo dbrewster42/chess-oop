@@ -96,7 +96,7 @@ public class GameService {
 
     private GameResponse getGameOverResponse(Game game) {
         //todo declare winner
-        return new GameResponse(false, game.getPlayer1().getName() + " wins!");
+        return new GameResponse(false,  getCurrentPlayer(game).getName() + " wins!");
     }
 
     public List<Piece> getAllPieces(Game game){

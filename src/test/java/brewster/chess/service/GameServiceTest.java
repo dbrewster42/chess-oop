@@ -5,6 +5,7 @@ import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.request.MoveRequest;
+import brewster.chess.model.response.GameResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,13 +34,6 @@ class GameServiceTest {
 //        trimPieces(game.getPlayer1().getPieces());
 //        trimPieces(game.getPlayer2().getPieces());
 //    }
-    private void trimPieces(List<Piece> pieces){
-        pieces.remove(1);
-        pieces.remove(2);
-        pieces.remove(3);
-        pieces.remove(4);
-        pieces.remove(5);
-    }
 
     @Test
     void movePieceRemovesFoe(){
@@ -79,6 +73,20 @@ class GameServiceTest {
         assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(51, 66)));
     }
 
+    @Test
+    void movePieceGetsCheckMate() {
+        trimPieces(game.getPlayer1().getPieces());
+        trimPieces(game.getPlayer2().getPieces());
+
+        sut.movePiece(game, getMoveRequest(31, 84));
+        sut.movePiece(game, getMoveRequest(27, 26));
+
+        GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
+        assertThat(response.isActive()).isFalse();
+        assertThat(response.getMessage()).isEqualTo("rainmaker wins!");
+        //todo adjust logic so that piece can capture teammate for checkmate
+    }
+
     private MoveRequest getMoveRequest(int start, int end){
         MoveRequest moveRequest = new MoveRequest();
         moveRequest.setStart(start);
@@ -86,4 +94,11 @@ class GameServiceTest {
         return moveRequest;
     }
 
+    private void trimPieces(List<Piece> pieces){
+        pieces.remove(1);
+        pieces.remove(2);
+        pieces.remove(3);
+        pieces.remove(4);
+        pieces.remove(5);
+    }
 }
