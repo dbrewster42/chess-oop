@@ -14,7 +14,6 @@ public class CheckService {
         Point kingsLocation = dto.getFriends().get(0).getSpot();
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(kingsLocation, dto.getSpots())){
-//          if (friend.calculateLegalMoves(dto.getSpots(), dto.getFriends()).contains(kingsLocation)){
                 return true;
             }
         }
@@ -25,7 +24,6 @@ public class CheckService {
         Point kingsLocation = dto.getFoes().get(0).getSpot();
         for (Piece friend : dto.getFriends()){
             if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
-//          if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsLocation)){
                 return true;
             }
         }
@@ -40,15 +38,16 @@ public class CheckService {
             }
         }
         //todo add to see if piece can take or block
-        //1. canBeBlocked() find piece/s that are pressuring king
-        //2. Piece - isLegalMove() for efficiency
+        //1. findAttackers() find piece/s pressuring king. if multiple then checkmate
+        // or set attacker in didCheck, then see if piece can taken/blocked, then add that to allSpots and re-run didCheck
+        //2. canBeTaken() if 1 piece
+        //3. canBeBlocked
         return true;
     }
 
     private boolean isMoveOpen(Point kingsMove, GamePiecesDto dto){
         for (Piece friend : dto.getFriends()){
-            if (friend.isLegalAttack(kingsMove, dto.getSpots())){
-//            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){
+            if (!kingsMove.equals(friend.getSpot()) && friend.isLegalAttack(kingsMove, dto.getSpots())){
                 return false;
             }
         }

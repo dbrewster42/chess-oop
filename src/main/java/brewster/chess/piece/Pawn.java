@@ -51,7 +51,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isLegalAttack(Point destination, List<Point> allSpots) {
-        return destination.y - spot.y == getDirection() && Math.abs(destination.x = spot.x) == 1;
+        return destination.y - spot.y == getDirection() && Math.abs(destination.x - spot.x) == 1;
     }
 
     private int getDirection(){

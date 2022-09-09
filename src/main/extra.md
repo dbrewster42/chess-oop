@@ -80,3 +80,7 @@ not needed because irrelevant if already in check
 //        if (game.isCheck()){
 ////todo            if (checkService.didDefeatCheck(game))
 //        }
+
+
+#### checkService.java
+            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){

@@ -58,6 +58,19 @@ class PawnTest {
         assertThrows(Promotion.class, () -> pawn.move(51));
     }
 
+    @Test
+    void isLegalAttack() {
+        pawn.move(42);
+        assertThat(pawn.isLegalAttack(new Point(3, 3), allSpots)).isTrue();
+        assertThat(pawn.isLegalAttack(new Point(5, 3), allSpots)).isTrue();
+        assertThat(pawn.isLegalAttack(new Point(6, 3), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(6, 2), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(5, 2), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(4, 3), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(3, 1), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(1, 1), allSpots)).isFalse();
+    }
+
 //    @Test
 //    void hasMoved() {
 //        Pawn pawn = new Pawn(Team.WHITE, 1, 2);

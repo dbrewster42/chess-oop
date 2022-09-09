@@ -44,7 +44,18 @@ class KingTest {
     }
 
     @Test
-    void isLegalAttack() {}
+    void isLegalAttack() {
+        moveKing(42);
+        assertThat(king.isLegalAttack(new Point(5, 3), allSpots)).isTrue();
+        assertThat(king.isLegalAttack(new Point(5, 2), allSpots)).isTrue();
+        assertThat(king.isLegalAttack(new Point(6, 3), allSpots)).isFalse();
+        assertThat(king.isLegalAttack(new Point(6, 2), allSpots)).isFalse();
+        assertThat(king.isLegalAttack(new Point(4, 3), allSpots)).isTrue();
+        assertThat(king.isLegalAttack(new Point(3, 3), allSpots)).isTrue();
+        assertThat(king.isLegalAttack(new Point(3, 1), allSpots)).isTrue();
+        assertThat(king.isLegalAttack(new Point(1, 1), allSpots)).isFalse();
+        assertThat(king.isLegalAttack(new Point(2, 3), allSpots)).isFalse();
+    }
 
     private void moveKing(int position){
         king.move(position);

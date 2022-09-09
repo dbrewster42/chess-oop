@@ -17,7 +17,6 @@ import java.util.List;
 import static brewster.chess.mother.UserMother.createUser;
 import static brewster.chess.mother.UserMother.createUser2;
 import static org.assertj.core.api.Assertions.assertThat;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -31,8 +30,6 @@ class GameServiceTest {
     @BeforeEach
     void setup(){
         game = new Game(createUser(), createUser2());
-//        trimPieces(game.getPlayer1().getPieces());
-//        trimPieces(game.getPlayer2().getPieces());
     }
 
     @Test
