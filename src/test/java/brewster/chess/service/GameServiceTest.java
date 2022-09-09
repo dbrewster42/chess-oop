@@ -24,16 +24,16 @@ import static org.mockito.Mockito.mock;
 
 class GameServiceTest {
     private GameRepository repository = mock(GameRepository.class);
-//    private CheckService checkService = mock(CheckService.class);
 
     private GameService sut = new GameService(repository, new CheckService());
-    private Game game = new Game(createUser(), createUser2());
+    private Game game;
 
-//    @BeforeEach
-//    void setup(){
+    @BeforeEach
+    void setup(){
+        game = new Game(createUser(), createUser2());
 //        trimPieces(game.getPlayer1().getPieces());
 //        trimPieces(game.getPlayer2().getPieces());
-//    }
+    }
 
     @Test
     void movePieceRemovesFoe(){

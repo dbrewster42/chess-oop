@@ -19,4 +19,9 @@ public class Queen extends Piece {
         return potentialMoves;
     }
 
+    @Override
+    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+        return isOnDiagonalLine(destination, allSpots) || isOnStraightLine(destination, allSpots);
+    }
+
 }

@@ -12,8 +12,9 @@ public class CheckService {
 
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
         Point kingsLocation = dto.getFriends().get(0).getSpot();
-        for (Piece friend : dto.getFoes()){
-            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFriends()).contains(kingsLocation)){
+        for (Piece foe : dto.getFoes()){
+            if (foe.isLegalAttack(kingsLocation, dto.getSpots())){
+//          if (friend.calculateLegalMoves(dto.getSpots(), dto.getFriends()).contains(kingsLocation)){
                 return true;
             }
         }
@@ -23,7 +24,8 @@ public class CheckService {
     public boolean didCheck(GamePiecesDto dto) {
         Point kingsLocation = dto.getFoes().get(0).getSpot();
         for (Piece friend : dto.getFriends()){
-            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsLocation)){
+            if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
+//          if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsLocation)){
                 return true;
             }
         }
@@ -44,9 +46,9 @@ public class CheckService {
     }
 
     private boolean isMoveOpen(Point kingsMove, GamePiecesDto dto){
-        dto.getFriends().get(6).calculateLegalMoves(dto.getSpots(), dto.getFoes());
         for (Piece friend : dto.getFriends()){
-            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){
+            if (friend.isLegalAttack(kingsMove, dto.getSpots())){
+//            if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){
                 return false;
             }
         }

@@ -58,23 +58,23 @@ class PawnTest {
         assertThrows(Promotion.class, () -> pawn.move(51));
     }
 
-    @Test
-    void hasMoved() {
-        Pawn pawn = new Pawn(Team.WHITE, 1, 2);
-        assertThat(pawn.hasNotMoved()).isTrue();
-        pawn.move(13);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(17);
-        assertThat(pawn.hasNotMoved()).isFalse();
-    }
-
-    @Test
-    void hasMoved2() {
-        Pawn pawn = new Pawn(Team.BLACK, 1, 2);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(13);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(17);
-        assertThat(pawn.hasNotMoved()).isTrue();
-    }
+//    @Test
+//    void hasMoved() {
+//        Pawn pawn = new Pawn(Team.WHITE, 1, 2);
+//        assertThat(pawn.hasNotMoved()).isTrue();
+//        pawn.move(13);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(17);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//    }
+//
+//    @Test
+//    void hasMoved2() {
+//        Pawn pawn = new Pawn(Team.BLACK, 1, 2);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(13);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(17);
+//        assertThat(pawn.hasNotMoved()).isTrue();
+//    }
 }

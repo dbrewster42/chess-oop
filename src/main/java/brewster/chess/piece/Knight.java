@@ -24,6 +24,12 @@ public class Knight extends Piece {
         return moves;
     }
 
+    @Override
+    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+        int xDiff = Math.abs(destination.x - spot.x);
+        return ((xDiff == 1 || xDiff == 2) && xDiff + Math.abs(destination.y - spot.y) == 3);
+    }
+
     private void makeJump(List<Point> moves, List<Point> spots, List<Piece> foes, int xDirection, int yDirection){
         addLegalMove(moves, spots, foes, 2 * xDirection + spot.x,  yDirection + spot.y);
         addLegalMove(moves, spots, foes, xDirection + spot.x,  2 * yDirection + spot.y);

@@ -11,11 +11,11 @@ import static brewster.chess.model.constant.Team.WHITE;
 import static brewster.chess.model.constant.Type.PAWN;
 
 public class Pawn extends Piece {
-    private final int direction;
+//    private final int direction;
 
     public Pawn(Team team, int x, int y) {
         super(team, x, y, PAWN);
-        this.direction = team == WHITE ? 1 : -1;
+//        this.direction = team == WHITE ? 1 : -1;
     }
 
     @Override
@@ -31,11 +31,13 @@ public class Pawn extends Piece {
     @Override
     public List<Point> calculateLegalMoves(List<Point> spots, List<Piece> foes) {
         List<Point> legalMoves = new ArrayList<>();
+        int direction = getDirection();
         int x = spot.x;
         int y = spot.y + direction;
+
         if (!isOccupied(x, y, spots)){
             legalMoves.add(new Point(x, y));
-            if (hasNotMoved()){
+            if (hasNotMoved(direction)){
                 if (!isOccupied(x, y + direction, spots)) {
                     legalMoves.add(new Point(x, y + direction));
                 }
@@ -47,14 +49,24 @@ public class Pawn extends Piece {
         return legalMoves;
     }
 
+    @Override
+    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+        return destination.y - spot.y == getDirection() && Math.abs(destination.x = spot.x) == 1;
+    }
+
+    private int getDirection(){
+        return team == WHITE ? 1 : -1;
+    }
+
+    private boolean hasNotMoved(int direction){
+        return (direction == 1 && getSpot().y == 2) || (direction == -1 && getSpot().y == 7);
+    }
+
     private void addIfAttackPossible(List<Point> moves, List<Point> spots, List<Piece> foes, int x, int y){
         if (isOccupied(x, y, spots) && isOpponent(foes, x, y)){
             moves.add(new Point(x, y));
         }
     }
 
-    boolean hasNotMoved(){
-        return (direction == 1 && getSpot().y == 2) || (direction == -1 && getSpot().y == 7);
-    }
 
 }

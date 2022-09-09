@@ -25,6 +25,11 @@ public class King extends Piece {
         return moves;
     }
 
+    @Override
+    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+        return Math.abs(destination.x - spot.x) < 2 && Math.abs(destination.y - spot.y) < 2;
+    }
+
     private void moveOneSpot(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection){
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;

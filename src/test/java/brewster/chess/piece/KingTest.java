@@ -43,6 +43,9 @@ class KingTest {
         assertThat(king.calculateLegalMoves(allSpots, foes).size()).isEqualTo(3);
     }
 
+    @Test
+    void isLegalAttack() {}
+
     private void moveKing(int position){
         king.move(position);
         allSpots.add(new Point(position / 10, position % 10));
