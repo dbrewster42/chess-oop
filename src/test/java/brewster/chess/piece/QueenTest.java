@@ -62,4 +62,38 @@ class QueenTest {
         assertThat(legalMoves.size()).isEqualTo(5);
     }
 
+    @Test
+    void isLegalAttackDiagonal() {
+        queen.move(42);
+        assertThat(queen.isLegalAttack(new Point(5, 3), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(6, 4), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(3, 1), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(2, 4), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(3, 4), allSpots)).isFalse();
+        assertThat(queen.isLegalAttack(new Point(8, 8), allSpots)).isFalse();
+    }
+
+    @Test
+    void isLegalAttackStraight() {
+        queen.move(42);
+        assertThat(queen.isLegalAttack(new Point(8, 2), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(1, 2), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(4, 8), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(4, 1), allSpots)).isTrue();
+        assertThat(queen.isLegalAttack(new Point(5, 4), allSpots)).isFalse();
+        assertThat(queen.isLegalAttack(new Point(3, 9), allSpots)).isFalse();
+    }
+
+    @Test
+    void isLegalAttackBlocked() {
+        queen.move(42);
+        allSpots.add(new Point(7, 2));
+        assertThat(queen.isLegalAttack(new Point(8, 2), allSpots)).isFalse();
+        allSpots.add(new Point(1, 2));
+        assertThat(queen.isLegalAttack(new Point(1, 2), allSpots)).isTrue();
+        allSpots.add(new Point(5, 3));
+        assertThat(queen.isLegalAttack(new Point(6, 4), allSpots)).isFalse();
+        allSpots.add(new Point(3, 3));
+        assertThat(queen.isLegalAttack(new Point(1, 5), allSpots)).isFalse();
+    }
 }

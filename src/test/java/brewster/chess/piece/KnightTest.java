@@ -51,4 +51,16 @@ public class KnightTest {
                 new Point(5,6), new Point(6,5), new Point(3,6), new Point(2,5), new Point(5,2));
     }
 
+    @Test
+    void isLegalAttack() {
+        knight.move(42);
+        assertThat(knight.isLegalAttack(new Point(6, 3), allSpots)).isTrue();
+        assertThat(knight.isLegalAttack(new Point(5, 4), allSpots)).isTrue();
+        assertThat(knight.isLegalAttack(new Point(6, 4), allSpots)).isFalse();
+        assertThat(knight.isLegalAttack(new Point(7, 2), allSpots)).isFalse();
+        assertThat(knight.isLegalAttack(new Point(2, 1), allSpots)).isTrue();
+        assertThat(knight.isLegalAttack(new Point(3, 4), allSpots)).isTrue();
+        assertThat(knight.isLegalAttack(new Point(5, 3), allSpots)).isFalse();
+        assertThat(knight.isLegalAttack(new Point(7, 5), allSpots)).isFalse();
+    }
 }
