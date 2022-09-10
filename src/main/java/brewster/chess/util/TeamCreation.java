@@ -31,16 +31,18 @@ public class TeamCreation {
         List<Piece> allPieces = new ArrayList<>();
 
         allPieces.add(new King(team, 5, y));
-        for (int x = 1; x < 9; x++){
-            allPieces.add(new Pawn(team, x, pawnY));
-        }
+        allPieces.add(new Queen(team, 4, y));
+
         allPieces.add(new Rook(team, 1, y));
         allPieces.add(new Knight(team,2, y));
         allPieces.add(new Bishop(team, 3, y));
-        allPieces.add(new Queen(team, 4, y));
         allPieces.add(new Bishop(team, 6, y));
         allPieces.add(new Knight(team, 7, y));
         allPieces.add(new Rook(team, 8, y));
+
+        for (int x = 1; x < 9; x++){
+            allPieces.add(new Pawn(team, x, pawnY));
+        }
 
         return allPieces;
     }

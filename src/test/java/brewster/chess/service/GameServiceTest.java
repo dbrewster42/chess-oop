@@ -22,9 +22,9 @@ import static org.mockito.Mockito.mock;
 
 
 class GameServiceTest {
-    private GameRepository repository = mock(GameRepository.class);
+    private final GameRepository repository = mock(GameRepository.class);
 
-    private GameService sut = new GameService(repository, new CheckService());
+    private final GameService sut = new GameService(repository, new CheckService());
     private Game game;
 
     @BeforeEach
@@ -92,10 +92,9 @@ class GameServiceTest {
     }
 
     private void trimPieces(List<Piece> pieces){
-        pieces.remove(1);
-        pieces.remove(2);
-        pieces.remove(3);
-        pieces.remove(4);
-        pieces.remove(5);
+        pieces.remove(8);
+        pieces.remove(9);
+        pieces.remove(10);
+        pieces.remove(11);
     }
 }

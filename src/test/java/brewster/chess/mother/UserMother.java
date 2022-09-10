@@ -3,8 +3,6 @@ package brewster.chess.mother;
 import brewster.chess.model.Player;
 import brewster.chess.model.User;
 
-import java.util.List;
-
 public class UserMother {
     public static User createUser(){
         return new User("rainmaker", "rainmaker@gmail.com");
