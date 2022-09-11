@@ -99,16 +99,22 @@ public abstract class Piece {
         return moves;
     }
 
+//    List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes) {
+//        List<Point> moves = new ArrayList<>();
+//        addMovesAlongLine(moves, allSpots, foes, -1, 0);
+//        addMovesAlongLine(moves, allSpots, foes, 1, 0);
+//        addMovesAlongLine(moves, allSpots, foes, 0, -1);
+//        addMovesAlongLine(moves, allSpots, foes, 0, 1);
+//        return moves;
+//    }
     List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes) {
-        List<Point> moves = new ArrayList<>();
-        addMovesAlongLine(moves, allSpots, foes, -1, 0);
+        List<Point> moves = addMovesAlongLine(new ArrayList<>(), allSpots, foes, -1, 0);
         addMovesAlongLine(moves, allSpots, foes, 1, 0);
         addMovesAlongLine(moves, allSpots, foes, 0, -1);
-        addMovesAlongLine(moves, allSpots, foes, 0, 1);
-        return moves;
+        return addMovesAlongLine(moves, allSpots, foes, 0, 1);
     }
 
-    private void addMovesAlongLine(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection) {
+    public List<Point> addMovesAlongLine(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection) {
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         while (isOnBoard(x, y)) {
@@ -123,6 +129,7 @@ public abstract class Piece {
             x += xDirection;
             y += yDirection;
         }
+        return moves;
     }
 
     private boolean isMoveUnblocked(Point destination, List<Point> allSpots, int xDirection, int yDirection) {

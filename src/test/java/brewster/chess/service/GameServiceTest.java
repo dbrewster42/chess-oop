@@ -81,7 +81,25 @@ class GameServiceTest {
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
         assertThat(response.isActive()).isFalse();
         assertThat(response.getMessage()).isEqualTo("rainmaker wins!");
-        //todo adjust logic so that piece can capture teammate for checkmate
+    }
+
+    @Test
+    void CheckMateCanBeDefeatedByCapture() {
+        GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
+
+        assertThat(game.isCheck()).isTrue();
+        assertThat(game.isWhitesTurn()).isFalse();
+        assertThat(response.isActive()).isTrue();
+    }
+
+    @Test
+    void mustMoveOutOfCheck() {
+        trimPieces(game.getPlayer1().getPieces());
+        trimPieces(game.getPlayer2().getPieces());
+        sut.movePiece(game, getMoveRequest(31, 84));
+        sut.movePiece(game, getMoveRequest(48, 42));
+
+        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(41, 48)));
     }
 
     private MoveRequest getMoveRequest(int start, int end){
