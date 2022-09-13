@@ -44,23 +44,11 @@ public class CheckService {
                 return false;
             }
         }
-        List<Piece> allAttackers = findAllAttackers(dto);
-        if (allAttackers.size() > 1){
-            return true;
-        }
         if (isMultipleAttackers(dto)){
             return true;
         }
-//        if (canBeTaken(dto)){
-//            return false;
-//        } else return !canBeBlocked(dto);
-        return !canBeTaken(dto, allAttackers.get(0)) || !canBeBlocked(dto, allAttackers.get(0));
 
-        //todo add to see if piece can take or block
-        //1. findAttackers() find piece/s pressuring king. if multiple then checkmate
-        // or set attacker in didCheck, then see if piece can taken/blocked, then add that to allSpots and re-run didCheck
-        //2. canBeTaken() if 1 piece
-        //3. canBeBlocked
+        return !canBeTaken(dto) || !canBeBlocked(dto);
     }
 
     private List<Piece> findAllAttackers(GamePiecesDto dto) {
@@ -90,7 +78,7 @@ public class CheckService {
         return allAttackers > 1;
     }
 
-    private boolean canBeTaken(GamePiecesDto dto, Piece attacker) {
+    private boolean canBeTaken(GamePiecesDto dto) {
         Point attackerSpot = attacker.getSpot();
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(attackerSpot, dto.getSpots())){
@@ -107,7 +95,7 @@ public class CheckService {
     }
 
 
-    private boolean canBeBlocked(GamePiecesDto dto, Piece attacker) {
+    private boolean canBeBlocked(GamePiecesDto dto) {
         if (attacker instanceof Knight || isOneSpotAway(dto.getFoes().get(0).getSpot())){
             return false;
         }
