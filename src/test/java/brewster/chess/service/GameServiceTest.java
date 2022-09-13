@@ -102,6 +102,17 @@ class GameServiceTest {
         assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(41, 48)));
     }
 
+    @Test
+    void CheckMateCanBeDefeatedByBlock() {
+        trimPieces(game.getPlayer1().getPieces());
+        trimPieces(game.getPlayer2().getPieces());
+        GameResponse response = sut.movePiece(game, getMoveRequest(41, 55));
+
+        assertThat(game.isCheck()).isTrue();
+        assertThat(game.isWhitesTurn()).isFalse();
+        assertThat(response.isActive()).isTrue();
+    }
+
     private MoveRequest getMoveRequest(int start, int end){
         MoveRequest moveRequest = new MoveRequest();
         moveRequest.setStart(start);

@@ -84,3 +84,40 @@ not needed because irrelevant if already in check
 
 #### checkService.java
             if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){
+    public boolean isInCheckAfterMove(GamePiecesDto dto) {
+        Point kingsLocation = dto.getFriends().get(0).getSpot();
+        for (Piece foe : dto.getFoes()){
+            if (foe.isLegalAttack(kingsLocation, dto.getSpots())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean didCheck(GamePiecesDto dto) {
+        Point kingsLocation = dto.getFoes().get(0).getSpot();
+        for (Piece friend : dto.getFriends()){
+            if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
+                attacker = friend;
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean isSpotDefended(GamePiecesDto dto, Point spot){
+        for (Piece friend : dto.getFriends()) {
+            if (friend.isLegalAttack(spot, dto.getSpots())) {
+                return true;
+            }
+        }
+        return false;
+
+//        if (attacker instanceof King || attacker instanceof Pawn || attacker instanceof Knight){
+//            return false;
+//        }
+private long findAllAttackers(GamePiecesDto dto) {
+Point kingsLocation = dto.getFoes().get(0).getSpot();
+return dto.getFriends().stream()
+.filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
+.count();
+}
