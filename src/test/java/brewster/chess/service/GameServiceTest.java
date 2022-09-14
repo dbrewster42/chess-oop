@@ -84,7 +84,7 @@ class GameServiceTest {
     }
 
     @Test
-    void CheckMateCanBeDefeatedByCapture() {
+    void CheckMateCanBeDefeatedByKingCapture() {
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
 
         assertThat(game.isCheck()).isTrue();
@@ -108,9 +108,39 @@ class GameServiceTest {
         trimPieces(game.getPlayer2().getPieces());
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 55));
 
+        assertThat(response.isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
+    }
+
+    @Test
+    
+    void CheckMateCanBeDefeatedByCapture() {
+        trimPieces(game.getPlayer1().getPieces());
+        trimPieces(game.getPlayer2().getPieces());
+
+        sut.movePiece(game, getMoveRequest(31, 84));
+        sut.movePiece(game, getMoveRequest(48, 14));;
+
+        GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
+
         assertThat(response.isActive()).isTrue();
+        assertThat(game.isCheck()).isTrue();
+        assertThat(game.isWhitesTurn()).isFalse();
+    }
+    @Test
+    void CheckMateCanBeDefeatedByCapture2() {
+        trimPieces(game.getPlayer1().getPieces());
+        trimPieces(game.getPlayer2().getPieces());
+
+        sut.movePiece(game, getMoveRequest(31, 84));
+        sut.movePiece(game, getMoveRequest(27, 26));
+
+        GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
+
+        assertThat(response.isActive()).isTrue();
+        assertThat(game.isCheck()).isTrue();
+        assertThat(game.isWhitesTurn()).isFalse();
     }
 
     private MoveRequest getMoveRequest(int start, int end){

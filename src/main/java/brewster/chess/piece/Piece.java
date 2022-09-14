@@ -17,6 +17,9 @@ public abstract class Piece {
     Type type;
     Point spot;
 
+    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
+    public abstract boolean isLegalAttack(Point destination, List<Point> allSpots);
+
     public Piece(Team team, int x, int y, Type type) {
         this.team = team;
         this.type = type;
@@ -28,11 +31,6 @@ public abstract class Piece {
         this.type = type;
         this.spot = new Point(x, selectY());
     }
-
-    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
-
-    public abstract boolean isLegalAttack(Point destination, List<Point> allSpots);
-
 
     private int selectY() {
         int y = 1;
@@ -133,6 +131,7 @@ public abstract class Piece {
     }
 
     private boolean isMoveUnblocked(Point destination, List<Point> allSpots, int xDirection, int yDirection) {
+        if (destination.equals(spot)) return false;
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         while (isOnBoard(x, y)) {
@@ -164,4 +163,5 @@ public abstract class Piece {
         }
         return false;
     }
+
 }

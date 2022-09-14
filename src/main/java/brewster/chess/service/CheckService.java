@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class CheckService {
-    private Piece attacker;
 
 
     public boolean didCheck(GamePiecesDto dto) {
@@ -44,74 +43,71 @@ public class CheckService {
                 return false;
             }
         }
-        if (isMultipleAttackers(dto)){
+        List<Piece> allAttackers = findAllAttackers(dto);
+        if (allAttackers.size() > 1){
             return true;
         }
+        return cannotBeTakenOrBlocked(dto, allAttackers.get(0));
+    }
 
-        return !canBeTaken(dto) || !canBeBlocked(dto);
+    private boolean cannotBeTakenOrBlocked(GamePiecesDto dto, Piece attacker) {
+        return canNotBeTaken(dto, attacker) && canNotBeBlocked(dto, attacker);
     }
 
     private List<Piece> findAllAttackers(GamePiecesDto dto) {
         Point kingsLocation = dto.getFoes().get(0).getSpot();
         return dto.getFriends().stream()
-                .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
-                .collect(Collectors.toList());
-//        List<Piece> allAttackers = new ArrayList<>();
+            .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
+            .collect(Collectors.toList());
+    }
+
+//    private boolean isMultipleAttackers(GamePiecesDto dto){
+//        int allAttackers = 0;
+//        Point kingsLocation = dto.getFoes().get(0).getSpot();
+//
 //        for (Piece friend : dto.getFriends()){
 //            if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
-//                allAttackers.add(friend);
+//                attacker = friend;
+//                allAttackers++;
 //            }
 //        }
-//        return allAttackers;
-    }
+//        return allAttackers > 1;
+//    }
 
-    private boolean isMultipleAttackers(GamePiecesDto dto){
-        int allAttackers = 0;
-        Point kingsLocation = dto.getFoes().get(0).getSpot();
-
-        for (Piece friend : dto.getFriends()){
-            if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
-                attacker = friend;
-                allAttackers++;
-            }
-        }
-        return allAttackers > 1;
-    }
-
-    private boolean canBeTaken(GamePiecesDto dto) {
+    private boolean canNotBeTaken(GamePiecesDto dto, Piece attacker) {
         Point attackerSpot = attacker.getSpot();
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(attackerSpot, dto.getSpots())){
                 if (foe instanceof King){
                     if (!isSpotDefended(dto, attackerSpot)) {
-                        return true;
+                        return false;
                     }
                 } else {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
 
-    private boolean canBeBlocked(GamePiecesDto dto) {
-        if (attacker instanceof Knight || isOneSpotAway(dto.getFoes().get(0).getSpot())){
-            return false;
+    private boolean canNotBeBlocked(GamePiecesDto dto, Piece attacker) {
+        if (attacker instanceof Knight || isOneSpotAway(dto.getFoes().get(0).getSpot(), attacker)){
+            return true;
         }
-        for (Point block : getSpotsToBlocks(dto)){
+        for (Point block : getSpotsToBlocks(dto, attacker)){
             if (isSpotDefended(dto, block)){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean isOneSpotAway(Point spot) {
+    private boolean isOneSpotAway(Point spot, Piece attacker) {
         return Math.abs(attacker.getSpot().x - spot.x) <= 1 && Math.abs(attacker.getSpot().y - spot.y) <= 1;
     }
 
-    private List<Point> getSpotsToBlocks(GamePiecesDto dto){
+    private List<Point> getSpotsToBlocks(GamePiecesDto dto, Piece attacker){
         Point kingsLocation = dto.getFoes().get(0).getSpot();
         Point attackerLocation = attacker.getSpot();
 
