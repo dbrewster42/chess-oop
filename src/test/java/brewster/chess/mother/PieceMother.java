@@ -1,12 +1,16 @@
 package brewster.chess.mother;
 
+import brewster.chess.model.constant.Team;
 import brewster.chess.piece.King;
 import brewster.chess.piece.Knight;
 import brewster.chess.piece.Pawn;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.Queen;
+import brewster.chess.service.model.GamePiecesDto;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,6 +19,10 @@ import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Team.WHITE;
 
 public class PieceMother {
+
+    public static List<Point> getSpotsForGivenPieces(List<Piece> friends, List<Piece> foes){
+        return Stream.concat(friends.stream(), foes.stream()).map(Piece::getSpot).collect(Collectors.toList());
+    }
 
     public static List<Piece> getAllPieces() {
         return Stream.of(getWhiteKing(), getBlackKing(), getWhitePawn2(), getBlackPawn2(), getWhiteQueen(), getBlackQueen()).collect(Collectors.toList());
@@ -25,6 +33,27 @@ public class PieceMother {
     }
     public static List<Piece> getBlackPieces() {
         return Stream.of(getBlackKing(), getBlackPawn(), getBlackPawn2(), getBlackQueen(), getBlackRook()).collect(Collectors.toList());
+    }
+
+    public static GamePiecesDto adjustDto(GamePiecesDto dto, Piece newFriend) {
+        dto.getFriends().add(newFriend);
+        dto.getSpots().add(newFriend.getSpot());
+        return dto;
+    }
+
+    public static GamePiecesDto createKingQueenDto() {
+        List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getWhiteQueen()));
+        List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8), getQueen(BLACK, 8, 6)));
+        List<Point> spots = getSpotsForGivenPieces(friends, foes);
+        return new GamePiecesDto(spots, friends, foes);
+
+    }
+
+    public static GamePiecesDto createStalemateDto() {
+        List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8)));
+        List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getQueen(WHITE, 8, 6)));
+        List<Point> spots = getSpotsForGivenPieces(friends, foes);
+        return new GamePiecesDto(spots, friends, foes);
     }
 
     public static List<Piece> getFoes(){
@@ -45,6 +74,12 @@ public class PieceMother {
 
     public static Piece getWhiteKing(){
         return new King(WHITE, 5, 1);
+    }
+    public static Piece getKing(Team team, int x, int y){
+        return new King(team, x, y);
+    }
+    public static Piece getQueen(Team team, int x, int y){
+        return new Queen(team, x, y);
     }
 
     public static Piece getBlackKing(){

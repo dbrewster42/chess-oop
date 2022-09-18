@@ -16,17 +16,14 @@ public class CheckService {
 
 
     public boolean didCheck(GamePiecesDto dto) {
-//        return isSpotUnderAttack(dto.getFoes().get(0).getSpot(), dto.getFriends(), dto.getSpots());
         return isSpotDefended(dto, dto.getFoes().get(0).getSpot());
     }
-    public boolean isInCheckAfterMove(GamePiecesDto dto) { //todo
+    public boolean isInCheckAfterMove(GamePiecesDto dto) {
         return isSpotUnderAttack(dto.getFriends().get(0).getSpot(), dto.getFoes(), dto.getSpots());
     }
-
     private boolean isSpotDefended(GamePiecesDto dto, Point spot){
         return isSpotUnderAttack(spot, dto.getFriends(), dto.getSpots());
     }
-
     private boolean isSpotUnderAttack(Point spot, List<Piece> attackingTeam, List<Point> allSpots){
         for (Piece friend : attackingTeam){
             if (friend.isLegalAttack(spot, allSpots)){
@@ -132,7 +129,15 @@ public class CheckService {
         return true;
     }
 
-    public boolean isStaleMate(GamePiecesDto gamePiecesDto) {
-        return false;
+    public boolean isStaleMate(GamePiecesDto dto) {
+        for (Piece friend : dto.getFriends()){
+            for (Point spot : friend.calculateLegalMoves(dto.getSpots(), dto.getFoes())){
+                friend.move(spot.x, spot.y);
+                if (!isInCheckAfterMove(dto)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

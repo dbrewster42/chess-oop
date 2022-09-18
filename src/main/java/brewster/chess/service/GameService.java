@@ -31,7 +31,6 @@ public class GameService {
         this.checkService = checkService;
     }
 
-//
     public NewGameResponse startGame(User user1, User user2) {
         Game newGame = repository.save(new Game(user1, user2));
 
@@ -83,9 +82,12 @@ public class GameService {
     }
 
     public GameResponse requestDraw(Game game) {
-        if (checkService.isStaleMate(getGamePiecesDto(game))){
+        if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
+            game.setActive(false);
+            //todo update user win totals with a draw. by calling user service?
             return getGameOverResponse(game);
         }
+        //todo request other player for Draw
         return null;
     }
 
