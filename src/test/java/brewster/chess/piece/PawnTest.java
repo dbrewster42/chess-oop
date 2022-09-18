@@ -59,22 +59,35 @@ class PawnTest {
     }
 
     @Test
-    void hasMoved() {
-        Pawn pawn = new Pawn(Team.WHITE, 1, 2);
-        assertThat(pawn.hasNotMoved()).isTrue();
-        pawn.move(13);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(17);
-        assertThat(pawn.hasNotMoved()).isFalse();
+    void isLegalAttack() {
+        pawn.move(42);
+        assertThat(pawn.isLegalAttack(new Point(3, 3), allSpots)).isTrue();
+        assertThat(pawn.isLegalAttack(new Point(5, 3), allSpots)).isTrue();
+        assertThat(pawn.isLegalAttack(new Point(6, 3), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(6, 2), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(5, 2), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(4, 3), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(3, 1), allSpots)).isFalse();
+        assertThat(pawn.isLegalAttack(new Point(1, 1), allSpots)).isFalse();
     }
 
-    @Test
-    void hasMoved2() {
-        Pawn pawn = new Pawn(Team.BLACK, 1, 2);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(13);
-        assertThat(pawn.hasNotMoved()).isFalse();
-        pawn.move(17);
-        assertThat(pawn.hasNotMoved()).isTrue();
-    }
+//    @Test
+//    void hasMoved() {
+//        Pawn pawn = new Pawn(Team.WHITE, 1, 2);
+//        assertThat(pawn.hasNotMoved()).isTrue();
+//        pawn.move(13);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(17);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//    }
+//
+//    @Test
+//    void hasMoved2() {
+//        Pawn pawn = new Pawn(Team.BLACK, 1, 2);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(13);
+//        assertThat(pawn.hasNotMoved()).isFalse();
+//        pawn.move(17);
+//        assertThat(pawn.hasNotMoved()).isTrue();
+//    }
 }

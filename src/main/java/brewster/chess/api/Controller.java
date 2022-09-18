@@ -38,7 +38,7 @@ public class Controller {
     public String createUser(@RequestBody UserRequest request){
         User user = userRepository.save(new User(request.getName(), request.getEmail()));
 //        if (isValid)
-        return user.getName();
+        return user.getName() + " has been saved in the db";
     }
 
 //    @PostMapping
@@ -68,6 +68,10 @@ public class Controller {
 //        return returnValue;
     }
 
+    @GetMapping("/{id}/draw")
+    public GameResponse requestDraw(@PathVariable long id){
+        return gameService.requestDraw(findGame(id));
+    }
     @PostMapping("/{id}/promotion")
     public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
         return gameService.implementPromotion(findGame(id), request);

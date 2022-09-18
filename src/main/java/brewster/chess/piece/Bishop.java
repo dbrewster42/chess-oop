@@ -16,4 +16,9 @@ public class Bishop extends Piece {
     public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
         return addDiagonalMoves(allSpots, foes);
     }
+
+    @Override
+    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+       return isOnDiagonalLine(destination, allSpots);
+    }
 }

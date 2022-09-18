@@ -1,5 +1,6 @@
 package brewster.chess.service;
 
+import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
@@ -11,6 +12,8 @@ import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.PieceFactory;
 import brewster.chess.repository.GameRepository;
+import brewster.chess.service.model.GamePiecesDto;
+import org.springframework.stereotype.Service;
 
 import java.awt.Point;
 import java.util.List;
@@ -18,14 +21,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Service
 public class GameService {
     private final GameRepository repository;
+    private final CheckService checkService;
 
-    public GameService(GameRepository repository) {
+    public GameService(GameRepository repository, CheckService checkService) {
         this.repository = repository;
+        this.checkService = checkService;
     }
 
-//
     public NewGameResponse startGame(User user1, User user2) {
         Game newGame = repository.save(new Game(user1, user2));
 
@@ -38,18 +43,37 @@ public class GameService {
     }
 
     public GameResponse movePiece(Game game, MoveRequest request) {
-        removeFoeIfCaptured(game, request.getEnd());
-
+        GamePiecesDto dto = getGamePiecesDto(game);
         Piece piece = findPiece(game, request.getStart());
         piece.move(request.getEnd());
-        game.setWhitesTurn(!game.isWhitesTurn());
 
-        //todo 1. validate that it doesn't move into check 2. validate if created check 3. special moves?
+        if (checkService.isInCheckAfterMove(dto)) {
+            piece.move(request.getStart());
+            if (game.isCheck()){
+                throw new InvalidMoveException("You must defeat check");
+            }
+            throw new InvalidMoveException("You may not move into check");
+        }
+        removeFoeIfCaptured(game, request.getEnd());
+
+        if (checkService.didCheck(dto)){
+            game.setCheck(true);
+            if (checkService.didCheckMate(dto)){
+                game.setActive(false);
+                return getGameOverResponse(game);
+            }
+        }
+
+        game.setWhitesTurn(!game.isWhitesTurn());
         return getGameResponse(game);
     }
 
+    private GamePiecesDto getGamePiecesDto(Game game){
+        return new GamePiecesDto(getAllSpots(game), getCurrentTeam(game), getFoesPieces(game));
+    }
+
     public GameResponse implementPromotion(Game game, PromotionRequest request) {
-        List<Piece> pieces = getCurrentPlayer(game).getPieces();
+        List<Piece> pieces = getCurrentTeam(game);
         Piece piece = findPiece(pieces, request.getOldPosition());
         pieces.remove(piece);
         pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
@@ -57,19 +81,41 @@ public class GameService {
         return getGameResponse(game);
     }
 
+    public GameResponse requestDraw(Game game) {
+        if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
+            game.setActive(false);
+            //todo update user win totals with a draw. by calling user service?
+            return getGameOverResponse(game);
+        }
+        //todo request other player for Draw
+        return null;
+    }
 
     private GameResponse getGameResponse(Game game) {
         //todo
         return new GameResponse(game, "generatedMessage");
     }
 
+    private GameResponse getGameOverResponse(Game game) {
+        //todo declare winner
+        return new GameResponse(false,  getCurrentPlayer(game).getName() + " wins!");
+    }
+
     public List<Piece> getAllPieces(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream()).collect(Collectors.toList());
     }
     public List<Piece> getFoesPieces(Game game){
-        return getOpponent(game).getPieces();
+        return game.isWhitesTurn() ? game.getPlayer2().getPieces() : game.getPlayer1().getPieces();
     }
-
+    public List<Piece> getCurrentTeam(Game game){
+        return game.isWhitesTurn() ? game.getPlayer1().getPieces() : game.getPlayer2().getPieces();
+    }
+    public Player getCurrentPlayer(Game game){
+        return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
+    }
+    public Player getOpponent(Game game){
+        return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
+    }
     public Stream<Piece> getAllPiecesStream(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
     }
@@ -87,15 +133,8 @@ public class GameService {
 //    }
 
 
-    public Player getCurrentPlayer(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
-    }
-    public Player getOpponent(Game game){
-        return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
-    }
-
     private Piece findPiece(Game game, int position) {
-        return getCurrentPlayer(game).getPieces().stream()
+        return getCurrentTeam(game).stream()
                 .filter(piece -> piece.isAtPosition(position))
                 .findAny().orElseThrow(PieceNotFound::new);
     }
@@ -106,7 +145,7 @@ public class GameService {
                 .findAny().orElseThrow(PieceNotFound::new);
     }
 
-    private void removeFoeIfCaptured(Game game, int end) {
+    void removeFoeIfCaptured(Game game, int end) {
         getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny()
                 .ifPresent(foe -> getFoesPieces(game).remove(foe));
     }
