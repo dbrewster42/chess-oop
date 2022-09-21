@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TypeTest {
     @Test
     void testType(){
-        assertThat(BISHOP.getName()).isEqualTo("Bishop");
+        assertThat(BISHOP.name).isEqualTo("Bishop");
         assertThat(Type.valueOf("BISHOP")).isEqualTo(BISHOP);
     }
 

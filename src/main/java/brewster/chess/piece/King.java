@@ -2,13 +2,14 @@ package brewster.chess.piece;
 
 import brewster.chess.model.constant.Team;
 
+import javax.persistence.Entity;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import static brewster.chess.model.constant.Type.KING;
 
-
+@Entity
 public class King extends Piece {
     public King(Team team, int x, int y) {
         super(team, x, y, KING);

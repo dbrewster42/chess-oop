@@ -5,7 +5,23 @@
        this.y = y;
        this.type = type;
    }
-###
+### Piece.java
+    public Piece(Team team, int x, Type type) {
+        this.team = team;
+        this.type = type;
+        this.spot = new Point(x, selectY());
+    }
+
+    private int selectY() {
+        int y = 1;
+        if (type.equals(PAWN)) {
+            y = 2;
+        }
+        if (team.equals(BLACK)) {
+            y = 9 - y;
+        }
+        return y;
+    }
 
 
 

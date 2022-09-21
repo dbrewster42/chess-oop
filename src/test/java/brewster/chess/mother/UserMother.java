@@ -19,4 +19,6 @@ public class UserMother {
     public static Player createPlayer2(User user){
         return new Player(user, false);
     }
+
+
 }

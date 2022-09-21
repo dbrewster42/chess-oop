@@ -1,8 +1,5 @@
 package brewster.chess.model.constant;
 
-import lombok.Getter;
-
-@Getter
 public enum Type {
 
     ROOK("Rook"),
@@ -12,7 +9,7 @@ public enum Type {
     QUEEN("Queen"),
     PAWN("Pawn");
 
-    private String name;
+    public final String name;
     Type(String name){
         this.name = name;
     }

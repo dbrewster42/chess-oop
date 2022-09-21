@@ -4,43 +4,46 @@ import brewster.chess.model.constant.Team;
 import brewster.chess.model.constant.Type;
 import lombok.Data;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Type.PAWN;
+import static java.util.UUID.randomUUID;
 
 @Data
+//@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name = "Type")
 public abstract class Piece {
-    Team team;
-    Type type;
-    Point spot;
+    @Id
+    @GeneratedValue
+    private int id;
+    //    private String id;
+    @NotNull Team team;
+    @NotNull Type type;
+
+    @NotNull Point spot;
 
     public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
     public abstract boolean isLegalAttack(Point destination, List<Point> allSpots);
 
     public Piece(Team team, int x, int y, Type type) {
+//        this.id = String.valueOf(randomUUID());
         this.team = team;
         this.type = type;
         this.spot = new Point(x, y);
-    }
-
-    public Piece(Team team, int x, Type type) {
-        this.team = team;
-        this.type = type;
-        this.spot = new Point(x, selectY());
-    }
-
-    private int selectY() {
-        int y = 1;
-        if (type.equals(PAWN)) {
-            y = 2;
-        }
-        if (team.equals(BLACK)) {
-            y = 9 - y;
-        }
-        return y;
     }
 
     public boolean isOccupied(int x, int y, List<Point> spots) {
@@ -97,19 +100,13 @@ public abstract class Piece {
         return moves;
     }
 
-//    List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes) {
-//        List<Point> moves = new ArrayList<>();
-//        addMovesAlongLine(moves, allSpots, foes, -1, 0);
-//        addMovesAlongLine(moves, allSpots, foes, 1, 0);
-//        addMovesAlongLine(moves, allSpots, foes, 0, -1);
-//        addMovesAlongLine(moves, allSpots, foes, 0, 1);
-//        return moves;
-//    }
     List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes) {
-        List<Point> moves = addMovesAlongLine(new ArrayList<>(), allSpots, foes, -1, 0);
+        List<Point> moves = new ArrayList<>();
+        addMovesAlongLine(moves, allSpots, foes, -1, 0);
         addMovesAlongLine(moves, allSpots, foes, 1, 0);
         addMovesAlongLine(moves, allSpots, foes, 0, -1);
-        return addMovesAlongLine(moves, allSpots, foes, 0, 1);
+        addMovesAlongLine(moves, allSpots, foes, 0, 1);
+        return moves;
     }
 
     public List<Point> addMovesAlongLine(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection) {

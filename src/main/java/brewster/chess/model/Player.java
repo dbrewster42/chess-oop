@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 import static brewster.chess.util.TeamCreation.getNewTeam;
@@ -20,6 +21,7 @@ public class Player {
     private long id;
 
     private final boolean isWhite;
+    @OneToMany
     private final List<Piece> pieces;
     @ManyToOne
     private final User user;

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 @Data
 @Entity
@@ -13,7 +14,9 @@ public class Game {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
+    @OneToOne
     private final Player player1;
+    @OneToOne
     private final Player player2;
 //    private Status status;
     private boolean isWhitesTurn = true;
