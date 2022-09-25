@@ -1,7 +1,9 @@
 package brewster.chess.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,9 +16,9 @@ public class Game {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private final Player player1;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private final Player player2;
 //    private Status status;
     private boolean isWhitesTurn = true;
@@ -29,5 +31,8 @@ public class Game {
         this.player2 = new Player(user2, false);
         user2.addPlayer(player2);
     }
-
+    public Game(){
+        this.player1 = null;
+        this.player2 = null;
+    }
 }

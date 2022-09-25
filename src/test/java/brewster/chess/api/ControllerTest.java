@@ -34,16 +34,19 @@ class ControllerTest {
 //    }
     @Test
     void createUserTest(){
-        String name = "rainmaker";
+        String name = "rainmaker1";
 
         String response = sut.createUser(getUserRequest(name));
 
-        assertThat(response).isEqualTo("rainmaker has been saved in the db") ;
+        assertThat(response).isEqualTo(name + " has been saved in the db") ;
         assertThat(userRepository.findById(name).isPresent()).isTrue();
     }
 
     @Test
     void startNewLocalGame(){
+        userRepository.save(new User("rainmaker", "rainmaker@gmail.com"));
+        userRepository.save(new User("Bobby", "Bobby@gmail.com"));
+
         NewGameResponse response = sut.startNewLocalGame(getNewGameRequest());
 
         assertThat(response.getWhitePlayerName()).isEqualTo("rainmaker");
