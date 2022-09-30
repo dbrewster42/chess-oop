@@ -63,7 +63,8 @@ public class Controller {
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         return gameService.movePiece(findGame(id), request);
 //        StatusResponse status = game.run(boardRequest, board);
-//        List<Response> returnValue = board.returnBoard();
+//        List<Response> returnValue
+//        = board.returnBoard();
 //        returnValue.add(status);
 //        return returnValue;
     }

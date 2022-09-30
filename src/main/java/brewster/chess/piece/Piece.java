@@ -3,6 +3,7 @@ package brewster.chess.piece;
 import brewster.chess.model.constant.Team;
 import brewster.chess.model.constant.Type;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import static java.util.UUID.randomUUID;
 //@MappedSuperclass
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@NoArgsConstructor
 //@DiscriminatorColumn(name = "Type")
 public abstract class Piece {
     @Id

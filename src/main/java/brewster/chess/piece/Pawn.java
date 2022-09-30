@@ -2,6 +2,7 @@ package brewster.chess.piece;
 
 import brewster.chess.exception.Promotion;
 import brewster.chess.model.constant.Team;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import java.awt.Point;
@@ -12,6 +13,7 @@ import static brewster.chess.model.constant.Team.WHITE;
 import static brewster.chess.model.constant.Type.PAWN;
 
 @Entity
+@NoArgsConstructor
 public class Pawn extends Piece {
 //    private final int direction;
 
