@@ -2,8 +2,10 @@ package brewster.chess.api;
 
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.User;
+import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.UserRequest;
+import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.awt.Point;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -74,14 +78,51 @@ class ControllerTest {
     @Test
     @Order(3)
     void selectPiece(){
-        assertThat(sut.selectPiece(id, 12).size()).isEqualTo(2);
         assertThat(sut.selectPiece(id, 21).size()).isEqualTo(2);
         assertThat(sut.selectPiece(id, 41).size()).isEqualTo(0);
+        assertThat(sut.selectPiece(id, 52).size()).isEqualTo(2);
+    }
+    @Test
+    @Order(4)
+    void movePieceFirst() {
+        GameResponse response = sut.movePiece(id, getMoveRequest(52, 54));
+
+        assertThat(response.isActive()).isTrue();
+        assertThat(response.isWhite()).isFalse();
+        assertThat(response.isCheck()).isFalse();
+        assertThat(response.getWhitePlayers().size()).isEqualTo(16);
+
+
     }
 
+    @Test
+    @Order(4)
+    void movePiece() {
+        int spot = 47;
+        Point moveTo = sut.selectPiece(id, spot).get(1);
+
+        sut.movePiece(id, getMoveRequest(spot,  moveTo.x * 10 + moveTo.y));
+        assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
+
+        GameResponse response = sut.movePiece(id, getMoveRequest(61, 16));
+
+        assertThat(response.isWhite()).isFalse();
+        assertThat(response.getWhitePlayers().size()).isEqualTo(16);
+
+        response = sut.movePiece(id, getMoveRequest(77, 16));
+
+        assertThat(response.isWhite()).isTrue();
+        assertThat(response.getWhitePlayers().size()).isEqualTo(15);
+    }
 //    @Test
 //    void selectPromotion() {
 //    }
+    private MoveRequest getMoveRequest(int start, int end){
+        MoveRequest request = new MoveRequest();
+        request.setStart(start);
+        request.setEnd(end);
+        return request;
+    }
 
     private NewGameRequest getNewGameRequest(){
         NewGameRequest request = new NewGameRequest();

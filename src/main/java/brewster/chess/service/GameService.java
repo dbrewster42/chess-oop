@@ -65,6 +65,7 @@ public class GameService {
         }
 
         game.setWhitesTurn(!game.isWhitesTurn());
+        repository.save(game);
         return getGameResponse(game);
     }
 
