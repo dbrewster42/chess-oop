@@ -12,6 +12,7 @@ import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.piece.PieceFactory;
 import brewster.chess.repository.GameRepository;
+import brewster.chess.repository.UserRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,12 @@ import java.util.stream.Stream;
 public class GameService {
     private final GameRepository repository;
     private final CheckService checkService;
+    private final UserRepository userRepository;
 
-    public GameService(GameRepository repository, CheckService checkService) {
+    public GameService(GameRepository repository, CheckService checkService, UserRepository userRepository) {
         this.repository = repository;
         this.checkService = checkService;
+        this.userRepository = userRepository;
     }
 
     public NewGameResponse startGame(User user1, User user2) {
@@ -49,12 +52,10 @@ public class GameService {
 
         if (checkService.isInCheckAfterMove(dto)) {
             piece.move(request.getStart());
-            if (game.isCheck()){
-                throw new InvalidMoveException("You must defeat check");
-            }
-            throw new InvalidMoveException("You may not move into check");
+            throw new InvalidMoveException("You are in check");
         }
-        removeFoeIfCaptured(game, request.getEnd());
+        Optional<Piece> potentialFoe = findPiece(getFoesPieces(game), request.getEnd());
+        potentialFoe.ifPresent(foe -> getFoesPieces(game).remove(foe));
 
         if (checkService.didCheck(dto)){
             game.setCheck(true);
@@ -63,10 +64,20 @@ public class GameService {
                 return getGameOverResponse(game);
             }
         }
-
+//        List<String> moves = repository.findById(game.getId()).map(Game::getMoves).orElseThrow();
+        game.setMoves(updateMoveMessage(game, piece.getType().name, request, potentialFoe, game.isCheck()));
         game.setWhitesTurn(!game.isWhitesTurn());
         repository.save(game);
         return getGameResponse(game);
+    }
+
+    private String updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe, boolean isCheck){
+        int turn = game.getMoves().split("\\.").length;
+        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getCurrentPlayer(game).getName());
+        message.append(" has moved his ").append(pieceName).append(" from ").append(request.getStart()).append(" to ").append(request.getEnd());
+        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
+        if (isCheck) { message.append(" - CHECK!"); }
+        return message.append("\n").toString();
     }
 
     private GamePiecesDto getGamePiecesDto(Game game){
@@ -75,7 +86,7 @@ public class GameService {
 
     public GameResponse implementPromotion(Game game, PromotionRequest request) {
         List<Piece> pieces = getCurrentTeam(game);
-        Piece piece = findPiece(pieces, request.getOldPosition());
+        Piece piece = findPiece(pieces, request.getOldPosition()).orElseThrow(PieceNotFound::new);
         pieces.remove(piece);
         pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
 //        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
@@ -94,12 +105,14 @@ public class GameService {
 
     private GameResponse getGameResponse(Game game) {
         //todo
-        return new GameResponse(game, "generatedMessage");
+        return new GameResponse(game);
     }
 
     private GameResponse getGameOverResponse(Game game) {
         //todo declare winner
-        return new GameResponse(false,  getCurrentPlayer(game).getName() + " wins!");
+        userRepository.save(getCurrentPlayer(game).getUser().addWin());
+        userRepository.save(getOpponent(game).getUser().addLoss());
+        return new GameResponse(false,  getCurrentPlayer(game).getName(), getOpponent(game).getName());
     }
 
     public List<Piece> getAllPieces(Game game){
@@ -140,10 +153,10 @@ public class GameService {
                 .findAny().orElseThrow(PieceNotFound::new);
     }
 
-    private Piece findPiece(List<Piece> pieces, int position) {
+    private Optional<Piece> findPiece(List<Piece> pieces, int position) {
         return pieces.stream()
                 .filter(piece -> piece.isAtPosition(position))
-                .findAny().orElseThrow(PieceNotFound::new);
+                .findAny();
     }
 
     void removeFoeIfCaptured(Game game, int end) {

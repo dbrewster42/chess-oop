@@ -8,6 +8,7 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.piece.Piece;
 import brewster.chess.repository.GameRepository;
+import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +24,10 @@ import static org.mockito.Mockito.mock;
 
 class GameServiceTest {
     private final GameRepository repository = mock(GameRepository.class);
+    private final UserRepository userRepository = mock(UserRepository.class);
 
-    private final GameService sut = new GameService(repository, new CheckService());
+
+    private final GameService sut = new GameService(repository, new CheckService(), userRepository);
     private Game game;
 
     @BeforeEach

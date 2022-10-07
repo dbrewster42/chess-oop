@@ -48,6 +48,7 @@ public class Controller {
 //    }
     @PostMapping
     public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
+
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
         User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
 
@@ -62,11 +63,6 @@ public class Controller {
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         return gameService.movePiece(findGame(id), request);
-//        StatusResponse status = game.run(boardRequest, board);
-//        List<Response> returnValue
-//        = board.returnBoard();
-//        returnValue.add(status);
-//        return returnValue;
     }
 
     @GetMapping("/{id}/draw")

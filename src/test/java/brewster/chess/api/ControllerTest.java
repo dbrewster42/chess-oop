@@ -91,18 +91,16 @@ class ControllerTest {
         assertThat(response.isWhite()).isFalse();
         assertThat(response.isCheck()).isFalse();
         assertThat(response.getWhitePlayers().size()).isEqualTo(16);
-
-
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void movePiece() {
         int spot = 47;
         Point moveTo = sut.selectPiece(id, spot).get(1);
 
         sut.movePiece(id, getMoveRequest(spot,  moveTo.x * 10 + moveTo.y));
-        assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
+//        assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
 
         GameResponse response = sut.movePiece(id, getMoveRequest(61, 16));
 
@@ -113,6 +111,22 @@ class ControllerTest {
 
         assertThat(response.isWhite()).isTrue();
         assertThat(response.getWhitePlayers().size()).isEqualTo(15);
+    }
+
+    @Test
+    @Order(6)
+    void movePieceWithMessage() {
+        GameResponse response = sut.movePiece(id, getMoveRequest(41, 63));
+
+        assertThat(response.isActive()).isTrue();
+        assertThat(response.isWhite()).isFalse();
+        assertThat(response.isCheck()).isFalse();
+        assertThat(response.getWhitePlayers().size()).isEqualTo(15);
+        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
+                "2. Bobby has moved his Pawn from 47 to 45\n" +
+                "3. rainmaker has moved his Bishop from 61 to 16\n" +
+                "4. Bobby has moved his Pawn from 77 to 16 and has captured a BISHOP\n" +
+                "5. rainmaker has moved his Queen from 41 to 63\n");
     }
 //    @Test
 //    void selectPromotion() {

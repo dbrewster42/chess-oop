@@ -16,3 +16,8 @@ could use it for piece logic- spots, friends, foes - and simplify Knight at leas
 
 ### game over response
 should it have its own POJO? should have separate POJO for draw request?
+
+
+
+### update user stats
+### message system

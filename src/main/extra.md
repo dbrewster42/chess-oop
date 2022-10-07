@@ -137,3 +137,16 @@ return dto.getFriends().stream()
 .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
 .count();
 }
+
+
+
+##### gameService with moves
+//        removeFoeIfCaptured(game, request.getEnd());
+//        final StringBuilder message = new StringBuilder(getCurrentPlayer(game).getName() + " has moved his " + piece.getType().name + " from " + request.getStart() + " to " + request.getEnd());
+//        potentialFoe.ifPresent(value -> message.append(" and has captured a ").append(value.getType().name));
+//        if (game.isCheck()) { message.append("and put his opponent in check!"); }
+//        Move move = new Move(getCurrentPlayer(game).getName(), piece.getType().name, request, potentialFoe, game.isCheck());
+removeFoeIfCaptured
+//        Optional<Piece> possibleFoe = getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny();
+//        possibleFoe.ifPresent(foe -> getFoesPieces(game).remove(foe));
+//        return possibleFoe.isPresent();

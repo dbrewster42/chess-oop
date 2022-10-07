@@ -24,8 +24,8 @@ public class GameResponse {
 //        this.active = true;
 //        this.check = false;
 //    }
-    public GameResponse(Game game, String message) {
-        this.message = message;
+    public GameResponse(Game game) {
+        this.message = game.getMoves();
         this.isWhite = game.isWhitesTurn();
         this.whitePlayers = game.getPlayer1().getPieces();
         this.blackPlayers = game.getPlayer2().getPieces();
@@ -41,8 +41,8 @@ public class GameResponse {
         this.active = true;
     }
 
-    public GameResponse(boolean active, String message) {
+    public GameResponse(boolean active, String player1, String player2) {
         this.active = active;
-        this.message = message;
+        this.message = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
     }
 }

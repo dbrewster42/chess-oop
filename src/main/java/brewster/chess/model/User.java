@@ -43,8 +43,17 @@ public class User {
         players.add(player);
     }
 
-    public void addWin(){ wins++; }
-    public void addLoss(){ losses++; }
-    public void addDraw(){ draws++; }
+    public User addWin(){
+        wins++;
+        return this;
+    }
+    public User addLoss(){
+        losses++;
+        return this;
+    }
+    public User addDraw(){
+        draws++;
+        return this;
+    }
 
 }
