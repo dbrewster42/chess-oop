@@ -4,7 +4,7 @@ import brewster.chess.model.constant.Team;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.model.constant.Type.ROOK;
@@ -17,12 +17,12 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
+    public List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes) {
         return addUpAndDownMoves(allSpots, foes);
     }
 
     @Override
-    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
         return isOnStraightLine(destination, allSpots);
     }
 }

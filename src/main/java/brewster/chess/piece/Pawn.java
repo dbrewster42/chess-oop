@@ -5,7 +5,7 @@ import brewster.chess.model.constant.Team;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +33,17 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Point> calculateLegalMoves(List<Point> spots, List<Piece> foes) {
-        List<Point> legalMoves = new ArrayList<>();
+    public List<Spot> calculateLegalMoves(List<Spot> spots, List<Piece> foes) {
+        List<Spot> legalMoves = new ArrayList<>();
         int direction = getDirection();
         int x = spot.x;
         int y = spot.y + direction;
 
         if (!isOccupied(x, y, spots)){
-            legalMoves.add(new Point(x, y));
+            legalMoves.add(new Spot(x, y));
             if (hasNotMoved(direction)){
                 if (!isOccupied(x, y + direction, spots)) {
-                    legalMoves.add(new Point(x, y + direction));
+                    legalMoves.add(new Spot(x, y + direction));
                 }
             }
         }
@@ -54,7 +54,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
         return destination.y - spot.y == getDirection() && Math.abs(destination.x - spot.x) == 1;
     }
 
@@ -66,9 +66,9 @@ public class Pawn extends Piece {
         return (direction == 1 && getSpot().y == 2) || (direction == -1 && getSpot().y == 7);
     }
 
-    private void addIfAttackPossible(List<Point> moves, List<Point> spots, List<Piece> foes, int x, int y){
+    private void addIfAttackPossible(List<Spot> moves, List<Spot> spots, List<Piece> foes, int x, int y){
         if (isOccupied(x, y, spots) && isOpponent(foes, x, y)){
-            moves.add(new Point(x, y));
+            moves.add(new Spot(x, y));
         }
     }
 

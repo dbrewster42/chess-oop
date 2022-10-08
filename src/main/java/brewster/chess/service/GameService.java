@@ -16,7 +16,7 @@ import brewster.chess.repository.UserRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +40,7 @@ public class GameService {
         return new NewGameResponse(newGame.getId(), newGame.getPlayer1(), newGame.getPlayer2());
     }
 
-    public List<Point> getLegalMoves(Game game, int position) {
+    public List<Spot> getLegalMoves(Game game, int position) {
         return findPiece(game, position)
                 .calculateLegalMoves(getAllSpots(game), getFoesPieces(game));
     }
@@ -144,12 +144,12 @@ public class GameService {
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
     }
 
-    public List<Point> getAllSpots(Game game){
+    public List<Spot> getAllSpots(Game game){
         return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream())
                 .map(Piece::getSpot)
                 .collect(Collectors.toList());
     }
-//    public List<Point> convertToSpots(Player player){
+//    public List<Spot> convertToSpots(Player player){
 //        return player.getPieces().stream().map(Piece::getSpot).collect(Collectors.toList());
 //    }
 //    public boolean isOccupied(Game game, int location){

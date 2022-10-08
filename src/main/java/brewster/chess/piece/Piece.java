@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotNull;
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,25 +22,25 @@ import java.util.List;
 public abstract class Piece {
     @Id
     @GeneratedValue
-    private int id;
+    private long id;
     //    private String id;
     @NotNull Team team;
     @NotNull Type type;
 
-    @NotNull Point spot;
+    @NotNull Spot spot;
 
-    public abstract List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes);
-    public abstract boolean isLegalAttack(Point destination, List<Point> allSpots);
+    public abstract List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes);
+    public abstract boolean isLegalAttack(Spot destination, List<Spot> allSpots);
 
     public Piece(Team team, int x, int y, Type type) {
 //        this.id = String.valueOf(randomUUID());
         this.team = team;
         this.type = type;
-        this.spot = new Point(x, y);
+        this.spot = new Spot(x, y);
     }
 
-    public boolean isOccupied(int x, int y, List<Point> spots) {
-        return spots.contains(new Point(x, y));
+    public boolean isOccupied(int x, int y, List<Spot> spots) {
+        return spots.contains(new Spot(x, y));
 //        return pieces.stream().anyMatch(piece -> piece.isAtPosition(x, y));
     }
 
@@ -73,7 +72,7 @@ public abstract class Piece {
         return spot.x * 10 + spot.y;
     }
 
-    public Point getSpot() {
+    public Spot getSpot() {
         return spot;
     }
 
@@ -85,8 +84,8 @@ public abstract class Piece {
         return type;
     }
 
-    List<Point> addDiagonalMoves(List<Point> allSpots, List<Piece> foes) {
-        List<Point> moves = new ArrayList<>();
+    List<Spot> addDiagonalMoves(List<Spot> allSpots, List<Piece> foes) {
+        List<Spot> moves = new ArrayList<>();
         addMovesAlongLine(moves, allSpots, foes, -1, -1);
         addMovesAlongLine(moves, allSpots, foes, 1, 1);
         addMovesAlongLine(moves, allSpots, foes, 1, -1);
@@ -94,8 +93,8 @@ public abstract class Piece {
         return moves;
     }
 
-    List<Point> addUpAndDownMoves(List<Point> allSpots, List<Piece> foes) {
-        List<Point> moves = new ArrayList<>();
+    List<Spot> addUpAndDownMoves(List<Spot> allSpots, List<Piece> foes) {
+        List<Spot> moves = new ArrayList<>();
         addMovesAlongLine(moves, allSpots, foes, -1, 0);
         addMovesAlongLine(moves, allSpots, foes, 1, 0);
         addMovesAlongLine(moves, allSpots, foes, 0, -1);
@@ -103,15 +102,15 @@ public abstract class Piece {
         return moves;
     }
 
-    public List<Point> addMovesAlongLine(List<Point> moves, List<Point> allSpots, List<Piece> foes, int xDirection, int yDirection) {
+    public List<Spot> addMovesAlongLine(List<Spot> moves, List<Spot> allSpots, List<Piece> foes, int xDirection, int yDirection) {
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
         while (isOnBoard(x, y)) {
             if (!isOccupied(x, y, allSpots)) {
-                moves.add(new Point(x, y));
+                moves.add(new Spot(x, y));
             } else {
                 if (isOpponent(foes, x, y)) {
-                    moves.add(new Point(x, y));
+                    moves.add(new Spot(x, y));
                 }
                 break;
             }
@@ -121,7 +120,7 @@ public abstract class Piece {
         return moves;
     }
 
-    private boolean isMoveUnblocked(Point destination, List<Point> allSpots, int xDirection, int yDirection) {
+    private boolean isMoveUnblocked(Spot destination, List<Spot> allSpots, int xDirection, int yDirection) {
         if (destination.equals(spot)) return false;
         int x = spot.x + xDirection;
         int y = spot.y + yDirection;
@@ -134,10 +133,10 @@ public abstract class Piece {
             x += xDirection;
             y += yDirection;
         }
-        throw new RuntimeException("isMoveUnblocked() should not have been called because point cannot be reached");
+        throw new RuntimeException("isMoveUnblocked() should not have been called because Spot cannot be reached");
     }
 
-    boolean isOnDiagonalLine(Point destination, List<Point> allSpots) {
+    boolean isOnDiagonalLine(Spot destination, List<Spot> allSpots) {
         if (Math.abs(destination.x - spot.x) == Math.abs(destination.y - spot.y)) {
             int xDirection = destination.x - spot.x > 0 ? 1 : -1;
             int yDirection = destination.y - spot.y > 0 ? 1 : -1;
@@ -146,7 +145,7 @@ public abstract class Piece {
         return false;
     }
 
-    boolean isOnStraightLine(Point destination, List<Point> allSpots) {
+    boolean isOnStraightLine(Spot destination, List<Spot> allSpots) {
         if (destination.x - spot.x == 0) {
             return isMoveUnblocked(destination, allSpots, 0, destination.y - spot.y > 0 ? 1 : -1);
         } else if (destination.y - spot.y == 0) {

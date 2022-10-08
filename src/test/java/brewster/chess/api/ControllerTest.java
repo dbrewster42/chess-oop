@@ -16,7 +16,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -97,7 +97,7 @@ class ControllerTest {
     @Order(5)
     void movePiece() {
         int spot = 47;
-        Point moveTo = sut.selectPiece(id, spot).get(1);
+        Spot moveTo = sut.selectPiece(id, spot).get(1);
 
         sut.movePiece(id, getMoveRequest(spot,  moveTo.x * 10 + moveTo.y));
         assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));

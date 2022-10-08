@@ -12,7 +12,7 @@ import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.mother.UserMother.createUser;
@@ -44,7 +44,7 @@ class GameServiceTest {
         sut.movePiece(game, getMoveRequest(17, 16));
 
         sut.movePiece(game, getMoveRequest(25, 16));
-        assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(new Point(1, 6), new Point(2, 6), new Point(2, 5));
+        assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(new Spot(1, 6), new Spot(2, 6), new Spot(2, 5));
         sut.movePiece(game, getMoveRequest(27, 16));
         assertThat(game.getPlayer1().getPieces().size()).isEqualTo(15);
     }

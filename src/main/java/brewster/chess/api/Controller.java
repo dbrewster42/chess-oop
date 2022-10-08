@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.List;
 
 import brewster.chess.exception.GameNotFound;
@@ -54,8 +54,8 @@ public class Controller {
         return gameService.startGame(user1, user2);
     }
 
-    @GetMapping("/{id}")
-    public List<Point> selectPiece(@PathVariable long id, int position){
+    @GetMapping("/{id}/{position}")
+    public List<Spot> selectPiece(@PathVariable long id, @PathVariable int position){
         return gameService.getLegalMoves(findGame(id), position);
     }
 

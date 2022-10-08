@@ -3,11 +3,11 @@ package brewster.chess.model.response;
 import brewster.chess.exception.Promotion;
 import lombok.Getter;
 
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 
 @Getter
 public class PromotionResponse {
-    private final Point spot;
+    private final Spot spot;
     private final int x;
     private final int y;
     public PromotionResponse(Promotion promotion) {

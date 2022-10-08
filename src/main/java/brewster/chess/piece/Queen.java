@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.awt.Point;
+import brewster.chess.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.model.constant.Type.QUEEN;
@@ -18,14 +18,14 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Point> calculateLegalMoves(List<Point> allSpots, List<Piece> foes) {
-        List<Point> potentialMoves = addUpAndDownMoves(allSpots, foes);
+    public List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes) {
+        List<Spot> potentialMoves = addUpAndDownMoves(allSpots, foes);
         potentialMoves.addAll(addDiagonalMoves(allSpots, foes));
         return potentialMoves;
     }
 
     @Override
-    public boolean isLegalAttack(Point destination, List<Point> allSpots) {
+    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
         return isOnDiagonalLine(destination, allSpots) || isOnStraightLine(destination, allSpots);
     }
 

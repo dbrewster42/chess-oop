@@ -9,7 +9,7 @@
     public Piece(Team team, int x, Type type) {
         this.team = team;
         this.type = type;
-        this.spot = new Point(x, selectY());
+        this.spot = new Spot(x, selectY());
     }
 
     private int selectY() {
@@ -38,22 +38,22 @@ this.direction = -1;
 return new Pawn(team, x, y);
 }
 //        if (isOccupied(x - 1, y, spots) && isOpponent(foes, x - 1, y)){
-//            legalMoves.add(new Point(x - 1, y));
+//            legalMoves.add(new Spot(x - 1, y));
 //        }
 //        if (isOccupied(x + 1, y, spots)){
-//            legalMoves.add(new Point(x + 1, y));
+//            legalMoves.add(new Spot(x + 1, y));
 //        }
 
 
 
 ### Knight.java
-            if (!isTeammate()){ moves.add(new Point(x, y));}
+            if (!isTeammate()){ moves.add(new Spot(x, y));}
 
 int x = 2 * xDirection + spot.x;
 int y = yDirection + spot.x;
 if (isOnBoard(x, y)){
 if (!(isOccupied(x, y, spots) && !isOpponent(foes, x, y))){
-moves.add(new Point(x, y));
+moves.add(new Spot(x, y));
 }
 }
 
@@ -101,7 +101,7 @@ not needed because irrelevant if already in check
 #### checkService.java
             if (friend.calculateLegalMoves(dto.getSpots(), dto.getFoes()).contains(kingsMove)){
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
-        Point kingsLocation = dto.getFriends().get(0).getSpot();
+        Spot kingsLocation = dto.getFriends().get(0).getSpot();
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(kingsLocation, dto.getSpots())){
                 return true;
@@ -111,7 +111,7 @@ not needed because irrelevant if already in check
     }
 
     public boolean didCheck(GamePiecesDto dto) {
-        Point kingsLocation = dto.getFoes().get(0).getSpot();
+        Spot kingsLocation = dto.getFoes().get(0).getSpot();
         for (Piece friend : dto.getFriends()){
             if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
                 attacker = friend;
@@ -120,7 +120,7 @@ not needed because irrelevant if already in check
         }
         return false;
     }
-    private boolean isSpotDefended(GamePiecesDto dto, Point spot){
+    private boolean isSpotDefended(GamePiecesDto dto, Spot spot){
         for (Piece friend : dto.getFriends()) {
             if (friend.isLegalAttack(spot, dto.getSpots())) {
                 return true;
@@ -132,7 +132,7 @@ not needed because irrelevant if already in check
 //            return false;
 //        }
 private long findAllAttackers(GamePiecesDto dto) {
-Point kingsLocation = dto.getFoes().get(0).getSpot();
+Spot kingsLocation = dto.getFoes().get(0).getSpot();
 return dto.getFriends().stream()
 .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
 .count();
