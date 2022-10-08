@@ -150,3 +150,5 @@ removeFoeIfCaptured
 //        Optional<Piece> possibleFoe = getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny();
 //        possibleFoe.ifPresent(foe -> getFoesPieces(game).remove(foe));
 //        return possibleFoe.isPresent();
+
+

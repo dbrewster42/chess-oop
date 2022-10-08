@@ -48,7 +48,6 @@ public class Controller {
 //    }
     @PostMapping
     public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
-
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
         User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
 
@@ -65,6 +64,14 @@ public class Controller {
         return gameService.movePiece(findGame(id), request);
     }
 
+    @PostMapping("/restart")
+    public NewGameResponse restart(@RequestBody NewGameRequest request){
+        User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
+        User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
+
+        return gameService.startGame(user1, user2);
+    }
+
     @GetMapping("/{id}/draw")
     public GameResponse requestDraw(@PathVariable long id){
         return gameService.requestDraw(findGame(id));
@@ -73,6 +80,7 @@ public class Controller {
     public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
         return gameService.implementPromotion(findGame(id), request);
     }
+
 
     private Game findGame(long id){
         return gameRepository.findById(id).orElseThrow(GameNotFound::new);

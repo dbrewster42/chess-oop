@@ -100,7 +100,7 @@ class ControllerTest {
         Point moveTo = sut.selectPiece(id, spot).get(1);
 
         sut.movePiece(id, getMoveRequest(spot,  moveTo.x * 10 + moveTo.y));
-//        assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
+        assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
 
         GameResponse response = sut.movePiece(id, getMoveRequest(61, 16));
 
@@ -151,6 +151,5 @@ class ControllerTest {
         userRequest.setEmail("rainmaker@gmail.com");
         return userRequest;
     }
-
 
 }

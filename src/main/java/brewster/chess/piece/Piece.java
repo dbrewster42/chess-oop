@@ -5,25 +5,17 @@ import brewster.chess.model.constant.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import static brewster.chess.model.constant.Team.BLACK;
-import static brewster.chess.model.constant.Type.PAWN;
-import static java.util.UUID.randomUUID;
-
 @Data
-//@MappedSuperclass
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
@@ -61,10 +53,6 @@ public abstract class Piece {
         return x > 0 && x < 9 && y > 0 && y < 9;
     }
 
-    public int getLocation() {
-        return spot.x * 10 + spot.y;
-    }
-
     public void move(int newPosition) {
         spot.move(newPosition / 10, newPosition % 10);
     }
@@ -81,16 +69,20 @@ public abstract class Piece {
         return spot.x == x && spot.y == y;
     }
 
+    public int getLocation() {
+        return spot.x * 10 + spot.y;
+    }
+
+    public Point getSpot() {
+        return spot;
+    }
+
     public Team getTeam() {
         return team;
     }
 
     public Type getType() {
         return type;
-    }
-
-    public Point getSpot() {
-        return spot;
     }
 
     List<Point> addDiagonalMoves(List<Point> allSpots, List<Piece> foes) {

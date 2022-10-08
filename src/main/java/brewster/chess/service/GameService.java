@@ -71,6 +71,14 @@ public class GameService {
         return getGameResponse(game);
     }
 
+//    public GameResponse restart(Game game) {
+//        game.setWhitesTurn(true);
+//        game.setCheck(false);
+//        game.setMoves("");
+//        game.setActive(true);
+//    }
+
+
     private String updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe, boolean isCheck){
         int turn = game.getMoves().split("\\.").length;
         StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getCurrentPlayer(game).getName());
@@ -109,10 +117,12 @@ public class GameService {
     }
 
     private GameResponse getGameOverResponse(Game game) {
-        //todo declare winner
-        userRepository.save(getCurrentPlayer(game).getUser().addWin());
-        userRepository.save(getOpponent(game).getUser().addLoss());
-        return new GameResponse(false,  getCurrentPlayer(game).getName(), getOpponent(game).getName());
+        User winner = getCurrentPlayer(game).getUser();
+        User loser = getOpponent(game).getUser();
+        userRepository.save(winner.addWin());
+        userRepository.save(loser.addLoss());
+        repository.delete(game);
+        return new GameResponse(false,  winner.getName(), loser.getName());
     }
 
     public List<Piece> getAllPieces(Game game){

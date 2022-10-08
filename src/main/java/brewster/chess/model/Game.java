@@ -28,12 +28,12 @@ public class Game {
     private final Player player1;
     @OneToOne(cascade = CascadeType.ALL)
     private final Player player2;
-//    private Status status;
 //    @OneToMany
 //    private List<Move> moves;
     private String moves;
 //    @ElementCollection(fetch = FetchType.EAGER)
 //    private Set<String> moves;
+//    private Status status;
     private boolean isWhitesTurn = true;
     private boolean isActive = true;
     private boolean isCheck = false;
@@ -49,5 +49,12 @@ public class Game {
     public Game(){
         this.player1 = null;
         this.player2 = null;
+    }
+
+    public void restart(){
+        isWhitesTurn = true;
+        isCheck = false;
+        moves = "";
+        isActive = true;
     }
 }
