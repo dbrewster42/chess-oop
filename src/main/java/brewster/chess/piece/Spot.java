@@ -1,10 +1,8 @@
 package brewster.chess.piece;
 
-import lombok.Data;
-
 import java.io.Serializable;
+import java.util.Objects;
 
-//@Data
 public class Spot implements Serializable {
     private static final long serialVersionUID = -5276940640259749850L;
 
@@ -15,10 +13,6 @@ public class Spot implements Serializable {
         this.x = x;
         this.y = y;
     }
-//    public Spot(){
-//        this.x = 0;
-//        this.y = 0;
-//    }
 
     public void move(int x, int y) {
         this.x = x;
@@ -29,4 +23,16 @@ public class Spot implements Serializable {
 //        return "Spot[x=" + x + ",y=" + y + "]";
 //    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Spot spot = (Spot) o;
+        return x == spot.x && y == spot.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }
