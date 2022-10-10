@@ -1,6 +1,6 @@
 package brewster.chess.service;
 
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.Piece;
 import org.springframework.stereotype.Service;
 
 @Service

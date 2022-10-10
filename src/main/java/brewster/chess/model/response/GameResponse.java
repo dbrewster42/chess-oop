@@ -1,7 +1,7 @@
 package brewster.chess.model.response;
 
 import brewster.chess.model.Game;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.Piece;
 import lombok.Data;
 
 import java.util.List;

@@ -1,10 +1,12 @@
 package brewster.chess.piece;
 
 import brewster.chess.model.constant.Team;
+import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.piece.Piece;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.mother.PieceMother.getFoes;

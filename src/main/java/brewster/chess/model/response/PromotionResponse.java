@@ -3,7 +3,7 @@ package brewster.chess.model.response;
 import brewster.chess.exception.Promotion;
 import lombok.Getter;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 
 @Getter
 public class PromotionResponse {

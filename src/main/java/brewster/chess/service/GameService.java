@@ -9,14 +9,14 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.PieceFactory;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.PieceFactory;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -173,7 +173,6 @@ public class GameService {
         getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny()
                 .ifPresent(foe -> getFoesPieces(game).remove(foe));
     }
-
 
     private boolean isAttack(Game game, int end) {
         return getFoesPieces(game).stream().anyMatch(p -> p.isAtPosition(end));

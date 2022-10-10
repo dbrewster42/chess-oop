@@ -6,13 +6,13 @@ import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.Piece;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.mother.UserMother.createUser;

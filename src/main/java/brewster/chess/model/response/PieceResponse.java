@@ -1,6 +1,6 @@
 package brewster.chess.model.response;
 
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.Piece;
 
 import java.util.List;
 

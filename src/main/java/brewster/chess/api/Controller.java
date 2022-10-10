@@ -1,7 +1,7 @@
 package brewster.chess.api;
 
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.List;
 
 import brewster.chess.exception.GameNotFound;

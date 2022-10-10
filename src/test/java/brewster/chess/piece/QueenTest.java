@@ -1,9 +1,10 @@
 package brewster.chess.piece;
 
+import brewster.chess.model.piece.Piece;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.List;
 import java.util.stream.Collectors;
 

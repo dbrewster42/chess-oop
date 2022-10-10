@@ -1,12 +1,12 @@
 package brewster.chess.service;
 
-import brewster.chess.piece.King;
-import brewster.chess.piece.Knight;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.King;
+import brewster.chess.model.piece.Knight;
+import brewster.chess.model.piece.Piece;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,10 +1,9 @@
-package brewster.chess.piece;
+package brewster.chess.model.piece;
 
 import brewster.chess.model.constant.Team;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import brewster.chess.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.model.constant.Type.BISHOP;

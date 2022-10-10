@@ -1,7 +1,7 @@
 package brewster.chess.model;
 
 import brewster.chess.model.request.MoveRequest;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.piece.Piece;
 import lombok.Getter;
 
 import javax.persistence.ManyToOne;

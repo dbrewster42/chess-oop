@@ -1,14 +1,14 @@
 package brewster.chess.mother;
 
 import brewster.chess.model.constant.Team;
-import brewster.chess.piece.King;
-import brewster.chess.piece.Knight;
-import brewster.chess.piece.Pawn;
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.Queen;
+import brewster.chess.model.piece.King;
+import brewster.chess.model.piece.Knight;
+import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Queen;
 import brewster.chess.service.model.GamePiecesDto;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -1,13 +1,13 @@
 package brewster.chess.util;
 
 import brewster.chess.model.constant.Team;
-import brewster.chess.piece.Bishop;
-import brewster.chess.piece.King;
-import brewster.chess.piece.Knight;
-import brewster.chess.piece.Pawn;
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.Queen;
-import brewster.chess.piece.Rook;
+import brewster.chess.model.piece.Bishop;
+import brewster.chess.model.piece.King;
+import brewster.chess.model.piece.Knight;
+import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Queen;
+import brewster.chess.model.piece.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class TeamCreation {
         }
         return getNewTeam(y, pawnY, team);
     }
-    public static List<Piece> getNewTeam(int y, int pawnY, Team team) {
+    private static List<Piece> getNewTeam(int y, int pawnY, Team team) {
         List<Piece> allPieces = new ArrayList<>();
 
         allPieces.add(new King(team, 5, y));

@@ -1,4 +1,4 @@
-package brewster.chess.piece;
+package brewster.chess.model.piece;
 
 import brewster.chess.Factory;
 import brewster.chess.exception.PieceNotFound;

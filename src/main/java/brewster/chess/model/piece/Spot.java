@@ -1,4 +1,4 @@
-package brewster.chess.piece;
+package brewster.chess.model.piece;
 
 import java.io.Serializable;
 import java.util.Objects;

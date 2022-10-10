@@ -1,7 +1,7 @@
 package brewster.chess.service.model;
 
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Spot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

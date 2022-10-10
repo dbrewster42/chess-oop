@@ -1,11 +1,10 @@
-package brewster.chess.piece;
+package brewster.chess.model.piece;
 
 import brewster.chess.exception.Promotion;
 import brewster.chess.model.constant.Team;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import brewster.chess.piece.Spot;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +14,9 @@ import static brewster.chess.model.constant.Type.PAWN;
 @Entity
 @NoArgsConstructor
 public class Pawn extends Piece {
-//    private final int direction;
 
     public Pawn(Team team, int x, int y) {
         super(team, x, y, PAWN);
-//        this.direction = team == WHITE ? 1 : -1;
     }
 
     @Override

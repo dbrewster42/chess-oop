@@ -3,7 +3,7 @@ package brewster.chess.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import brewster.chess.piece.Spot;
+import brewster.chess.model.piece.Spot;
 
 @Getter
 @AllArgsConstructor
