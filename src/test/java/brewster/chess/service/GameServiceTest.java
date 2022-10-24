@@ -27,7 +27,7 @@ class GameServiceTest {
     private final UserRepository userRepository = mock(UserRepository.class);
 
 
-    private final GameService sut = new GameService(repository, new CheckService(), userRepository);
+    private final GameService sut = new GameService(repository, new CheckService(), userRepository, new MoveMessageService());
     private Game game;
 
     @BeforeEach

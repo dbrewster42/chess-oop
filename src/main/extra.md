@@ -152,3 +152,20 @@ removeFoeIfCaptured
 //        return possibleFoe.isPresent();
 
 
+//    public GameResponse restart(Game game) {
+//        game.setWhitesTurn(true);
+//        game.setCheck(false);
+//        game.setMoves("");
+//        game.setActive(true);
+//    }
+
+////        List<String> moves = repository.findById(game.getId()).map(Game::getMoves).orElseThrow();
+//        game.setMoves(updateMoveMessage(game, piece.getType().name, request, potentialFoe, game.isCheck()));
+    private String updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe, boolean isCheck){
+        int turn = game.getMoves().split("\\.").length;
+        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getCurrentPlayer(game).getName());
+        message.append(" has moved his ").append(pieceName).append(" from ").append(request.getStart()).append(" to ").append(request.getEnd());
+        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
+        if (isCheck) { message.append(" - CHECK!"); }
+        return message.append("\n").toString();
+    }

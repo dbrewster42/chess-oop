@@ -27,17 +27,17 @@ public class GameService {
     private final GameRepository repository;
     private final CheckService checkService;
     private final UserRepository userRepository;
+    private final MoveMessageService moveMessageService;
 
-    public GameService(GameRepository repository, CheckService checkService, UserRepository userRepository) {
+    public GameService(GameRepository repository, CheckService checkService, UserRepository userRepository, MoveMessageService moveMessageService) {
         this.repository = repository;
         this.checkService = checkService;
         this.userRepository = userRepository;
+        this.moveMessageService = moveMessageService;
     }
 
     public NewGameResponse startGame(User user1, User user2) {
-        Game newGame = repository.save(new Game(user1, user2));
-
-        return new NewGameResponse(newGame.getId(), newGame.getPlayer1(), newGame.getPlayer2());
+        return new NewGameResponse(repository.save(new Game(user1, user2)));
     }
 
     public List<Spot> getLegalMoves(Game game, int position) {
@@ -64,28 +64,11 @@ public class GameService {
                 return getGameOverResponse(game);
             }
         }
-//        List<String> moves = repository.findById(game.getId()).map(Game::getMoves).orElseThrow();
-        game.setMoves(updateMoveMessage(game, piece.getType().name, request, potentialFoe, game.isCheck()));
+
+        moveMessageService.updateMoveMessage(game, piece.getType().name, request, potentialFoe);
         game.setWhitesTurn(!game.isWhitesTurn());
         repository.save(game);
         return getGameResponse(game);
-    }
-
-//    public GameResponse restart(Game game) {
-//        game.setWhitesTurn(true);
-//        game.setCheck(false);
-//        game.setMoves("");
-//        game.setActive(true);
-//    }
-
-
-    private String updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe, boolean isCheck){
-        int turn = game.getMoves().split("\\.").length;
-        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getCurrentPlayer(game).getName());
-        message.append(" has moved his ").append(pieceName).append(" from ").append(request.getStart()).append(" to ").append(request.getEnd());
-        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
-        if (isCheck) { message.append(" - CHECK!"); }
-        return message.append("\n").toString();
     }
 
     private GamePiecesDto getGamePiecesDto(Game game){

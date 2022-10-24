@@ -20,7 +20,7 @@ import brewster.chess.service.GameService;
 import org.springframework.web.bind.annotation.*;
 
 
-//@CrossOrigin(origins= "http://localhost:3000")
+@CrossOrigin(origins= "http://localhost:3000")
 @RestController
 @RequestMapping("/game")
 public class Controller {
