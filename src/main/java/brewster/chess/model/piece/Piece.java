@@ -23,10 +23,8 @@ public abstract class Piece {
     @Id
     @GeneratedValue
     private long id;
-    //    private String id;
     @NotNull Team team;
     @NotNull Type type;
-    @NotNull String image;
     @NotNull Spot spot;
 
 
@@ -38,17 +36,9 @@ public abstract class Piece {
         this.type = type;
         this.spot = new Spot(x, y);
     }
-    public Piece(Team team, int x, int y, Type type, String image) {
-//        this.id = String.valueOf(randomUUID());
-        this.team = team;
-        this.type = type;
-        this.spot = new Spot(x, y);
-        this.image = image;
-    }
 
     public boolean isOccupied(int x, int y, List<Spot> spots) {
         return spots.contains(new Spot(x, y));
-//        return pieces.stream().anyMatch(piece -> piece.isAtPosition(x, y));
     }
 
     public boolean isOpponent(List<Piece> foes, int x, int y) {
