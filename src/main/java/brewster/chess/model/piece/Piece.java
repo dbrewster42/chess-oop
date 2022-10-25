@@ -26,17 +26,24 @@ public abstract class Piece {
     //    private String id;
     @NotNull Team team;
     @NotNull Type type;
-
+    @NotNull String image;
     @NotNull Spot spot;
+
 
     public abstract List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes);
     public abstract boolean isLegalAttack(Spot destination, List<Spot> allSpots);
 
     public Piece(Team team, int x, int y, Type type) {
+        this.team = team;
+        this.type = type;
+        this.spot = new Spot(x, y);
+    }
+    public Piece(Team team, int x, int y, Type type, String image) {
 //        this.id = String.valueOf(randomUUID());
         this.team = team;
         this.type = type;
         this.spot = new Spot(x, y);
+        this.image = image;
     }
 
     public boolean isOccupied(int x, int y, List<Spot> spots) {

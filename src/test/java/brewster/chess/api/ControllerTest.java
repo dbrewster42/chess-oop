@@ -122,11 +122,16 @@ class ControllerTest {
         assertThat(response.isWhite()).isFalse();
         assertThat(response.isCheck()).isFalse();
         assertThat(response.getWhitePlayers().size()).isEqualTo(15);
-        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
-                "2. Bobby has moved his Pawn from 47 to 45\n" +
-                "3. rainmaker has moved his Bishop from 61 to 16\n" +
-                "4. Bobby has moved his Pawn from 77 to 16 and has captured a BISHOP\n" +
-                "5. rainmaker has moved his Queen from 41 to 63\n");
+//        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
+//                "2. Bobby has moved his Pawn from 47 to 45\n" +
+//                "3. rainmaker has moved his Bishop from 61 to 16\n" +
+//                "4. Bobby has moved his Pawn from 77 to 16 and has captured a BISHOP\n" +
+//                "5. rainmaker has moved his Queen from 41 to 63\n");
+        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
+                "2. Bobby has moved his Pawn from D7 to D5\n" +
+                "3. rainmaker has moved his Bishop from F1 to A6\n" +
+                "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
+                "5. rainmaker has moved his Queen from D1 to F3\n");
     }
 //    @Test
 //    void selectPromotion() {

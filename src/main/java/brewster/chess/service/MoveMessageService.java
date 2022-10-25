@@ -23,9 +23,9 @@ public class MoveMessageService {
 
     private String createSquareDisplayName(MoveRequest request){
         char startX = columnName.charAt(request.getStart() / 10);
-        char endX = columnName.charAt(request.getStart() / 10);
+        char endX = columnName.charAt(request.getEnd() / 10);
 
-        return startX + request.getStart() % 10 + " to " + endX + request.getEnd() % 10;
+        return startX + "" + request.getStart() % 10 + " to " + endX + request.getEnd() % 10;
     }
     private char getColumn(int y){
         String column =  " ABCDEFGH";
