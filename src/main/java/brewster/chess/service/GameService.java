@@ -40,9 +40,12 @@ public class GameService {
         return new NewGameResponse(repository.save(new Game(user1, user2)));
     }
 
-    public List<Spot> getLegalMoves(Game game, int position) {
+    public List<Integer> getLegalMoves(Game game, int position) {
         return findPiece(game, position)
-                .calculateLegalMoves(getAllSpots(game), getFoesPieces(game));
+                .calculateLegalMoves(getAllSpots(game), getFoesPieces(game))
+                .stream()
+                .map(Spot::convertToInt)
+                .collect(Collectors.toList());
     }
 
     public GameResponse movePiece(Game game, MoveRequest request) {

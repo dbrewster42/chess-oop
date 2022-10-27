@@ -66,7 +66,7 @@ public abstract class Piece {
     }
 
     public int getLocation() {
-        return spot.x * 10 + spot.y;
+        return spot.convertToInt();
     }
 
     public Spot getSpot() {

@@ -16,8 +16,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import brewster.chess.model.piece.Spot;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -90,27 +88,27 @@ class ControllerTest {
         assertThat(response.isActive()).isTrue();
         assertThat(response.isWhite()).isFalse();
         assertThat(response.isCheck()).isFalse();
-        assertThat(response.getWhitePlayers().size()).isEqualTo(16);
+        assertThat(response.getPieces().size()).isEqualTo(32);
     }
 
     @Test
     @Order(5)
     void movePiece() {
         int spot = 47;
-        Spot moveTo = sut.selectPiece(id, spot).get(1);
+        int moveTo = sut.selectPiece(id, spot).get(1);
 
-        sut.movePiece(id, getMoveRequest(spot,  moveTo.x * 10 + moveTo.y));
+        sut.movePiece(id, getMoveRequest(spot, moveTo));
         assertThrows(PieceNotFound.class, () -> sut.selectPiece(id, 88));
 
         GameResponse response = sut.movePiece(id, getMoveRequest(61, 16));
 
         assertThat(response.isWhite()).isFalse();
-        assertThat(response.getWhitePlayers().size()).isEqualTo(16);
+        assertThat(response.getPieces().size()).isEqualTo(32);
 
         response = sut.movePiece(id, getMoveRequest(77, 16));
 
         assertThat(response.isWhite()).isTrue();
-        assertThat(response.getWhitePlayers().size()).isEqualTo(15);
+        assertThat(response.getPieces().size()).isEqualTo(31);
     }
 
     @Test
@@ -121,7 +119,7 @@ class ControllerTest {
         assertThat(response.isActive()).isTrue();
         assertThat(response.isWhite()).isFalse();
         assertThat(response.isCheck()).isFalse();
-        assertThat(response.getWhitePlayers().size()).isEqualTo(15);
+        assertThat(response.getPieces().size()).isEqualTo(31);
 //        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
 //                "2. Bobby has moved his Pawn from 47 to 45\n" +
 //                "3. rainmaker has moved his Bishop from 61 to 16\n" +

@@ -19,6 +19,10 @@ public class Spot implements Serializable {
         this.y = y;
     }
 
+    public int convertToInt(){
+        return x * 10 + y;
+    }
+
 //    public String toString() {
 //        return "Spot[x=" + x + ",y=" + y + "]";
 //    }

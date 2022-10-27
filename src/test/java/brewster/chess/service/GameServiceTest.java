@@ -44,7 +44,7 @@ class GameServiceTest {
         sut.movePiece(game, getMoveRequest(17, 16));
 
         sut.movePiece(game, getMoveRequest(25, 16));
-        assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(new Spot(1, 6), new Spot(2, 6), new Spot(2, 5));
+        assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(16, 26, 25);
         sut.movePiece(game, getMoveRequest(27, 16));
         assertThat(game.getPlayer1().getPieces().size()).isEqualTo(15);
     }
@@ -83,7 +83,7 @@ class GameServiceTest {
 
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
         assertThat(response.isActive()).isFalse();
-        assertThat(response.getMessage()).isEqualTo("rainmaker wins!");
+        assertThat(response.getMessage()).contains("rainmaker wins!");
     }
 
     @Test

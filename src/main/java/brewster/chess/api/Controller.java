@@ -55,7 +55,7 @@ public class Controller {
     }
 
     @GetMapping("/{id}/{position}")
-    public List<Spot> selectPiece(@PathVariable long id, @PathVariable int position){
+    public List<Integer> selectPiece(@PathVariable long id, @PathVariable int position){
         return gameService.getLegalMoves(findGame(id), position);
     }
 
