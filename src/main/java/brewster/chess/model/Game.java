@@ -37,6 +37,7 @@ public class Game {
     private boolean isWhitesTurn = true;
     private boolean isActive = true;
     private boolean isCheck = false;
+    private String currentPlayer; //todo set in here?
 
     public Game(User user1, User user2) {
         this.player1 = new Player(user1, true);
@@ -49,6 +50,10 @@ public class Game {
     public Game(){
         this.player1 = null;
         this.player2 = null;
+    }
+
+    public String getCurrentPlayerName(){
+        return isWhitesTurn ? player1.getName() : player2.getName();
     }
 
     public void restart(){

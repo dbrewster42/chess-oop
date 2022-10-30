@@ -13,7 +13,8 @@ public class MoveMessageService {
 
     public void updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe){
         int turn = game.getMoves().split("\\.").length;
-        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getPlayerName(game));
+//        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getPlayerName(game));
+        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + game.getCurrentPlayerName());
         message.append(" has moved his ").append(pieceName).append(" from ").append(createSquareDisplayName(request));
 //                .append(request.getStart()).append(" to ").append(request.getEnd());
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
@@ -21,19 +22,19 @@ public class MoveMessageService {
         game.setMoves(message.append("\n").toString());
     }
 
+    public String getPlayerName(Game game){
+        return game.isWhitesTurn() ? game.getPlayer1().getName() : game.getPlayer2().getName();
+    }
     private String createSquareDisplayName(MoveRequest request){
         char startX = columnName.charAt(request.getStart() / 10);
         char endX = columnName.charAt(request.getEnd() / 10);
 
         return startX + "" + request.getStart() % 10 + " to " + endX + request.getEnd() % 10;
     }
+
     private char getColumn(int y){
         String column =  " ABCDEFGH";
         return column.charAt(y);
-    }
-
-    public String getPlayerName(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1().getName() : game.getPlayer2().getName();
     }
 
     public String getPlayerNames(Game game){

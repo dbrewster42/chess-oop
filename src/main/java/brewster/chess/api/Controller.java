@@ -59,6 +59,7 @@ public class Controller {
         return gameService.getLegalMoves(findGame(id), position);
     }
 
+
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         return gameService.movePiece(findGame(id), request);
