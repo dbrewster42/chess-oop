@@ -10,10 +10,12 @@ public class StatusResponse {
     private boolean isWhite;
     private String playerName;
 
-    public StatusResponse(Game game){
+    public StatusResponse(Game game) {
         this.isActive = true;
         this.isWhite = game.isWhitesTurn();
         this.isCheck = game.isCheck();
         this.playerName = game.getCurrentPlayerName();
     }
+
+    public StatusResponse() {}
 }

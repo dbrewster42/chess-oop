@@ -12,7 +12,6 @@ import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import brewster.chess.model.piece.Spot;
 import java.util.List;
 
 import static brewster.chess.mother.UserMother.createUser;
@@ -82,8 +81,8 @@ class GameServiceTest {
         sut.movePiece(game, getMoveRequest(27, 26));
 
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
-        assertThat(response.isActive()).isFalse();
-        assertThat(response.getMessage()).contains("rainmaker wins!");
+        assertThat(response.getStatus().isActive()).isFalse();
+        assertThat(response.getMoves()).contains("rainmaker wins!");
     }
 
     @Test
@@ -92,7 +91,7 @@ class GameServiceTest {
 
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
-        assertThat(response.isActive()).isTrue();
+        assertThat(response.getStatus().isActive()).isTrue();
     }
 
     @Test
@@ -111,7 +110,7 @@ class GameServiceTest {
         trimPieces(game.getPlayer2().getPieces());
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 55));
 
-        assertThat(response.isActive()).isTrue();
+        assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
     }
@@ -127,7 +126,7 @@ class GameServiceTest {
 
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
 
-        assertThat(response.isActive()).isTrue();
+        assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
     }
@@ -141,7 +140,7 @@ class GameServiceTest {
 
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
 
-        assertThat(response.isActive()).isTrue();
+        assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
     }

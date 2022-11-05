@@ -9,17 +9,17 @@ import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
 
 @Data
 public class GameResponse {
-    private boolean active;
-    private boolean check;
-    private boolean isWhite;
+//    private boolean active;
+//    private boolean check;
+//    private boolean isWhite;
     private StatusResponse status;
-    private String message;
+    private String moves;
     private Map<Integer, String> pieces;
 //    private List<Piece> whitePlayers;
 //    private List<Piece> blackPlayers;
 
     public GameResponse(Game game) {
-        this.message = game.getMoves();
+        this.moves = game.getMoves();
         this.pieces = convertPiecesToResponse(game);
         this.status = new StatusResponse(game);
     }
@@ -32,7 +32,7 @@ public class GameResponse {
 //    }
 
     public GameResponse(boolean active, String player1, String player2) {
-        this.active = active;
-        this.message = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
+        this.status = new StatusResponse();
+        this.moves = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
     }
 }

@@ -7,6 +7,7 @@ import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
+import brewster.chess.model.response.StatusResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.MethodOrderer;
@@ -85,9 +86,10 @@ class ControllerTest {
     void movePieceFirst() {
         GameResponse response = sut.movePiece(id, getMoveRequest(52, 54));
 
-        assertThat(response.isActive()).isTrue();
-        assertThat(response.isWhite()).isFalse();
-        assertThat(response.isCheck()).isFalse();
+        StatusResponse status = response.getStatus();
+        assertThat(status.isActive()).isTrue();
+        assertThat(status.isWhite()).isFalse();
+        assertThat(status.isCheck()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(32);
     }
 
@@ -102,12 +104,12 @@ class ControllerTest {
 
         GameResponse response = sut.movePiece(id, getMoveRequest(61, 16));
 
-        assertThat(response.isWhite()).isFalse();
+        assertThat(response.getStatus().isWhite()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(32);
 
         response = sut.movePiece(id, getMoveRequest(77, 16));
 
-        assertThat(response.isWhite()).isTrue();
+        assertThat(response.getStatus().isWhite()).isTrue();
         assertThat(response.getPieces().size()).isEqualTo(31);
     }
 
@@ -116,16 +118,17 @@ class ControllerTest {
     void movePieceWithMessage() {
         GameResponse response = sut.movePiece(id, getMoveRequest(41, 63));
 
-        assertThat(response.isActive()).isTrue();
-        assertThat(response.isWhite()).isFalse();
-        assertThat(response.isCheck()).isFalse();
+        StatusResponse status = response.getStatus();
+        assertThat(status.isActive()).isTrue();
+        assertThat(status.isWhite()).isFalse();
+        assertThat(status.isCheck()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(31);
 //        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
 //                "2. Bobby has moved his Pawn from 47 to 45\n" +
 //                "3. rainmaker has moved his Bishop from 61 to 16\n" +
 //                "4. Bobby has moved his Pawn from 77 to 16 and has captured a BISHOP\n" +
 //                "5. rainmaker has moved his Queen from 41 to 63\n");
-        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
+        assertThat(response.getMoves()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
                 "2. Bobby has moved his Pawn from D7 to D5\n" +
                 "3. rainmaker has moved his Bishop from F1 to A6\n" +
                 "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
