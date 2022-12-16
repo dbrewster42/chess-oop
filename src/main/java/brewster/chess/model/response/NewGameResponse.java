@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 public class NewGameResponse {
     private long id;
+    private StatusResponse status;
     private String whitePlayerName;
     private String blackPlayerName;
     private List<Piece> whitePlayers;
@@ -16,6 +17,7 @@ public class NewGameResponse {
 
     public NewGameResponse(Game game){
         this.id = game.getId();
+        this.status = new StatusResponse(game);
         this.whitePlayerName = game.getPlayer1().getName();
         this.blackPlayerName = game.getPlayer2().getName();
         this.whitePlayers = game.getPlayer1().getPieces();

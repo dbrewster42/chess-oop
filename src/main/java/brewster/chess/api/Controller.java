@@ -40,6 +40,12 @@ public class Controller {
 //        if (isValid)
         return user.getName() + " has been saved in the db";
     }
+    @PostMapping("/user")
+    public String login(@RequestBody UserRequest request){
+        User user = userRepository.findById(request.getName()).orElseThrow(UserNotFound::new);
+//        if (isValid)
+        return user.getName() + " has been retrieved from the db";
+    }
 
 //    @PostMapping
 //    public NewGameResponse startNewGame(@RequestBody String name){
@@ -47,7 +53,7 @@ public class Controller {
 ////        return gameService.startGame(userRepository.findById(name).orElseThrow(UserNotFound::new));
 //    }
     @PostMapping
-    public NewGameResponse startNewLocalGame(@RequestBody NewGameRequest request){
+    public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
         User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
 

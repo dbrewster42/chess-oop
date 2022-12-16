@@ -56,7 +56,7 @@ class ControllerTest {
 //        userRepository.save(new User("rainmaker", "rainmaker@gmail.com"));
         userRepository.save(new User("Bobby", "Bobby@gmail.com"));
 
-        NewGameResponse response = sut.startNewLocalGame(getNewGameRequest());
+        NewGameResponse response = sut.startLocalGame(getNewGameRequest());
 
         assertThat(response.getWhitePlayerName()).isEqualTo("rainmaker");
         assertThat(response.getWhitePlayers().size()).isEqualTo(16);
