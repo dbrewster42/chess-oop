@@ -108,12 +108,9 @@ public class GameService {
         userRepository.save(winner.addWin());
         userRepository.save(loser.addLoss());
         repository.delete(game);
-        return new GameResponse(false,  winner.getName(), loser.getName());
+        return new GameResponse(winner.getName(), loser.getName());
     }
 
-    public List<Piece> getAllPieces(Game game){
-        return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream()).collect(Collectors.toList());
-    }
     public List<Piece> getFoesPieces(Game game){
         return game.isWhitesTurn() ? game.getPlayer2().getPieces() : game.getPlayer1().getPieces();
     }
@@ -126,12 +123,9 @@ public class GameService {
     public Player getOpponent(Game game){
         return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
     }
-    public Stream<Piece> getAllPiecesStream(Game game){
-        return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream());
-    }
 
     public List<Spot> getAllSpots(Game game){
-        return Stream.concat(game.getPlayer1().getPieces().stream(), game.getPlayer2().getPieces().stream())
+        return game.getAllPieces().stream()
                 .map(Piece::getSpot)
                 .collect(Collectors.toList());
     }

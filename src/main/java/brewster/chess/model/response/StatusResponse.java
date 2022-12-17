@@ -8,14 +8,16 @@ public class StatusResponse {
     private boolean isActive;
     private boolean isCheck;
     private boolean isWhite;
-    private String playerName;
+    private String currentPlayer;
 
     public StatusResponse(Game game) {
         this.isActive = true;
         this.isWhite = game.isWhitesTurn();
         this.isCheck = game.isCheck();
-        this.playerName = game.getCurrentPlayerName();
+        this.currentPlayer = game.getCurrentPlayerName();
     }
 
-    public StatusResponse() {}
+    public StatusResponse() {
+        this.isActive = false;
+    }
 }

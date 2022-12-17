@@ -6,22 +6,24 @@ import lombok.Data;
 
 import java.util.List;
 
+import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
+
 @Data
 public class NewGameResponse {
     private long id;
     private StatusResponse status;
     private String whitePlayerName;
     private String blackPlayerName;
-    private List<Piece> whitePlayers;
-    private List<Piece> blackPlayers;
+    private List<Piece> pieces;
+
 
     public NewGameResponse(Game game){
         this.id = game.getId();
         this.status = new StatusResponse(game);
         this.whitePlayerName = game.getPlayer1().getName();
         this.blackPlayerName = game.getPlayer2().getName();
-        this.whitePlayers = game.getPlayer1().getPieces();
-        this.blackPlayers = game.getPlayer2().getPieces();
+//        this.pieces = convertPiecesToResponse(game);
+        this.pieces = game.getAllPieces();
     }
 
 }

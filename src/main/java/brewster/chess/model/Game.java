@@ -1,5 +1,6 @@
 package brewster.chess.model;
 
+import brewster.chess.model.piece.Piece;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @Entity
@@ -24,7 +27,6 @@ public class Game {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
     @OneToOne(cascade = {CascadeType.ALL})
-
     private final Player player1;
     @OneToOne(cascade = CascadeType.ALL)
     private final Player player2;
@@ -45,11 +47,14 @@ public class Game {
         this.player2 = new Player(user2, false);
         user2.addPlayer(player2);
         moves = "";
-//        moves = new HashSet<>();
     }
     public Game(){
         this.player1 = null;
         this.player2 = null;
+    }
+
+    public List<Piece> getAllPieces(){
+        return Stream.concat(player1.getPieces().stream(), player2.getPieces().stream()).collect(Collectors.toList());
     }
 
     public String getCurrentPlayerName(){

@@ -31,7 +31,7 @@ public class GameResponse {
 //        this.pieces = convertPiecesToResponse(game);
 //    }
 
-    public GameResponse(boolean active, String player1, String player2) {
+    public GameResponse(String player1, String player2) {
         this.status = new StatusResponse();
         this.moves = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
     }
