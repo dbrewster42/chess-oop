@@ -17,12 +17,14 @@ import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import brewster.chess.service.GameService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
 @RequestMapping("/game")
+@Slf4j
 public class Controller {
     public final GameRepository gameRepository;
     public final UserRepository userRepository;
@@ -36,12 +38,14 @@ public class Controller {
 
     @PostMapping("/user")
     public String createUser(@RequestBody UserRequest request){
+        log.info("new user - {}", request);
         User user = userRepository.save(new User(request.getName(), request.getEmail()));
 //        if (isValid)
         return user.getName() + " has been saved in the db";
     }
-    @PostMapping("/user")
+    @GetMapping("/user")
     public String login(@RequestBody UserRequest request){
+        log.info("login - {}", request);
         User user = userRepository.findById(request.getName()).orElseThrow(UserNotFound::new);
 //        if (isValid)
         return user.getName() + " has been retrieved from the db";
@@ -54,6 +58,7 @@ public class Controller {
 //    }
     @PostMapping
     public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){
+        log.info("start new game - {}", request);
         User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
         User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
 
@@ -62,12 +67,14 @@ public class Controller {
 
     @GetMapping("/{id}/{position}")
     public List<Integer> selectPiece(@PathVariable long id, @PathVariable int position){
+        log.info("selecting piece - {}", position);
         return gameService.getLegalMoves(findGame(id), position);
     }
 
 
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
+        log.info("moving piece - {}", request);
         return gameService.movePiece(findGame(id), request);
     }
 

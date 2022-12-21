@@ -1,10 +1,9 @@
 package brewster.chess.model.response;
 
 import brewster.chess.model.Game;
-import brewster.chess.model.piece.Piece;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
 
@@ -12,18 +11,17 @@ import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
 public class NewGameResponse {
     private long id;
     private StatusResponse status;
-    private String whitePlayerName;
-    private String blackPlayerName;
-    private List<Piece> pieces;
+    private String whitePlayer;
+    private String blackPlayer;
+    private Map<Integer, String> pieces;
 
 
     public NewGameResponse(Game game){
         this.id = game.getId();
         this.status = new StatusResponse(game);
-        this.whitePlayerName = game.getPlayer1().getName();
-        this.blackPlayerName = game.getPlayer2().getName();
-//        this.pieces = convertPiecesToResponse(game);
-        this.pieces = game.getAllPieces();
+        this.whitePlayer = game.getPlayer1().getName();
+        this.blackPlayer = game.getPlayer2().getName();
+        this.pieces = convertPiecesToResponse(game);
     }
 
 }
