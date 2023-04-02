@@ -21,3 +21,9 @@ should it have its own POJO? should have separate POJO for draw request?
 
 ### update user stats
 ### message system
+
+
+
+### promotion
+what to do if in check after promotion?
+must check for check afterwards and get move message.

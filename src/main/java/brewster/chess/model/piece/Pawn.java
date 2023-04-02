@@ -19,15 +19,15 @@ public class Pawn extends Piece {
         super(team, x, y, PAWN);
     }
 
-    @Override
-    public void move(int newSpot) {
-        int x = newSpot / 10;
-        int y = newSpot % 10;
-        if (y == 1 || y == 8){
-            throw new Promotion(spot, x, y);
-        }
-        spot.move(x, y);
-    }
+//    @Override
+//    public void move(int newSpot) {
+//        int x = newSpot / 10;
+//        int y = newSpot % 10;
+////        if (y == 1 || y == 8){
+////            throw new Promotion(spot, x, y);
+////        }
+//        spot.move(newSpot);
+//    }
 
     @Override
     public List<Spot> calculateLegalMoves(List<Spot> spots, List<Piece> foes) {

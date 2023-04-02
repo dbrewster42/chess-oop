@@ -18,6 +18,10 @@ public class Spot implements Serializable {
         this.x = x;
         this.y = y;
     }
+    public void move(int newPosition) {
+        this.x = newPosition / 10;
+        this.y = newPosition % 10;
+    }
 
     public int convertToInt(){
         return x * 10 + y;

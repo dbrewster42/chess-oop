@@ -50,7 +50,7 @@ public abstract class Piece {
     }
 
     public void move(int newPosition) {
-        spot.move(newPosition / 10, newPosition % 10);
+        spot.move(newPosition);
     }
 
     public void move(int x, int y) {

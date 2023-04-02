@@ -58,19 +58,6 @@ public class CheckService {
             .collect(Collectors.toList());
     }
 
-//    private boolean isMultipleAttackers(GamePiecesDto dto){
-//        int allAttackers = 0;
-//        Spot kingsLocation = dto.getFoes().get(0).getSpot();
-//
-//        for (Piece friend : dto.getFriends()){
-//            if (friend.isLegalAttack(kingsLocation, dto.getSpots())){
-//                attacker = friend;
-//                allAttackers++;
-//            }
-//        }
-//        return allAttackers > 1;
-//    }
-
     private boolean canNotBeTaken(GamePiecesDto dto, Piece attacker) {
         Spot attackerSpot = attacker.getSpot();
         for (Piece foe : dto.getFoes()){

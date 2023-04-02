@@ -5,12 +5,14 @@ import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.Game;
 import brewster.chess.model.Player;
 import brewster.chess.model.User;
+import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.PieceFactory;
+import brewster.chess.model.response.PromotionResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import brewster.chess.service.model.GamePiecesDto;
@@ -20,7 +22,6 @@ import brewster.chess.model.piece.Spot;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class GameService {
@@ -60,6 +61,10 @@ public class GameService {
         Optional<Piece> potentialFoe = findPiece(getFoesPieces(game), request.getEnd());
         potentialFoe.ifPresent(foe -> getFoesPieces(game).remove(foe));
 
+        boolean isPromotion = isPromotion(piece);
+        if (isPromotion) {
+            return new PromotionResponse(request);
+        }
         if (checkService.didCheck(dto)){
             game.setCheck(true);
             if (checkService.didCheckMate(dto)){
@@ -72,6 +77,13 @@ public class GameService {
         game.setWhitesTurn(!game.isWhitesTurn());
         repository.save(game);
         return getGameResponse(game);
+    }
+
+    private boolean isPromotion(Piece piece) {
+        if (piece instanceof Pawn) {
+            return piece.getSpot().y == 1 || piece.getSpot().y == 8;
+        }
+        return false;
     }
 
     private GamePiecesDto getGamePiecesDto(Game game){

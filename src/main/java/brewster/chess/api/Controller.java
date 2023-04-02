@@ -1,9 +1,6 @@
 package brewster.chess.api;
 
 
-import brewster.chess.model.piece.Spot;
-import java.util.List;
-
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.UserNotFound;
 import brewster.chess.model.Game;
@@ -18,7 +15,15 @@ import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
 import brewster.chess.service.GameService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @CrossOrigin(origins= "http://localhost:3000")
@@ -70,7 +75,6 @@ public class Controller {
         log.info("selecting piece - {}", position);
         return gameService.getLegalMoves(findGame(id), position);
     }
-
 
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {

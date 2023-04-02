@@ -35,4 +35,5 @@ public class GameResponse {
         this.status = new StatusResponse();
         this.moves = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
     }
+    public GameResponse() {}
 }
