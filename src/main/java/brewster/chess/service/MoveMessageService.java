@@ -9,41 +9,27 @@ import java.util.Optional;
 
 @Service
 public class MoveMessageService {
-    private final String columnName = " ABCDEFGH";
+    private static final String COLUMNS = " ABCDEFGH";
 
     public void updateMoveMessage(Game game, String pieceName, MoveRequest request, Optional<Piece> potentialFoe){
-        int turn = game.getMoves().split("\\.").length;
-//        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + getPlayerName(game));
-        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + game.getCurrentPlayerName());
-        message.append(" has moved his ").append(pieceName).append(" from ").append(createSquareDisplayName(request));
-//                .append(request.getStart()).append(" to ").append(request.getEnd());
+        StringBuilder message = getStandardMessage(game, pieceName, request);
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
         if (game.isCheck()) { message.append(" - CHECK!"); }
         game.setMoves(message.append("\n").toString());
     }
 
-    public String getPlayerName(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1().getName() : game.getPlayer2().getName();
-    }
-    private String createSquareDisplayName(MoveRequest request){
-        char startX = columnName.charAt(request.getStart() / 10);
-        char endX = columnName.charAt(request.getEnd() / 10);
+    private StringBuilder getStandardMessage(Game game, String pieceName, MoveRequest request) {
+        int turn = game.getMoves().split("\n").length;
+        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + game.getCurrentPlayerName());
+        message.append(" has moved his ").append(pieceName).append(getPieceMovement(request));
+        return message;
 
-        return startX + "" + request.getStart() % 10 + " to " + endX + request.getEnd() % 10;
     }
 
-    private char getColumn(int y){
-        String column =  " ABCDEFGH";
-        return column.charAt(y);
+    private String getPieceMovement(MoveRequest request) {
+        return getSquareName(" from ", request.getStart()) + getSquareName(" to ", request.getEnd());
     }
-
-    public String getPlayerNames(Game game){
-        String player1 = game.getPlayer1().getName();
-        String player2 = game.getPlayer2().getName();
-
-        return game.isWhitesTurn() ? game.getPlayer1().getName() : game.getPlayer2().getName();
-    }
-    private String generateMessage(String playerName, Piece piece){
-        return "";
+    private String getSquareName(String prefix, int location) {
+        return prefix + COLUMNS.charAt(location / 10) + location % 10;
     }
 }

@@ -61,9 +61,9 @@ public class GameService {
         Optional<Piece> potentialFoe = findPiece(getFoesPieces(game), request.getEnd());
         potentialFoe.ifPresent(foe -> getFoesPieces(game).remove(foe));
 
-        boolean isPromotion = isPromotion(piece);
+        boolean isPromotion = isPromotion(piece); //todo need to complete per todo.md
         if (isPromotion) {
-            return new PromotionResponse(request);
+            return new PromotionResponse(game, request);
         }
         if (checkService.didCheck(dto)){
             game.setCheck(true);
@@ -87,7 +87,11 @@ public class GameService {
     }
 
     private GamePiecesDto getGamePiecesDto(Game game){
-        return new GamePiecesDto(getAllSpots(game), getCurrentTeam(game), getFoesPieces(game));
+        return GamePiecesDto.builder()
+            .spots(getAllSpots(game))
+            .friends(getCurrentTeam(game))
+            .foes(getFoesPieces(game))
+            .build();
     }
 
     public GameResponse implementPromotion(Game game, PromotionRequest request) {

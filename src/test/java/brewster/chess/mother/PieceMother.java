@@ -44,16 +44,22 @@ public class PieceMother {
     public static GamePiecesDto createKingQueenDto() {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getWhiteQueen()));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8), getQueen(BLACK, 8, 6)));
-        List<Spot> spots = getSpotsForGivenPieces(friends, foes);
-        return new GamePiecesDto(spots, friends, foes);
+        return GamePiecesDto.builder()
+            .spots(getSpotsForGivenPieces(friends, foes))
+            .friends(friends)
+            .foes(foes)
+            .build();
 
     }
 
     public static GamePiecesDto createStalemateDto() {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8)));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getQueen(WHITE, 8, 6)));
-        List<Spot> spots = getSpotsForGivenPieces(friends, foes);
-        return new GamePiecesDto(spots, friends, foes);
+        return GamePiecesDto.builder()
+            .spots(getSpotsForGivenPieces(friends, foes))
+            .friends(friends)
+            .foes(foes)
+            .build();
     }
 
     public static List<Piece> getFoes(){

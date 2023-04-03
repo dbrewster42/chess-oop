@@ -1,6 +1,7 @@
 package brewster.chess.model.response;
 
 import brewster.chess.exception.Promotion;
+import brewster.chess.model.Game;
 import brewster.chess.model.request.MoveRequest;
 import lombok.Getter;
 
@@ -18,8 +19,8 @@ public class PromotionResponse extends GameResponse {
 //        this.y = promotion.getY();
 //    }
 
-    public PromotionResponse(MoveRequest request) {
-        super();
+    public PromotionResponse(Game game, MoveRequest request) {
+        super(game);
         this.spot = request.getEnd();
     }
 
