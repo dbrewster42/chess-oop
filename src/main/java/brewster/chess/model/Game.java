@@ -4,24 +4,37 @@ import brewster.chess.model.piece.Piece;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.UUID.randomUUID;
 
 @Data
 @Entity
 public class Game {
     @Id
+//    private final String id = randomUUID().toString();
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private long id;
+
     @OneToOne(cascade = {CascadeType.ALL})
     private final Player player1;
     @OneToOne(cascade = CascadeType.ALL)
     private final Player player2;
-//    @OneToMany
+    //@OneToMany
+    @ElementCollection(fetch = FetchType.EAGER)
 //    private List<Move> moves;
-    private String moves;
+    private List<String> moves;
+//    private String moves;
 //    @ElementCollection(fetch = FetchType.EAGER)
 //    private Set<String> moves;
 //    private Status status;
@@ -34,7 +47,7 @@ public class Game {
         user1.addPlayer(player1);
         this.player2 = new Player(user2, false);
         user2.addPlayer(player2);
-        moves = "";
+        moves = new ArrayList<>();
     }
     public Game(){
         this.player1 = null;
@@ -52,7 +65,7 @@ public class Game {
     public void restart(){
         isWhitesTurn = true;
         isCheck = false;
-        moves = "";
+        moves = new ArrayList<>();
         isActive = true;
     }
 }

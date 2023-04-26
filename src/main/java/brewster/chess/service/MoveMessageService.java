@@ -15,15 +15,16 @@ public class MoveMessageService {
         StringBuilder message = getStandardMessage(game, pieceName, request);
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
         if (game.isCheck()) { message.append(" - CHECK!"); }
-        game.setMoves(message.append("\n").toString());
+        game.getMoves().add(message.toString());
+//        game.setMoves(message.append("\n").toString());
     }
 
     private StringBuilder getStandardMessage(Game game, String pieceName, MoveRequest request) {
-        int turn = game.getMoves().split("\n").length;
-        StringBuilder message = new StringBuilder(game.getMoves() + turn + ". " + game.getCurrentPlayerName());
-        message.append(" has moved his ").append(pieceName).append(getPieceMovement(request));
-        return message;
-
+////        int turn = game.getMoves().split("\n").length;
+//        StringBuilder message = new StringBuilder(game.getCurrentPlayerName());
+//        message.append(" has moved his ").append(pieceName).append(getPieceMovement(request));
+        return new StringBuilder(game.getCurrentPlayerName() + " has moved his " + pieceName + getPieceMovement(request));
+//        return new StringBuilder(game.getCurrentPlayerName()).append(" has moved his ").append(pieceName).append(getPieceMovement(request));
     }
 
     private String getPieceMovement(MoveRequest request) {

@@ -58,7 +58,7 @@ class ControllerTest {
 
         NewGameResponse response = sut.startLocalGame(getNewGameRequest());
 
-        assertThat(response.getWhitePlayerName()).isEqualTo("rainmaker");
+        assertThat(response.getWhitePlayer()).isEqualTo("rainmaker");
         assertThat(response.getPieces().size()).isEqualTo(32);
         assertThat(gameRepository.findById(response.getId()).isPresent()).isTrue();
     }

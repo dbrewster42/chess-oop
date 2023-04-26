@@ -3,6 +3,7 @@ package brewster.chess.model.response;
 import brewster.chess.model.Game;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
@@ -13,7 +14,8 @@ public class GameResponse {
 //    private boolean check;
 //    private boolean isWhite;
     private StatusResponse status;
-    private String moves;
+    private List<String> moves;
+    //    private String moves;
     private Map<Integer, String> pieces;
 //    private List<Piece> whitePlayers;
 //    private List<Piece> blackPlayers;
@@ -33,6 +35,6 @@ public class GameResponse {
 
     public GameResponse(String player1, String player2) {
         this.status = new StatusResponse();
-        this.moves = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
+        this.moves = List.of(player1 + " has checkmated " + player2 + "! " + player1 + " wins!");
     }
 }
