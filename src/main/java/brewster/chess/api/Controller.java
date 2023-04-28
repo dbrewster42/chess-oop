@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 
@@ -79,7 +80,7 @@ public class Controller {
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         log.info("moving piece - {}", request);
-        return gameService.movePiece(findGame(id), request);
+        return gameService.movePiece(findGameWithMoves(id), request);
     }
 
     @PostMapping("/restart")
@@ -102,6 +103,10 @@ public class Controller {
 
     private Game findGame(long id){
         return gameRepository.findById(id).orElseThrow(GameNotFound::new);
+    }
+    @Transactional
+    private Game findGameWithMoves(long id){
+        return gameRepository.findByIdAndFetchMovesEagerly(id).orElseThrow(GameNotFound::new);
     }
 //    @PostMapping("/restart")
 //    public List<Response> restart(@PathVariable int id){

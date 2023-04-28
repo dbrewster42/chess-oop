@@ -1,3 +1,12 @@
+
+## Abram chat
+1. return all valid moves at once and let front end select from that list, thus limiting the calls
+2. include promotion options and special moves in the validMoves method return
+3. User must know the games it is in. Does player need user? 
+4. Add board. Both board and piece keep track of location
+5. game should control the pieces directly. Is player needed?
+6. make iGame
+
 [//]: # (### simplicity vs pojo)
 
 [//]: # (should Piece implement its own business logic?)

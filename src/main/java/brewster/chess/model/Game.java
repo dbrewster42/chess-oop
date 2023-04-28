@@ -6,7 +6,6 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,27 +15,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.UUID.randomUUID;
-
 @Data
 @Entity
 public class Game {
     @Id
-//    private final String id = randomUUID().toString();
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @OneToOne(cascade = {CascadeType.ALL})
+
     private final Player player1;
     @OneToOne(cascade = CascadeType.ALL)
     private final Player player2;
-    //@OneToMany
-    @ElementCollection(fetch = FetchType.EAGER)
-//    private List<Move> moves;
+    @ElementCollection
     private List<String> moves;
-//    private String moves;
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    private Set<String> moves;
+
 //    private Status status;
     private boolean isWhitesTurn = true;
     private boolean isActive = true;

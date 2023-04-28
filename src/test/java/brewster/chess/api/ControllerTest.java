@@ -37,7 +37,6 @@ class ControllerTest {
 //        Game game = new Game(createUser(), createUser2());
 //        game.setId(id);
 //        gameRepository.save(game);
-//
 //    }
     @Test
     @Order(1)
