@@ -25,20 +25,20 @@ public abstract class Piece {
     private long id;
     @NotNull Team team;
     @NotNull Type type;
-    @NotNull Spot spot;
+    @NotNull Square square;
 
 
-    public abstract List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes);
-    public abstract boolean isLegalAttack(Spot destination, List<Spot> allSpots);
+    public abstract List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes);
+    public abstract boolean isLegalAttack(Square destination, List<Square> allSquares);
 
     public Piece(Team team, int x, int y, Type type) {
         this.team = team;
         this.type = type;
-        this.spot = new Spot(x, y);
+        this.square = new Square(x, y);
     }
 
-    public boolean isOccupied(int x, int y, List<Spot> spots) {
-        return spots.contains(new Spot(x, y));
+    public boolean isOccupied(int x, int y, List<Square> squares) {
+        return squares.contains(new Square(x, y));
     }
 
     public boolean isOpponent(List<Piece> foes, int x, int y) {
@@ -50,27 +50,27 @@ public abstract class Piece {
     }
 
     public void move(int newPosition) {
-        spot.move(newPosition);
+        square.move(newPosition);
     }
 
     public void move(int x, int y) {
-        spot.move(x, y);
+        square.move(x, y);
     }
 
     public boolean isAtPosition(int position) {
-        return spot.x == position / 10 && spot.y == position % 10;
+        return square.x == position / 10 && square.y == position % 10;
     }
 
     public boolean isAtPosition(int x, int y) {
-        return spot.x == x && spot.y == y;
+        return square.x == x && square.y == y;
     }
 
     public int getLocation() {
-        return spot.convertToInt();
+        return square.convertToInt();
     }
 
-    public Spot getSpot() {
-        return spot;
+    public Square getSquare() {
+        return square;
     }
 
     public Team getTeam() {
@@ -81,33 +81,33 @@ public abstract class Piece {
         return type;
     }
 
-    List<Spot> addDiagonalMoves(List<Spot> allSpots, List<Piece> foes) {
-        List<Spot> moves = new ArrayList<>();
-        addMovesAlongLine(moves, allSpots, foes, -1, -1);
-        addMovesAlongLine(moves, allSpots, foes, 1, 1);
-        addMovesAlongLine(moves, allSpots, foes, 1, -1);
-        addMovesAlongLine(moves, allSpots, foes, -1, 1);
+    List<Square> addDiagonalMoves(List<Square> allSquares, List<Piece> foes) {
+        List<Square> moves = new ArrayList<>();
+        addMovesAlongLine(moves, allSquares, foes, -1, -1);
+        addMovesAlongLine(moves, allSquares, foes, 1, 1);
+        addMovesAlongLine(moves, allSquares, foes, 1, -1);
+        addMovesAlongLine(moves, allSquares, foes, -1, 1);
         return moves;
     }
 
-    List<Spot> addUpAndDownMoves(List<Spot> allSpots, List<Piece> foes) {
-        List<Spot> moves = new ArrayList<>();
-        addMovesAlongLine(moves, allSpots, foes, -1, 0);
-        addMovesAlongLine(moves, allSpots, foes, 1, 0);
-        addMovesAlongLine(moves, allSpots, foes, 0, -1);
-        addMovesAlongLine(moves, allSpots, foes, 0, 1);
+    List<Square> addUpAndDownMoves(List<Square> allSquares, List<Piece> foes) {
+        List<Square> moves = new ArrayList<>();
+        addMovesAlongLine(moves, allSquares, foes, -1, 0);
+        addMovesAlongLine(moves, allSquares, foes, 1, 0);
+        addMovesAlongLine(moves, allSquares, foes, 0, -1);
+        addMovesAlongLine(moves, allSquares, foes, 0, 1);
         return moves;
     }
 
-    public List<Spot> addMovesAlongLine(List<Spot> moves, List<Spot> allSpots, List<Piece> foes, int xDirection, int yDirection) {
-        int x = spot.x + xDirection;
-        int y = spot.y + yDirection;
+    public List<Square> addMovesAlongLine(List<Square> moves, List<Square> allSquares, List<Piece> foes, int xDirection, int yDirection) {
+        int x = square.x + xDirection;
+        int y = square.y + yDirection;
         while (isOnBoard(x, y)) {
-            if (!isOccupied(x, y, allSpots)) {
-                moves.add(new Spot(x, y));
+            if (!isOccupied(x, y, allSquares)) {
+                moves.add(new Square(x, y));
             } else {
                 if (isOpponent(foes, x, y)) {
-                    moves.add(new Spot(x, y));
+                    moves.add(new Square(x, y));
                 }
                 break;
             }
@@ -117,14 +117,14 @@ public abstract class Piece {
         return moves;
     }
 
-    private boolean isMoveUnblocked(Spot destination, List<Spot> allSpots, int xDirection, int yDirection) {
-        if (destination.equals(spot)) return false;
-        int x = spot.x + xDirection;
-        int y = spot.y + yDirection;
+    private boolean isMoveUnblocked(Square destination, List<Square> allSquares, int xDirection, int yDirection) {
+        if (destination.equals(square)) return false;
+        int x = square.x + xDirection;
+        int y = square.y + yDirection;
         while (isOnBoard(x, y)) {
             if (x == destination.x && y == destination.y) {
                 return true;
-            } else if (isOccupied(x, y, allSpots)) {
+            } else if (isOccupied(x, y, allSquares)) {
                 return false;
             }
             x += xDirection;
@@ -133,20 +133,20 @@ public abstract class Piece {
         throw new RuntimeException("isMoveUnblocked() should not have been called because Spot cannot be reached");
     }
 
-    boolean isOnDiagonalLine(Spot destination, List<Spot> allSpots) {
-        if (Math.abs(destination.x - spot.x) == Math.abs(destination.y - spot.y)) {
-            int xDirection = destination.x - spot.x > 0 ? 1 : -1;
-            int yDirection = destination.y - spot.y > 0 ? 1 : -1;
-            return isMoveUnblocked(destination, allSpots, xDirection, yDirection);
+    boolean isOnDiagonalLine(Square destination, List<Square> allSquares) {
+        if (Math.abs(destination.x - square.x) == Math.abs(destination.y - square.y)) {
+            int xDirection = destination.x - square.x > 0 ? 1 : -1;
+            int yDirection = destination.y - square.y > 0 ? 1 : -1;
+            return isMoveUnblocked(destination, allSquares, xDirection, yDirection);
         }
         return false;
     }
 
-    boolean isOnStraightLine(Spot destination, List<Spot> allSpots) {
-        if (destination.x - spot.x == 0) {
-            return isMoveUnblocked(destination, allSpots, 0, destination.y - spot.y > 0 ? 1 : -1);
-        } else if (destination.y - spot.y == 0) {
-            return isMoveUnblocked(destination, allSpots, destination.x - spot.x > 0 ? 1 : -1, 0);
+    boolean isOnStraightLine(Square destination, List<Square> allSquares) {
+        if (destination.x - square.x == 0) {
+            return isMoveUnblocked(destination, allSquares, 0, destination.y - square.y > 0 ? 1 : -1);
+        } else if (destination.y - square.y == 0) {
+            return isMoveUnblocked(destination, allSquares, destination.x - square.x > 0 ? 1 : -1, 0);
         }
         return false;
     }

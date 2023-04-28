@@ -9,7 +9,7 @@
     public Piece(Team team, int x, Type type) {
         this.team = team;
         this.type = type;
-        this.spot = new Spot(x, selectY());
+        this.square = new Spot(x, selectY());
     }
 
     private int selectY() {
@@ -37,10 +37,10 @@ this.direction = -1;
 }
 return new Pawn(team, x, y);
 }
-//        if (isOccupied(x - 1, y, spots) && isOpponent(foes, x - 1, y)){
+//        if (isOccupied(x - 1, y, squares) && isOpponent(foes, x - 1, y)){
 //            legalMoves.add(new Spot(x - 1, y));
 //        }
-//        if (isOccupied(x + 1, y, spots)){
+//        if (isOccupied(x + 1, y, squares)){
 //            legalMoves.add(new Spot(x + 1, y));
 //        }
 
@@ -49,10 +49,10 @@ return new Pawn(team, x, y);
 ### Knight.java
             if (!isTeammate()){ moves.add(new Spot(x, y));}
 
-int x = 2 * xDirection + spot.x;
-int y = yDirection + spot.x;
+int x = 2 * xDirection + square.x;
+int y = yDirection + square.x;
 if (isOnBoard(x, y)){
-if (!(isOccupied(x, y, spots) && !isOpponent(foes, x, y))){
+if (!(isOccupied(x, y, squares) && !isOpponent(foes, x, y))){
 moves.add(new Spot(x, y));
 }
 }
@@ -62,7 +62,7 @@ for (int j = -1; j <= 1; j++){
 if (i == 0 || j == 0){
 continue;
 }
-makeJump(moves, allSpots, foes, i, j);
+makeJump(moves, allSquares, foes, i, j);
 }
 }
 ####
@@ -120,9 +120,9 @@ not needed because irrelevant if already in check
         }
         return false;
     }
-    private boolean isSpotDefended(GamePiecesDto dto, Spot spot){
+    private boolean isSpotDefended(GamePiecesDto dto, Spot square){
         for (Piece friend : dto.getFriends()) {
-            if (friend.isLegalAttack(spot, dto.getSpots())) {
+            if (friend.isLegalAttack(square, dto.getSpots())) {
                 return true;
             }
         }

@@ -1,11 +1,8 @@
 package brewster.chess.model.response;
 
-import brewster.chess.exception.Promotion;
 import brewster.chess.model.Game;
 import brewster.chess.model.request.MoveRequest;
 import lombok.Getter;
-
-import brewster.chess.model.piece.Spot;
 
 @Getter
 public class PromotionResponse extends GameResponse {

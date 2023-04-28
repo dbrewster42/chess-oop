@@ -18,7 +18,7 @@ import brewster.chess.repository.UserRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
-import brewster.chess.model.piece.Spot;
+import brewster.chess.model.piece.Square;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +45,7 @@ public class GameService {
         return findPiece(game, position)
                 .calculateLegalMoves(getAllSpots(game), getFoesPieces(game))
                 .stream()
-                .map(Spot::convertToInt)
+                .map(Square::convertToInt)
                 .collect(Collectors.toList());
     }
 
@@ -81,14 +81,14 @@ public class GameService {
 
     private boolean isPromotion(Piece piece) {
         if (piece instanceof Pawn) {
-            return piece.getSpot().y == 1 || piece.getSpot().y == 8;
+            return piece.getSquare().y == 1 || piece.getSquare().y == 8;
         }
         return false;
     }
 
     private GamePiecesDto getGamePiecesDto(Game game){
         return GamePiecesDto.builder()
-            .spots(getAllSpots(game))
+            .squares(getAllSpots(game))
             .friends(getCurrentTeam(game))
             .foes(getFoesPieces(game))
             .build();
@@ -128,21 +128,21 @@ public class GameService {
     }
 
     public List<Piece> getFoesPieces(Game game){
-        return game.isWhitesTurn() ? game.getPlayer2().getPieces() : game.getPlayer1().getPieces();
+        return game.isWhitesTurn() ? game.getBlackPlayer().getPieces() : game.getWhitePlayer().getPieces();
     }
     public List<Piece> getCurrentTeam(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1().getPieces() : game.getPlayer2().getPieces();
+        return game.isWhitesTurn() ? game.getWhitePlayer().getPieces() : game.getBlackPlayer().getPieces();
     }
     public Player getCurrentPlayer(Game game){
-        return game.isWhitesTurn() ? game.getPlayer1() : game.getPlayer2();
+        return game.isWhitesTurn() ? game.getWhitePlayer() : game.getBlackPlayer();
     }
     public Player getOpponent(Game game){
-        return game.isWhitesTurn() ? game.getPlayer2() : game.getPlayer1();
+        return game.isWhitesTurn() ? game.getBlackPlayer() : game.getWhitePlayer();
     }
 
-    public List<Spot> getAllSpots(Game game){
+    public List<Square> getAllSpots(Game game){
         return game.getAllPieces().stream()
-                .map(Piece::getSpot)
+                .map(Piece::getSquare)
                 .collect(Collectors.toList());
     }
 //    public List<Spot> convertToSpots(Player player){

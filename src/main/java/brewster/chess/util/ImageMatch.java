@@ -10,10 +10,10 @@ public class ImageMatch {
 
     public static Map<Integer, String> convertPiecesToResponse(Game game){
         Map<Integer, String> spotAndPicture = new HashMap<>();
-        for (Piece piece : game.getPlayer1().getPieces()){
+        for (Piece piece : game.getWhitePlayer().getPieces()){
             spotAndPicture.put(piece.getLocation(), convertToImage(piece, 'w'));
         }
-        for (Piece piece : game.getPlayer2().getPieces()){
+        for (Piece piece : game.getBlackPlayer().getPieces()){
             spotAndPicture.put(piece.getLocation(), convertToImage(piece, 'b'));
         }
         return spotAndPicture;

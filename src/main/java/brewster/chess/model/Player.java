@@ -39,10 +39,6 @@ public class Player {
         this.pieces = null;
     }
 
-//    public void restart(){
-//        pieces = generatePieces();
-//    }
-
     public String getName(){
         return user.getName();
     }

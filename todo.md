@@ -20,7 +20,7 @@ have method to request draw. upon request, check if stalemate. if not, then ask 
 use ifDidCheckMate plus all other pieces have empty legalMoves
 
 ### use DTOs
-could use it for piece logic- spots, friends, foes - and simplify Knight at least
+could use it for piece logic- squares, friends, foes - and simplify Knight at least
 
 
 ### game over response

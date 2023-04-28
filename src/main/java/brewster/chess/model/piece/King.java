@@ -17,29 +17,29 @@ public class King extends Piece {
     }
 
     @Override
-    public List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes) {
-        List<Spot> moves = new ArrayList<>();
+    public List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes) {
+        List<Square> moves = new ArrayList<>();
         for (int i = -1; i <= 1; i++){
             for (int j = -1; j <= 1; j++){
-                moveOneSpot(moves, allSpots, foes, i, j);
+                moveOneSpot(moves, allSquares, foes, i, j);
             }
         }
         return moves;
     }
 
     @Override
-    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
-        return Math.abs(destination.x - spot.x) < 2 && Math.abs(destination.y - spot.y) < 2;
+    public boolean isLegalAttack(Square destination, List<Square> allSquares) {
+        return Math.abs(destination.x - square.x) < 2 && Math.abs(destination.y - square.y) < 2;
     }
 
-    private void moveOneSpot(List<Spot> moves, List<Spot> allSpots, List<Piece> foes, int xDirection, int yDirection){
-        int x = spot.x + xDirection;
-        int y = spot.y + yDirection;
+    private void moveOneSpot(List<Square> moves, List<Square> allSquares, List<Piece> foes, int xDirection, int yDirection){
+        int x = square.x + xDirection;
+        int y = square.y + yDirection;
         if (isOnBoard(x, y)){
-            if (!isOccupied(x, y, allSpots)){
-                moves.add(new Spot(x, y));
+            if (!isOccupied(x, y, allSquares)){
+                moves.add(new Square(x, y));
             } else if (isOpponent(foes, x, y)){
-                moves.add(new Spot(x, y));
+                moves.add(new Square(x, y));
             }
         }
     }

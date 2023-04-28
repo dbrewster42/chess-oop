@@ -1,6 +1,5 @@
 package brewster.chess.model.piece;
 
-import brewster.chess.exception.Promotion;
 import brewster.chess.model.constant.Team;
 import lombok.NoArgsConstructor;
 
@@ -30,29 +29,29 @@ public class Pawn extends Piece {
 //    }
 
     @Override
-    public List<Spot> calculateLegalMoves(List<Spot> spots, List<Piece> foes) {
-        List<Spot> legalMoves = new ArrayList<>();
+    public List<Square> calculateLegalMoves(List<Square> squares, List<Piece> foes) {
+        List<Square> legalMoves = new ArrayList<>();
         int direction = getDirection();
-        int x = spot.x;
-        int y = spot.y + direction;
+        int x = square.x;
+        int y = square.y + direction;
 
-        if (!isOccupied(x, y, spots)){
-            legalMoves.add(new Spot(x, y));
+        if (!isOccupied(x, y, squares)){
+            legalMoves.add(new Square(x, y));
             if (hasNotMoved(direction)){
-                if (!isOccupied(x, y + direction, spots)) {
-                    legalMoves.add(new Spot(x, y + direction));
+                if (!isOccupied(x, y + direction, squares)) {
+                    legalMoves.add(new Square(x, y + direction));
                 }
             }
         }
-        addIfAttackPossible(legalMoves, spots, foes, x - 1, y);
-        addIfAttackPossible(legalMoves, spots, foes, x + 1, y);
+        addIfAttackPossible(legalMoves, squares, foes, x - 1, y);
+        addIfAttackPossible(legalMoves, squares, foes, x + 1, y);
 
         return legalMoves;
     }
 
     @Override
-    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
-        return destination.y - spot.y == getDirection() && Math.abs(destination.x - spot.x) == 1;
+    public boolean isLegalAttack(Square destination, List<Square> allSquares) {
+        return destination.y - square.y == getDirection() && Math.abs(destination.x - square.x) == 1;
     }
 
     private int getDirection(){
@@ -60,12 +59,12 @@ public class Pawn extends Piece {
     }
 
     private boolean hasNotMoved(int direction){
-        return (direction == 1 && getSpot().y == 2) || (direction == -1 && getSpot().y == 7);
+        return (direction == 1 && getSquare().y == 2) || (direction == -1 && getSquare().y == 7);
     }
 
-    private void addIfAttackPossible(List<Spot> moves, List<Spot> spots, List<Piece> foes, int x, int y){
-        if (isOccupied(x, y, spots) && isOpponent(foes, x, y)){
-            moves.add(new Spot(x, y));
+    private void addIfAttackPossible(List<Square> moves, List<Square> squares, List<Piece> foes, int x, int y){
+        if (isOccupied(x, y, squares) && isOpponent(foes, x, y)){
+            moves.add(new Square(x, y));
         }
     }
 

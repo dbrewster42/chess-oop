@@ -3,13 +3,13 @@ package brewster.chess.model.piece;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Spot implements Serializable {
+public class Square implements Serializable {
     private static final long serialVersionUID = -5276940640259749850L;
 
     public int x;
     public int y;
 
-    public Spot(int x, int y) {
+    public Square(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -35,8 +35,8 @@ public class Spot implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Spot spot = (Spot) o;
-        return x == spot.x && y == spot.y;
+        Square square = (Square) o;
+        return x == square.x && y == square.y;
     }
 
     @Override

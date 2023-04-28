@@ -24,9 +24,9 @@ public class Game {
 
     @OneToOne(cascade = {CascadeType.ALL})
 
-    private final Player player1;
+    private final Player whitePlayer;
     @OneToOne(cascade = CascadeType.ALL)
-    private final Player player2;
+    private final Player blackPlayer;
     @ElementCollection
     private List<String> moves;
 
@@ -36,23 +36,23 @@ public class Game {
     private boolean isCheck = false;
 
     public Game(User user1, User user2) {
-        this.player1 = new Player(user1, true);
-        user1.addPlayer(player1);
-        this.player2 = new Player(user2, false);
-        user2.addPlayer(player2);
+        this.whitePlayer = new Player(user1, true);
+        user1.addPlayer(whitePlayer);
+        this.blackPlayer = new Player(user2, false);
+        user2.addPlayer(blackPlayer);
         moves = new ArrayList<>();
     }
     public Game(){
-        this.player1 = null;
-        this.player2 = null;
+        this.whitePlayer = null;
+        this.blackPlayer = null;
     }
 
     public List<Piece> getAllPieces(){
-        return Stream.concat(player1.getPieces().stream(), player2.getPieces().stream()).collect(Collectors.toList());
+        return Stream.concat(whitePlayer.getPieces().stream(), blackPlayer.getPieces().stream()).collect(Collectors.toList());
     }
 
     public String getCurrentPlayerName(){
-        return isWhitesTurn ? player1.getName() : player2.getName();
+        return isWhitesTurn ? whitePlayer.getName() : blackPlayer.getName();
     }
 
     public void restart(){

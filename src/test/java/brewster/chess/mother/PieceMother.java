@@ -6,9 +6,9 @@ import brewster.chess.model.piece.Knight;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Queen;
+import brewster.chess.model.piece.Square;
 import brewster.chess.service.model.GamePiecesDto;
 
-import brewster.chess.model.piece.Spot;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,8 @@ import static brewster.chess.model.constant.Team.WHITE;
 
 public class PieceMother {
 
-    public static List<Spot> getSpotsForGivenPieces(List<Piece> friends, List<Piece> foes){
-        return Stream.concat(friends.stream(), foes.stream()).map(Piece::getSpot).collect(Collectors.toList());
+    public static List<Square> getSpotsForGivenPieces(List<Piece> friends, List<Piece> foes){
+        return Stream.concat(friends.stream(), foes.stream()).map(Piece::getSquare).collect(Collectors.toList());
     }
 
     public static List<Piece> getAllPieces() {
@@ -37,7 +37,7 @@ public class PieceMother {
 
     public static GamePiecesDto adjustDto(GamePiecesDto dto, Piece newFriend) {
         dto.getFriends().add(newFriend);
-        dto.getSpots().add(newFriend.getSpot());
+        dto.getSquares().add(newFriend.getSquare());
         return dto;
     }
 
@@ -45,7 +45,7 @@ public class PieceMother {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getWhiteQueen()));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8), getQueen(BLACK, 8, 6)));
         return GamePiecesDto.builder()
-            .spots(getSpotsForGivenPieces(friends, foes))
+            .squares(getSpotsForGivenPieces(friends, foes))
             .friends(friends)
             .foes(foes)
             .build();
@@ -56,7 +56,7 @@ public class PieceMother {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8)));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getQueen(WHITE, 8, 6)));
         return GamePiecesDto.builder()
-            .spots(getSpotsForGivenPieces(friends, foes))
+            .squares(getSpotsForGivenPieces(friends, foes))
             .friends(friends)
             .foes(foes)
             .build();
@@ -66,16 +66,16 @@ public class PieceMother {
         return Stream.of(getBlackKing(), getBlackPawn(), getBlackQueen()).collect(Collectors.toList());
     }
 
-    public static List<Spot> getSpotsForKing(){
-        return Stream.of(new Spot(5, 8), new Spot(8, 2), new Spot(8, 7)).collect(Collectors.toList());
+    public static List<Square> getSpotsForKing(){
+        return Stream.of(new Square(5, 8), new Square(8, 2), new Square(8, 7)).collect(Collectors.toList());
     }
 
-    public static List<Spot> getSpots2(){
-        return Stream.of(new Spot(4, 1), new Spot(5, 1), new Spot(5, 8), new Spot(8, 2), new Spot(8, 7), new Spot(4, 8)).collect(Collectors.toList());
+    public static List<Square> getSpots2(){
+        return Stream.of(new Square(4, 1), new Square(5, 1), new Square(5, 8), new Square(8, 2), new Square(8, 7), new Square(4, 8)).collect(Collectors.toList());
     }
 
-    public static List<Spot> getSpots3(){
-        return Stream.of(new Spot(4, 1), new Spot(5, 1), new Spot(5, 8), new Spot(5, 2), new Spot(5, 7), new Spot(4, 8)).collect(Collectors.toList());
+    public static List<Square> getSpots3(){
+        return Stream.of(new Square(4, 1), new Square(5, 1), new Square(5, 8), new Square(5, 2), new Square(5, 7), new Square(4, 8)).collect(Collectors.toList());
     }
 
     public static Piece getWhiteKing(){

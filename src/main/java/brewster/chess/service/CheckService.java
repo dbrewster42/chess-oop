@@ -3,10 +3,10 @@ package brewster.chess.service;
 import brewster.chess.model.piece.King;
 import brewster.chess.model.piece.Knight;
 import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Square;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
 
-import brewster.chess.model.piece.Spot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,17 +16,17 @@ public class CheckService {
 
 
     public boolean didCheck(GamePiecesDto dto) {
-        return isSpotDefended(dto, dto.getFoes().get(0).getSpot());
+        return isSpotDefended(dto, dto.getFoes().get(0).getSquare());
     }
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
-        return isSpotUnderAttack(dto.getFriends().get(0).getSpot(), dto.getFoes(), dto.getSpots());
+        return isSpotUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getSquares());
     }
-    private boolean isSpotDefended(GamePiecesDto dto, Spot spot){
-        return isSpotUnderAttack(spot, dto.getFriends(), dto.getSpots());
+    private boolean isSpotDefended(GamePiecesDto dto, Square square){
+        return isSpotUnderAttack(square, dto.getFriends(), dto.getSquares());
     }
-    private boolean isSpotUnderAttack(Spot spot, List<Piece> attackingTeam, List<Spot> allSpots){
+    private boolean isSpotUnderAttack(Square square, List<Piece> attackingTeam, List<Square> allSquares){
         for (Piece friend : attackingTeam){
-            if (friend.isLegalAttack(spot, allSpots)){
+            if (friend.isLegalAttack(square, allSquares)){
                 return true;
             }
         }
@@ -34,8 +34,8 @@ public class CheckService {
     }
 
     public boolean didCheckMate(GamePiecesDto dto) {
-        List<Spot> kingsMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getSpots(), dto.getFriends());
-        for (Spot kingsMove : kingsMoves){
+        List<Square> kingsMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getSquares(), dto.getFriends());
+        for (Square kingsMove : kingsMoves){
             if (isMoveOpen(kingsMove, dto)){
                 return false;
             }
@@ -52,18 +52,18 @@ public class CheckService {
     }
 
     private List<Piece> findAllAttackers(GamePiecesDto dto) {
-        Spot kingsLocation = dto.getFoes().get(0).getSpot();
+        Square kingsLocation = dto.getFoes().get(0).getSquare();
         return dto.getFriends().stream()
-            .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSpots()))
+            .filter(friend -> friend.isLegalAttack(kingsLocation, dto.getSquares()))
             .collect(Collectors.toList());
     }
 
     private boolean canNotBeTaken(GamePiecesDto dto, Piece attacker) {
-        Spot attackerSpot = attacker.getSpot();
+        Square attackerSquare = attacker.getSquare();
         for (Piece foe : dto.getFoes()){
-            if (foe.isLegalAttack(attackerSpot, dto.getSpots())){
+            if (foe.isLegalAttack(attackerSquare, dto.getSquares())){
                 if (foe instanceof King){
-                    if (!isSpotDefended(dto, attackerSpot)) {
+                    if (!isSpotDefended(dto, attackerSquare)) {
                         return false;
                     }
                 } else {
@@ -76,10 +76,10 @@ public class CheckService {
 
 
     private boolean canNotBeBlocked(GamePiecesDto dto, Piece attacker) {
-        if (attacker instanceof Knight || isOneSpotAway(dto.getFoes().get(0).getSpot(), attacker)){
+        if (attacker instanceof Knight || isOneSpotAway(dto.getFoes().get(0).getSquare(), attacker)){
             return true;
         }
-        for (Spot block : getSpotsToBlocks(dto, attacker)){
+        for (Square block : getSpotsToBlocks(dto, attacker)){
             if (isSpotDefended(dto, block)){
                 return false;
             }
@@ -87,18 +87,18 @@ public class CheckService {
         return true;
     }
 
-    private boolean isOneSpotAway(Spot spot, Piece attacker) {
-        return Math.abs(attacker.getSpot().x - spot.x) <= 1 && Math.abs(attacker.getSpot().y - spot.y) <= 1;
+    private boolean isOneSpotAway(Square square, Piece attacker) {
+        return Math.abs(attacker.getSquare().x - square.x) <= 1 && Math.abs(attacker.getSquare().y - square.y) <= 1;
     }
 
-    private List<Spot> getSpotsToBlocks(GamePiecesDto dto, Piece attacker){
-        Spot kingsLocation = dto.getFoes().get(0).getSpot();
-        Spot attackerLocation = attacker.getSpot();
+    private List<Square> getSpotsToBlocks(GamePiecesDto dto, Piece attacker){
+        Square kingsLocation = dto.getFoes().get(0).getSquare();
+        Square attackerLocation = attacker.getSquare();
 
         int xDirection = reduceToDirection(kingsLocation.x - attackerLocation.x);
         int yDirection = reduceToDirection(kingsLocation.y - attackerLocation.y);
 
-        return attacker.addMovesAlongLine(new ArrayList<>(), dto.getSpots(), dto.getFoes(), xDirection, yDirection);
+        return attacker.addMovesAlongLine(new ArrayList<>(), dto.getSquares(), dto.getFoes(), xDirection, yDirection);
     }
 
     private int reduceToDirection(int dif){
@@ -107,9 +107,9 @@ public class CheckService {
         return dif;
     }
 
-    private boolean isMoveOpen(Spot kingsMove, GamePiecesDto dto){
+    private boolean isMoveOpen(Square kingsMove, GamePiecesDto dto){
         for (Piece friend : dto.getFriends()){
-            if (!kingsMove.equals(friend.getSpot()) && friend.isLegalAttack(kingsMove, dto.getSpots())){
+            if (!kingsMove.equals(friend.getSquare()) && friend.isLegalAttack(kingsMove, dto.getSquares())){
                 return false;
             }
         }
@@ -118,8 +118,8 @@ public class CheckService {
 
     public boolean isStaleMate(GamePiecesDto dto) {
         for (Piece friend : dto.getFriends()){
-            for (Spot spot : friend.calculateLegalMoves(dto.getSpots(), dto.getFoes())){
-                friend.move(spot.x, spot.y);
+            for (Square square : friend.calculateLegalMoves(dto.getSquares(), dto.getFoes())){
+                friend.move(square.x, square.y);
                 if (!isInCheckAfterMove(dto)){
                     return false;
                 }

@@ -45,7 +45,7 @@ class GameServiceTest {
         sut.movePiece(game, getMoveRequest(25, 16));
         assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(16, 26, 25);
         sut.movePiece(game, getMoveRequest(27, 16));
-        assertThat(game.getPlayer1().getPieces().size()).isEqualTo(15);
+        assertThat(game.getWhitePlayer().getPieces().size()).isEqualTo(15);
     }
 
     @Test
@@ -74,8 +74,8 @@ class GameServiceTest {
 
     @Test
     void movePieceGetsCheckMate() {
-        trimPieces(game.getPlayer1().getPieces());
-        trimPieces(game.getPlayer2().getPieces());
+        trimPieces(game.getWhitePlayer().getPieces());
+        trimPieces(game.getBlackPlayer().getPieces());
 
         sut.movePiece(game, getMoveRequest(31, 84));
         sut.movePiece(game, getMoveRequest(27, 26));
@@ -96,8 +96,8 @@ class GameServiceTest {
 
     @Test
     void mustMoveOutOfCheck() {
-        trimPieces(game.getPlayer1().getPieces());
-        trimPieces(game.getPlayer2().getPieces());
+        trimPieces(game.getWhitePlayer().getPieces());
+        trimPieces(game.getBlackPlayer().getPieces());
         sut.movePiece(game, getMoveRequest(31, 84));
         sut.movePiece(game, getMoveRequest(48, 42));
 
@@ -106,8 +106,8 @@ class GameServiceTest {
 
     @Test
     void CheckMateCanBeDefeatedByBlock() {
-        trimPieces(game.getPlayer1().getPieces());
-        trimPieces(game.getPlayer2().getPieces());
+        trimPieces(game.getWhitePlayer().getPieces());
+        trimPieces(game.getBlackPlayer().getPieces());
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 55));
 
         assertThat(response.getStatus().isActive()).isTrue();
@@ -118,8 +118,8 @@ class GameServiceTest {
     @Test
     
     void CheckMateCanBeDefeatedByCapture() {
-        trimPieces(game.getPlayer1().getPieces());
-        trimPieces(game.getPlayer2().getPieces());
+        trimPieces(game.getWhitePlayer().getPieces());
+        trimPieces(game.getBlackPlayer().getPieces());
 
         sut.movePiece(game, getMoveRequest(31, 84));
         sut.movePiece(game, getMoveRequest(48, 14));;
@@ -132,8 +132,8 @@ class GameServiceTest {
     }
     @Test
     void CheckMateCanBeDefeatedByCapture2() {
-        trimPieces(game.getPlayer1().getPieces());
-        trimPieces(game.getPlayer2().getPieces());
+        trimPieces(game.getWhitePlayer().getPieces());
+        trimPieces(game.getBlackPlayer().getPieces());
 
         sut.movePiece(game, getMoveRequest(31, 84));
         sut.movePiece(game, getMoveRequest(27, 26));

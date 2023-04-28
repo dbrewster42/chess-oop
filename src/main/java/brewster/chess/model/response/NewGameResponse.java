@@ -19,8 +19,8 @@ public class NewGameResponse {
     public NewGameResponse(Game game){
         this.id = game.getId();
         this.status = new StatusResponse(game);
-        this.whitePlayer = game.getPlayer1().getName();
-        this.blackPlayer = game.getPlayer2().getName();
+        this.whitePlayer = game.getWhitePlayer().getName();
+        this.blackPlayer = game.getBlackPlayer().getName();
         this.pieces = convertPiecesToResponse(game);
     }
 

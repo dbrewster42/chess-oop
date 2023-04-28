@@ -16,12 +16,12 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes) {
-        return addUpAndDownMoves(allSpots, foes);
+    public List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes) {
+        return addUpAndDownMoves(allSquares, foes);
     }
 
     @Override
-    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
-        return isOnStraightLine(destination, allSpots);
+    public boolean isLegalAttack(Square destination, List<Square> allSquares) {
+        return isOnStraightLine(destination, allSquares);
     }
 }

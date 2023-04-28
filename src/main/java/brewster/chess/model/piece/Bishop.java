@@ -16,12 +16,12 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Spot> calculateLegalMoves(List<Spot> allSpots, List<Piece> foes) {
-        return addDiagonalMoves(allSpots, foes);
+    public List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes) {
+        return addDiagonalMoves(allSquares, foes);
     }
 
     @Override
-    public boolean isLegalAttack(Spot destination, List<Spot> allSpots) {
-       return isOnDiagonalLine(destination, allSpots);
+    public boolean isLegalAttack(Square destination, List<Square> allSquares) {
+       return isOnDiagonalLine(destination, allSquares);
     }
 }
