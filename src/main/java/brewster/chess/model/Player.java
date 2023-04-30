@@ -23,6 +23,7 @@ public class Player {
     private long id;
 
     private final boolean isWhite;
+
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private final List<Piece> pieces;
     @ManyToOne

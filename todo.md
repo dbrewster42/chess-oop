@@ -7,6 +7,9 @@
 5. game should control the pieces directly. Is player needed?
 6. make iGame
 
+player needs user to keep track of wins, losses, etc
+how to map relationship between player and game? 1 to 1 but how does it know which one?
+
 [//]: # (### simplicity vs pojo)
 
 [//]: # (should Piece implement its own business logic?)

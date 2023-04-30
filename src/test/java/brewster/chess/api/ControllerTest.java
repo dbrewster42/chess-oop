@@ -121,16 +121,17 @@ class ControllerTest {
         assertThat(status.isWhite()).isFalse();
         assertThat(status.isCheck()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(31);
-//        assertThat(response.getMessage()).isEqualTo("1. rainmaker has moved his Pawn from 52 to 54\n" +
-//                "2. Bobby has moved his Pawn from 47 to 45\n" +
-//                "3. rainmaker has moved his Bishop from 61 to 16\n" +
-//                "4. Bobby has moved his Pawn from 77 to 16 and has captured a BISHOP\n" +
-//                "5. rainmaker has moved his Queen from 41 to 63\n");
-        assertThat(response.getMoves()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
-                "2. Bobby has moved his Pawn from D7 to D5\n" +
-                "3. rainmaker has moved his Bishop from F1 to A6\n" +
-                "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
-                "5. rainmaker has moved his Queen from D1 to F3\n");
+        assertThat(response.getMoves())
+            .containsExactly("rainmaker has moved his Pawn from E2 to E4",
+                "Bobby has moved his Pawn from D7 to D5",
+                "rainmaker has moved his Bishop from F1 to A6",
+                "Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP",
+                "rainmaker has moved his Queen from D1 to F3");
+//        assertThat(response.getMoves()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
+//                "2. Bobby has moved his Pawn from D7 to D5\n" +
+//                "3. rainmaker has moved his Bishop from F1 to A6\n" +
+//                "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
+//                "5. rainmaker has moved his Queen from D1 to F3\n");
     }
 //    @Test
 //    void selectPromotion() {

@@ -106,7 +106,7 @@ public class Controller {
     }
     @Transactional
     private Game findGameWithMoves(long id){
-        return gameRepository.findByIdAndFetchMovesEagerly(id).orElseThrow(GameNotFound::new);
+        return gameRepository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 //    @PostMapping("/restart")
 //    public List<Response> restart(@PathVariable int id){

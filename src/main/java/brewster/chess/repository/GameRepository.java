@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface GameRepository extends CrudRepository<Game, Long> {
 
-    @Query("SELECT g FROM Game g JOIN FETCH g.moves WHERE g.id = :id")
-    Optional<Game> findByIdAndFetchMovesEagerly(@Param("id") Long id);
+    @Query("SELECT g FROM Game g LEFT JOIN FETCH g.moves WHERE g.id = :id")
+    Optional<Game> findGameWithMoves(@Param("id") Long id);
 }
