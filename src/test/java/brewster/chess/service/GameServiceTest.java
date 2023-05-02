@@ -13,12 +13,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static brewster.chess.mother.UserMother.createUser;
 import static brewster.chess.mother.UserMother.createUser2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 class GameServiceTest {
@@ -36,6 +38,8 @@ class GameServiceTest {
 
     @Test
     void movePieceRemovesFoe(){
+        when(repository.findById(game.getId())).thenReturn(Optional.of(game));
+
         sut.movePiece(game, getMoveRequest(52, 54));
         sut.movePiece(game, getMoveRequest(57, 55));
 
@@ -43,7 +47,7 @@ class GameServiceTest {
         sut.movePiece(game, getMoveRequest(17, 16));
 
         sut.movePiece(game, getMoveRequest(25, 16));
-        assertThat(sut.getLegalMoves(game, 27)).containsExactlyInAnyOrder(16, 26, 25);
+        assertThat(sut.getLegalMoves(game.getId(), 27)).containsExactlyInAnyOrder(16, 26, 25);
         sut.movePiece(game, getMoveRequest(27, 16));
         assertThat(game.getWhitePlayer().getPieces().size()).isEqualTo(15);
     }
@@ -82,7 +86,8 @@ class GameServiceTest {
 
         GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
         assertThat(response.getStatus().isActive()).isFalse();
-        assertThat(response.getMoves()).contains("rainmaker wins!");
+        assertThat(response.getMoves()).contains("rainmaker has checkmated Bobby! rainmaker wins!");
+//        assertThat(response.getMoves()).contains(game.getWhitePlayer().getName() + " has checkmated " + game.getBlackPlayer().getName());
     }
 
     @Test

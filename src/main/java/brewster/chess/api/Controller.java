@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 
 @CrossOrigin(origins= "http://localhost:3000")
@@ -32,12 +33,10 @@ import java.util.List;
 @RequestMapping("/game")
 @Slf4j
 public class Controller {
-    public final GameRepository gameRepository;
     public final UserRepository userRepository;
     public final GameService gameService;
 
-    public Controller(GameRepository gameRepository, UserRepository userRepository, GameService gameService) {
-        this.gameRepository = gameRepository;
+    public Controller(UserRepository userRepository, GameService gameService) {
         this.userRepository = userRepository;
         this.gameService = gameService;
     }
@@ -74,13 +73,18 @@ public class Controller {
     @GetMapping("/{id}/{position}")
     public List<Integer> selectPiece(@PathVariable long id, @PathVariable int position){
         log.info("selecting piece - {}", position);
-        return gameService.getLegalMoves(findGame(id), position);
+        return gameService.getLegalMoves(id, position);
+    }
+    @GetMapping("/{id}/validMoves")
+    public Map<Integer, List<Integer>> getLegalMoves(@PathVariable long id){
+        log.info("fetching all legal moves");
+        return gameService.getAllMoves(id);
     }
 
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         log.info("moving piece - {}", request);
-        return gameService.movePiece(findGameWithMoves(id), request);
+        return gameService.movePiece(id, request);
     }
 
     @PostMapping("/restart")
@@ -93,21 +97,14 @@ public class Controller {
 
     @GetMapping("/{id}/draw")
     public GameResponse requestDraw(@PathVariable long id){
-        return gameService.requestDraw(findGame(id));
+        return gameService.requestDraw(id);
     }
     @PostMapping("/{id}/promotion")
     public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
-        return gameService.implementPromotion(findGame(id), request);
+        return gameService.implementPromotion(id, request);
     }
 
 
-    private Game findGame(long id){
-        return gameRepository.findById(id).orElseThrow(GameNotFound::new);
-    }
-    @Transactional
-    private Game findGameWithMoves(long id){
-        return gameRepository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
-    }
 //    @PostMapping("/restart")
 //    public List<Response> restart(@PathVariable int id){
 //        game = Manager.getGame(id);
