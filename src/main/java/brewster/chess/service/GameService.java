@@ -163,10 +163,10 @@ public class GameService {
     }
 
     public List<Piece> getFoesPieces(Game game){
-        return game.isWhitesTurn() ? game.getBlackPlayer().getPieces() : game.getWhitePlayer().getPieces();
+        return getOpponent(game).getPieces();
     }
     public List<Piece> getCurrentTeam(Game game){
-        return game.isWhitesTurn() ? game.getWhitePlayer().getPieces() : game.getBlackPlayer().getPieces();
+        return getCurrentPlayer(game).getPieces();
     }
     public Player getCurrentPlayer(Game game){
         return game.isWhitesTurn() ? game.getWhitePlayer() : game.getBlackPlayer();
