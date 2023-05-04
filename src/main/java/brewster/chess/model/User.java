@@ -1,12 +1,8 @@
 package brewster.chess.model;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -20,7 +16,7 @@ public class User {
     @Id
     private final String name;
     private final String email;
-    @OneToMany(mappedBy="user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user")
     private final List<Player> players;
 
     private int wins;

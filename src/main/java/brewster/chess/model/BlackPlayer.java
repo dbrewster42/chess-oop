@@ -1,18 +1,9 @@
 package brewster.chess.model;
 
-import brewster.chess.model.piece.Piece;
 import lombok.Getter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import java.util.List;
 
 import static brewster.chess.util.TeamCreation.generatePieces;
 
@@ -27,5 +18,6 @@ public class BlackPlayer extends Player {
         this.game = game;
         this.pieces = generatePieces(false);
     }
+    public BlackPlayer(){ game = null; }
 
 }

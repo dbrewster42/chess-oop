@@ -58,7 +58,7 @@ public class GameService {
     }
     public List<Integer> getLegalMoves(Game game, int position) {
         return findPiece(game, position)
-            .calculateLegalMoves(getAllSpots(game), getFoesPieces(game))
+            .calculateLegalMoves(getAllSquares(game), getFoesPieces(game))
             .stream()
             .map(Square::convertToInt)
             .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class GameService {
     public List<Integer> getLegalMoves(long id, int position) {
         Game game = findGame(id);
         return findPiece(game, position)
-                .calculateLegalMoves(getAllSpots(game), getFoesPieces(game))
+                .calculateLegalMoves(getAllSquares(game), getFoesPieces(game))
                 .stream()
                 .map(Square::convertToInt)
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class GameService {
 
     private GamePiecesDto getGamePiecesDto(Game game){
         return GamePiecesDto.builder()
-            .squares(getAllSpots(game))
+            .squares(getAllSquares(game))
             .friends(getCurrentTeam(game))
             .foes(getFoesPieces(game))
             .build();
@@ -175,7 +175,7 @@ public class GameService {
         return game.isWhitesTurn() ? game.getBlackPlayer() : game.getWhitePlayer();
     }
 
-    public List<Square> getAllSpots(Game game){
+    public List<Square> getAllSquares(Game game){
         return game.getAllPieces().stream()
                 .map(Piece::getSquare)
                 .collect(Collectors.toList());

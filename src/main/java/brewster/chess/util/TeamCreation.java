@@ -18,9 +18,9 @@ import static brewster.chess.model.constant.Team.WHITE;
 public class TeamCreation {
     public static List<Piece> generatePieces(boolean isWhite) {
         if (isWhite){
-            return generatePieces(8, 7, WHITE);
+            return generatePieces(1, 2, WHITE);
         }  else {
-            return generatePieces(1, 2, BLACK);
+            return generatePieces(8, 7, BLACK);
         }
     }
     private static List<Piece> generatePieces(int y, int pawnY, Team team) {
