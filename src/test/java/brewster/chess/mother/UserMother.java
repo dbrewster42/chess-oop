@@ -13,12 +13,12 @@ public class UserMother {
     }
 
 
-    public static Player createPlayer(User user){
-        return new Player(user, true);
-    }
-    public static Player createPlayer2(User user){
-        return new Player(user, false);
-    }
+//    public static Player createPlayer(User user){
+//        return new Player(user, true);
+//    }
+//    public static Player createPlayer2(User user){
+//        return new Player(user, false);
+//    }
 
 
 }

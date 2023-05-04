@@ -30,16 +30,15 @@ public class Game {
     @ElementCollection
     private List<String> moves;
 
-//    private Status status;
     private boolean isWhitesTurn = true;
     private boolean isActive = true;
     private boolean isCheck = false;
 
     public Game(User user1, User user2) {
-        this.whitePlayer = new Player(user1, true);
-        user1.addPlayer(whitePlayer);
-        this.blackPlayer = new Player(user2, false);
-        user2.addPlayer(blackPlayer);
+        this.whitePlayer = new WhitePlayer(user1, this);
+//        user1.addPlayer(whitePlayer);
+        this.blackPlayer = new BlackPlayer(user2, this);
+//        user2.addPlayer(blackPlayer);
         moves = new ArrayList<>();
     }
     public Game(){

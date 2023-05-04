@@ -12,7 +12,7 @@ import static brewster.chess.mother.PieceMother.getEnterprisingBlackPawn;
 import static brewster.chess.mother.PieceMother.getFoes;
 import static brewster.chess.mother.PieceMother.getSpots2;
 import static brewster.chess.mother.PieceMother.getWhiteQueen;
-import static brewster.chess.util.TeamCreation.getNewTeam;
+import static brewster.chess.util.TeamCreation.generatePieces;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class QueenTest {
@@ -54,7 +54,7 @@ class QueenTest {
 
     @Test
     void calculatePotentialMovesFullBoard() {
-        List<Piece> fullTeam = getNewTeam(true);
+        List<Piece> fullTeam = generatePieces(true);
         List<Square> squares = fullTeam.stream().map(Piece::getSquare).collect(Collectors.toList());
         List<Square> legalMoves = queen.calculateLegalMoves(squares, List.of());
         assertThat(legalMoves.size()).isEqualTo(0);

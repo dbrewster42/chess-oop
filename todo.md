@@ -6,6 +6,7 @@
 4. Add board. Both board and piece keep track of location
 5. game should control the pieces directly. Is player needed?
 6. make iGame
+7. isOnBoard part of Square's responsibility instead of Piece
 
 player needs user to keep track of wins, losses, etc
 how to map relationship between player and game? 1 to 1 but how does it know which one?

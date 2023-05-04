@@ -10,7 +10,7 @@ class UserTest {
     void user(){
         User user = new User("james", "james@hotmail.com");
         assertThat(user.getWins()).isEqualTo(0);
-        user.addPlayer(new Player(user, true));
+        user.addPlayer(new WhitePlayer(user, null));
         assertThat(user.getPlayers().size()).isEqualTo(1);
         user.addWin();
         assertThat(user.getWins()).isEqualTo(1);

@@ -16,18 +16,14 @@ import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Team.WHITE;
 
 public class TeamCreation {
-    public static List<Piece> getNewTeam(boolean isWhite) {
-        int y = 8;
-        int pawnY = 7;
-        Team team = BLACK;
+    public static List<Piece> generatePieces(boolean isWhite) {
         if (isWhite){
-            y = 1;
-            pawnY = 2;
-            team = WHITE;
+            return generatePieces(8, 7, WHITE);
+        }  else {
+            return generatePieces(1, 2, BLACK);
         }
-        return getNewTeam(y, pawnY, team);
     }
-    private static List<Piece> getNewTeam(int y, int pawnY, Team team) {
+    private static List<Piece> generatePieces(int y, int pawnY, Team team) {
         List<Piece> allPieces = new ArrayList<>();
 
         allPieces.add(new King(team, 5, y));

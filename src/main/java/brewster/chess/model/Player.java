@@ -9,43 +9,33 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.List;
 
-import static brewster.chess.util.TeamCreation.getNewTeam;
-
-@Getter
 @Entity
-public class Player {
+@Getter
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Player {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
-    private final boolean isWhite;
-
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    private final List<Piece> pieces;
+    List<Piece> pieces;
     @ManyToOne
-    private final User user;
+    User user;
 
-    public Player(User user, boolean isWhite) {
-        this.user = user;
-        this.isWhite = isWhite;
-        this.pieces = generatePieces();
-    }
     public Player(){
         this.user = null;
-        this.isWhite = true;
         this.pieces = null;
     }
 
-    public String getName(){
+    public abstract Game getGame();
+    public String getName() {
         return user.getName();
-    }
-
-    private List<Piece> generatePieces(){
-        return getNewTeam(isWhite);
     }
 
 }
