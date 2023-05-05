@@ -20,10 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+//todo delete
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ControllerTest {
-    @Autowired Controller sut;
+class ChessControllerTest {
+    @Autowired
+    UserController userController;
+    @Autowired
+    ChessController sut;
     long id = 1;
     @Autowired GameRepository gameRepository;
     @Autowired UserRepository userRepository;
@@ -43,7 +47,7 @@ class ControllerTest {
     void createUserTest(){
         name1 = "rainmaker";
 
-        String response = sut.createUser(getUserRequest(name1));
+        String response = userController.createUser(getUserRequest(name1));
 
         assertThat(response).isEqualTo(name1 + " has been saved in the db") ;
         assertThat(userRepository.findById(name1).isPresent()).isTrue();

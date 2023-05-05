@@ -3,7 +3,7 @@ package brewster.chess.service;
 
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
-import brewster.chess.model.Game;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.piece.Piece;
@@ -23,17 +23,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
-class GameServiceTest {
+class ChessGameServiceTest {
     private final GameRepository repository = mock(GameRepository.class);
     private final UserRepository userRepository = mock(UserRepository.class);
 
 
-    private final GameService sut = new GameService(repository, new CheckService(), userRepository, new MoveMessageService());
-    private Game game;
+    private final ChessGameService sut = new ChessGameService(repository, new CheckService(), userRepository, new MoveMessageService());
+    private ChessGame game;
 
     @BeforeEach
     void setup(){
-        game = new Game(createUser(), createUser2());
+        game = new ChessGame(createUser(), createUser2());
     }
 
     @Test

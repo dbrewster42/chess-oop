@@ -1,5 +1,6 @@
 package brewster.chess.piece;
 
+import brewster.chess.model.constant.Team;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +55,7 @@ class QueenTest {
 
     @Test
     void calculatePotentialMovesFullBoard() {
-        List<Piece> fullTeam = generatePieces(true);
+        List<Piece> fullTeam = generatePieces(Team.WHITE);
         List<Square> squares = fullTeam.stream().map(Piece::getSquare).collect(Collectors.toList());
         List<Square> legalMoves = queen.calculateLegalMoves(squares, List.of());
         assertThat(legalMoves.size()).isEqualTo(0);

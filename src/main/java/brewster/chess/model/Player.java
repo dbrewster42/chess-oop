@@ -33,7 +33,7 @@ public abstract class Player {
         this.pieces = null;
     }
 
-    public abstract Game getGame();
+    public abstract ChessGame getGame();
     public String getName() {
         return user.getName();
     }

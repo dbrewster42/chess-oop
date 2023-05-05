@@ -3,7 +3,7 @@ package brewster.chess.service;
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
-import brewster.chess.model.Game;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.model.piece.Pawn;
@@ -28,13 +28,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class GameService {
+public class ChessGameService {
     private final GameRepository repository;
     private final CheckService checkService;
     private final UserRepository userRepository;
     private final MoveMessageService moveMessageService;
 
-    public GameService(GameRepository repository, CheckService checkService, UserRepository userRepository, MoveMessageService moveMessageService) {
+    public ChessGameService(GameRepository repository, CheckService checkService, UserRepository userRepository, MoveMessageService moveMessageService) {
         this.repository = repository;
         this.checkService = checkService;
         this.userRepository = userRepository;
@@ -42,11 +42,11 @@ public class GameService {
     }
 
     public NewGameResponse startGame(User user1, User user2) {
-        return new NewGameResponse(repository.save(new Game(user1, user2)));
+        return new NewGameResponse(repository.save(new ChessGame(user1, user2)));
     }
 
     public Map<Integer, List<Integer>> getAllMoves(long id) {
-        Game game = findGame(id);
+        ChessGame game = findGame(id);
         Map<Integer, List<Integer>> allMoves = new HashMap<>();
         for (Piece piece : getCurrentPlayer(game).getPieces()) {
             List<Integer> pieceMoves = getLegalMoves(game, piece.getLocation());
@@ -56,7 +56,7 @@ public class GameService {
         }
         return allMoves;
     }
-    public List<Integer> getLegalMoves(Game game, int position) {
+    public List<Integer> getLegalMoves(ChessGame game, int position) {
         return findPiece(game, position)
             .calculateLegalMoves(getAllSquares(game), getFoesPieces(game))
             .stream()
@@ -64,7 +64,7 @@ public class GameService {
             .collect(Collectors.toList());
     }
     public List<Integer> getLegalMoves(long id, int position) {
-        Game game = findGame(id);
+        ChessGame game = findGame(id);
         return findPiece(game, position)
                 .calculateLegalMoves(getAllSquares(game), getFoesPieces(game))
                 .stream()
@@ -75,7 +75,7 @@ public class GameService {
         return movePiece(findGameWithMoves(id), request);
     }
 
-    public GameResponse movePiece(Game game, MoveRequest request) {
+    public GameResponse movePiece(ChessGame game, MoveRequest request) {
         GamePiecesDto dto = getGamePiecesDto(game);
         Piece piece = findPiece(game, request.getStart());
         piece.move(request.getEnd());
@@ -112,7 +112,7 @@ public class GameService {
         return false;
     }
 
-    private GamePiecesDto getGamePiecesDto(Game game){
+    private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
             .squares(getAllSquares(game))
             .friends(getCurrentTeam(game))
@@ -121,7 +121,7 @@ public class GameService {
     }
 
     public GameResponse implementPromotion(long id, PromotionRequest request) {
-        Game game = findGame(id);
+        ChessGame game = findGame(id);
         List<Piece> pieces = getCurrentTeam(game);
         Piece piece = findPiece(pieces, request.getOldPosition()).orElseThrow(PieceNotFound::new);
         pieces.remove(piece);
@@ -131,7 +131,7 @@ public class GameService {
     }
 
     public GameResponse requestDraw(long id) {
-        Game game = findGame(id);
+        ChessGame game = findGame(id);
         if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
             game.setActive(false);
             //todo update user win totals with a draw. by calling user service?
@@ -141,19 +141,19 @@ public class GameService {
         return null;
     }
 
-    private Game findGame(long id){
+    private ChessGame findGame(long id){
         return repository.findById(id).orElseThrow(GameNotFound::new);
     }
-    private Game findGameWithMoves(long id){
+    private ChessGame findGameWithMoves(long id){
         return repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 
-    private GameResponse getGameResponse(Game game) {
+    private GameResponse getGameResponse(ChessGame game) {
         //todo
         return new GameResponse(game);
     }
 
-    private GameResponse getGameOverResponse(Game game) {
+    private GameResponse getGameOverResponse(ChessGame game) {
         User winner = getCurrentPlayer(game).getUser();
         User loser = getOpponent(game).getUser();
         userRepository.save(winner.addWin());
@@ -162,20 +162,20 @@ public class GameService {
         return new GameResponse(winner.getName(), loser.getName());
     }
 
-    public List<Piece> getFoesPieces(Game game){
+    public List<Piece> getFoesPieces(ChessGame game){
         return getOpponent(game).getPieces();
     }
-    public List<Piece> getCurrentTeam(Game game){
+    public List<Piece> getCurrentTeam(ChessGame game){
         return getCurrentPlayer(game).getPieces();
     }
-    public Player getCurrentPlayer(Game game){
+    public Player getCurrentPlayer(ChessGame game){
         return game.isWhitesTurn() ? game.getWhitePlayer() : game.getBlackPlayer();
     }
-    public Player getOpponent(Game game){
+    public Player getOpponent(ChessGame game){
         return game.isWhitesTurn() ? game.getBlackPlayer() : game.getWhitePlayer();
     }
 
-    public List<Square> getAllSquares(Game game){
+    public List<Square> getAllSquares(ChessGame game){
         return game.getAllPieces().stream()
                 .map(Piece::getSquare)
                 .collect(Collectors.toList());
@@ -188,7 +188,7 @@ public class GameService {
 //    }
 
 
-    private Piece findPiece(Game game, int position) {
+    private Piece findPiece(ChessGame game, int position) {
         return getCurrentTeam(game).stream()
                 .filter(piece -> piece.isAtPosition(position))
                 .findAny().orElseThrow(PieceNotFound::new);
@@ -200,15 +200,15 @@ public class GameService {
                 .findAny();
     }
 
-    void removeFoeIfCaptured(Game game, int end) {
+    void removeFoeIfCaptured(ChessGame game, int end) {
         getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny()
                 .ifPresent(foe -> getFoesPieces(game).remove(foe));
     }
 
-    private boolean isAttack(Game game, int end) {
+    private boolean isAttack(ChessGame game, int end) {
         return getFoesPieces(game).stream().anyMatch(p -> p.isAtPosition(end));
     }
-    private Optional<Piece> isFoeCaptured(Game game, int end) {
+    private Optional<Piece> isFoeCaptured(ChessGame game, int end) {
         return getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny();
     }
 

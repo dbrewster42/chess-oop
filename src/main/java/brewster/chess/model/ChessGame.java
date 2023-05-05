@@ -6,7 +6,6 @@ import lombok.Data;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +17,7 @@ import java.util.stream.Stream;
 
 @Data
 @Entity
-public class Game {
+public class ChessGame {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -34,14 +33,14 @@ public class Game {
     private boolean isActive = true;
     private boolean isCheck = false;
 
-    public Game(User user1, User user2) {
+    public ChessGame(User user1, User user2) {
         this.whitePlayer = new WhitePlayer(user1, this);
 //        user1.addPlayer(whitePlayer);
         this.blackPlayer = new BlackPlayer(user2, this);
 //        user2.addPlayer(blackPlayer);
         moves = new ArrayList<>();
     }
-    public Game(){
+    public ChessGame(){
         this.whitePlayer = null;
         this.blackPlayer = null;
     }

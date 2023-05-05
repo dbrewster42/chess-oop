@@ -1,6 +1,6 @@
 package brewster.chess.model.response;
 
-import brewster.chess.model.Game;
+import brewster.chess.model.ChessGame;
 import lombok.Data;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ public class NewGameResponse {
     private Map<Integer, String> pieces;
 
 
-    public NewGameResponse(Game game){
+    public NewGameResponse(ChessGame game){
         this.id = game.getId();
         this.status = new StatusResponse(game);
         this.whitePlayer = game.getWhitePlayer().getName();

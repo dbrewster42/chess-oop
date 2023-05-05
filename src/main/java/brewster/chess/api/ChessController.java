@@ -1,9 +1,7 @@
 package brewster.chess.api;
 
 
-import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.UserNotFound;
-import brewster.chess.model.Game;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
@@ -11,9 +9,9 @@ import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
-import brewster.chess.service.GameService;
+import brewster.chess.service.ChessGameService;
+import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -32,40 +29,26 @@ import java.util.Map;
 @RestController
 @RequestMapping("/game")
 @Slf4j
-public class Controller {
-    public final UserRepository userRepository;
-    public final GameService gameService;
+public class ChessController {
+    public final UserService userService;
+    public final ChessGameService gameService;
 
-    public Controller(UserRepository userRepository, GameService gameService) {
-        this.userRepository = userRepository;
+    public ChessController(UserService userService, ChessGameService gameService) {
+        this.userService = userService;
         this.gameService = gameService;
     }
 
-    @PostMapping("/user")
-    public String createUser(@RequestBody UserRequest request){
-        log.info("new user - {}", request);
-        User user = userRepository.save(new User(request.getName(), request.getEmail()));
-//        if (isValid)
-        return user.getName() + " has been saved in the db";
-    }
-    @GetMapping("/user")
-    public String login(@RequestBody UserRequest request){
-        log.info("login - {}", request);
-        User user = userRepository.findById(request.getName()).orElseThrow(UserNotFound::new);
-//        if (isValid)
-        return user.getName() + " has been retrieved from the db";
-    }
 
 //    @PostMapping
 //    public NewGameResponse startNewGame(@RequestBody String name){
 //        //todo sockets
-////        return gameService.startGame(userRepository.findById(name).orElseThrow(UserNotFound::new));
+////        return gameService.startGame(userService.findById(name).orElseThrow(UserNotFound::new));
 //    }
     @PostMapping
     public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){
         log.info("start new game - {}", request);
-        User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
-        User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
+        User user1 = userService.getUser(request.getUser1());
+        User user2 = userService.getUser(request.getUser2());
 
         return gameService.startGame(user1, user2);
     }
@@ -89,8 +72,8 @@ public class Controller {
 
     @PostMapping("/restart")
     public NewGameResponse restart(@RequestBody NewGameRequest request){
-        User user1 = userRepository.findById(request.getUser1()).orElseThrow(UserNotFound::new);
-        User user2 = userRepository.findById(request.getUser2()).orElseThrow(UserNotFound::new);
+        User user1 = userService.getUser(request.getUser1());
+        User user2 = userService.getUser(request.getUser2());
 
         return gameService.startGame(user1, user2);
     }

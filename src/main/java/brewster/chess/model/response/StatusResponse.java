@@ -1,6 +1,6 @@
 package brewster.chess.model.response;
 
-import brewster.chess.model.Game;
+import brewster.chess.model.ChessGame;
 import lombok.Data;
 
 @Data
@@ -10,7 +10,7 @@ public class StatusResponse {
     private boolean isWhite;
     private String currentPlayer;
 
-    public StatusResponse(Game game) {
+    public StatusResponse(ChessGame game) {
         this.isActive = true;
         this.isWhite = game.isWhitesTurn();
         this.isCheck = game.isCheck();

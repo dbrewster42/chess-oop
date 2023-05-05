@@ -1,6 +1,6 @@
 package brewster.chess.service.model;
 
-import brewster.chess.model.Game;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.request.MoveRequest;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Builder
 //@AllArgsConstructor
 public class MoveMessageDto {
-    private Game game;
+    private ChessGame game;
     private String pieceName;
     private MoveRequest request;
     private Optional<Piece> potentialFoe;

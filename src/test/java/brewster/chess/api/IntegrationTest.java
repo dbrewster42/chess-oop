@@ -1,10 +1,7 @@
 package brewster.chess.api;
 
-import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
-import brewster.chess.model.request.NewGameRequest;
-import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.StatusResponse;
@@ -18,29 +15,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static brewster.chess.mother.RequestMother.getNewGameRequest;
 import static brewster.chess.mother.RequestMother.getUserRequest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class IntegrationTest {
-    @Autowired Controller sut;
+    @Autowired
+    UserController userController;
+    @Autowired
+    ChessController sut;
     long id = 1;
     @Autowired GameRepository gameRepository;
     @Autowired UserRepository userRepository;
 
-    private String whitePlayer = "rainmaker";
-    private String blackPlayer = "Bobby";
+    private final String whitePlayer = "rainmaker";
+    private final String blackPlayer = "Bobby";
 
 
     @Test
     @Order(1)
     void createUserTest(){
-        String response = sut.createUser(getUserRequest(whitePlayer));
+        String response = userController.createUser(getUserRequest(whitePlayer));
 
         assertThat(response).isEqualTo(whitePlayer + " has been saved in the db") ;
         assertThat(userRepository.findById(whitePlayer).isPresent()).isTrue();
@@ -53,7 +51,8 @@ class IntegrationTest {
 
         NewGameResponse response = sut.startLocalGame(getNewGameRequest(whitePlayer, blackPlayer));
 
-        assertThat(response.getWhitePlayer()).isEqualTo("rainmaker");
+        assertThat(response.getWhitePlayer()).isEqualTo(whitePlayer);
+        assertThat(response.getBlackPlayer()).isEqualTo(blackPlayer);
         assertThat(response.getPieces().size()).isEqualTo(32);
         assertThat(gameRepository.findById(response.getId()).isPresent()).isTrue();
     }
