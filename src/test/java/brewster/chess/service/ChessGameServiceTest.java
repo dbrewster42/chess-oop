@@ -8,7 +8,6 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.repository.GameRepository;
-import brewster.chess.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,10 +24,9 @@ import static org.mockito.Mockito.when;
 
 class ChessGameServiceTest {
     private final GameRepository repository = mock(GameRepository.class);
-    private final UserRepository userRepository = mock(UserRepository.class);
+    private final UserService userService = mock(UserService.class);
 
-
-    private final ChessGameService sut = new ChessGameService(repository, new CheckService(), userRepository, new MoveMessageService());
+    private final ChessGameService sut = new ChessGameService(repository, new CheckService(), userService, new MoveMessageService());
     private ChessGame game;
 
     @BeforeEach
@@ -121,7 +119,6 @@ class ChessGameServiceTest {
     }
 
     @Test
-    
     void CheckMateCanBeDefeatedByCapture() {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());

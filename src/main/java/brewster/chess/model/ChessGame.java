@@ -1,6 +1,7 @@
 package brewster.chess.model;
 
 import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Square;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -48,9 +49,26 @@ public class ChessGame {
     public List<Piece> getAllPieces(){
         return Stream.concat(whitePlayer.getPieces().stream(), blackPlayer.getPieces().stream()).collect(Collectors.toList());
     }
+    public List<Square> getAllSquares(){
+        return getAllPieces().stream()
+            .map(Piece::getSquare)
+            .collect(Collectors.toList());
+    }
 
     public String getCurrentPlayerName(){
-        return isWhitesTurn ? whitePlayer.getName() : blackPlayer.getName();
+        return getCurrentPlayer().getName();
+    }
+    public List<Piece> getFoesPieces(){
+        return getOpponent().getPieces();
+    }
+    public List<Piece> getCurrentTeam(){
+        return getCurrentPlayer().getPieces();
+    }
+    public Player getCurrentPlayer(){
+        return isWhitesTurn ? whitePlayer : blackPlayer;
+    }
+    public Player getOpponent(){
+        return isWhitesTurn ? blackPlayer : whitePlayer;
     }
 
     public void restart(){

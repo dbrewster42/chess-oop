@@ -16,8 +16,8 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String name, String email) {
-        return userRepository.save(new User(name, email));
+    public User save(User user) {
+        return userRepository.save(user);
     }
     public User createUser(UserRequest request) {
         return userRepository.save(new User(request.getName(), request.getEmail()));

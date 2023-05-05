@@ -1,15 +1,12 @@
 package brewster.chess.api;
 
 
-import brewster.chess.exception.UserNotFound;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.PromotionRequest;
-import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.repository.UserRepository;
 import brewster.chess.service.ChessGameService;
 import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
