@@ -74,20 +74,20 @@ public class ChessGameService {
 
         if (checkService.isInCheckAfterMove(dto)) {
             piece.move(request.getStart());
-            throw new InvalidMoveException("You are in check");
+            throw new InvalidMoveException(game.isCheck());
         }
+        game.setCheck(false);
         Optional<Piece> potentialFoe = potentialPiece(game.getFoesPieces(), request.getEnd());
         potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));
 
-        boolean isPromotion = isPromotion(piece); //todo need to complete per todo.md
-        if (isPromotion) {
-            return new PromotionResponse(game, request);
-        }
+//        boolean isPromotion = isPromotion(piece); //todo will incorporate via selectPieces
+//        if (isPromotion) {
+//            return new PromotionResponse(game, request);
+//        }
         if (checkService.didCheck(dto)){
             game.setCheck(true);
             if (checkService.didCheckMate(dto)){
-                game.setActive(false);
-                return getGameOverResponse(game);
+                return checkMate(game);
             }
         }
 
@@ -125,9 +125,8 @@ public class ChessGameService {
     public GameResponse requestDraw(long id) {
         ChessGame game = findGame(id);
         if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
-            game.setActive(false);
             //todo update user win totals with a draw. by calling user service?
-            return getGameOverResponse(game);
+            return draw(game);
         }
         //todo request other player for Draw
         return null;
@@ -144,14 +143,21 @@ public class ChessGameService {
         //todo
         return new GameResponse(game);
     }
-
-    private GameResponse getGameOverResponse(ChessGame game) {
+    private GameResponse checkMate(ChessGame game) {
         User winner = game.getCurrentPlayer().getUser().addWin();
         User loser = game.getOpponent().getUser().addLoss();
-        userService.save(winner);
-        userService.save(loser);
-        repository.delete(game);
+        endGame(game, winner, loser);
         return new GameResponse(winner.getName(), loser.getName());
+    }
+    private GameResponse draw(ChessGame game) {
+        endGame(game, game.getCurrentPlayer().getUser(), game.getOpponent().getUser());
+        return new GameResponse();
+    }
+
+    private void endGame(ChessGame game, User player1, User player2) {
+        userService.save(player1);
+        userService.save(player2);
+        repository.delete(game);
     }
 
     private Piece getPiece(ChessGame game, int position) {

@@ -25,4 +25,8 @@ public class GameResponse {
         this.status = new StatusResponse();
         this.moves = List.of(player1 + " has checkmated " + player2 + "! " + player1 + " wins!");
     }
+    public GameResponse() {
+        this.status = new StatusResponse();
+        this.moves = List.of("The game has ended in a draw");
+    }
 }

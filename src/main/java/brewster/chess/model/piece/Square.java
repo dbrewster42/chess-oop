@@ -1,7 +1,5 @@
 package brewster.chess.model.piece;
 
-import brewster.chess.exception.InvalidMoveException;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -12,17 +10,9 @@ public class Square implements Serializable {
     public int y;
 
     public Square(int x, int y) {
-        if (!isOnBoard(x, y)) {
-            throw new InvalidMoveException(String.format("%s%s is not a valid square", x, y));
-        }
         this.x = x;
         this.y = y;
     }
-
-    public static boolean isOnBoard(int x, int y) {
-        return x > 0 && x < 9 && y > 0 && y < 9;
-    }
-
 
     public void move(int x, int y) {
         this.x = x;
@@ -36,10 +26,6 @@ public class Square implements Serializable {
     public int intValue(){
         return x * 10 + y;
     }
-
-//    public String toString() {
-//        return "Spot[x=" + x + ",y=" + y + "]";
-//    }
 
     @Override
     public boolean equals(Object o) {

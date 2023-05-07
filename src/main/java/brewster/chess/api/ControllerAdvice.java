@@ -14,10 +14,6 @@ public class ControllerAdvice {
     public Error resolveInvalidMoveException(InvalidMoveException e){
         return buildError(e);
     }
-//    @ExceptionHandler(value = Promotion.class)
-//    public PromotionResponse resolvePromotion(Promotion promotion){
-//        return new PromotionResponse(promotion);
-//    }
 
     private Error buildError(Exception e){
         return new Error(e.getMessage(), e);

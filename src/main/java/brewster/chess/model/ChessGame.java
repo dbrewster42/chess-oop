@@ -31,13 +31,13 @@ public class ChessGame {
     private List<String> moves;
 
     private boolean isWhitesTurn = true;
-    private boolean isActive = true;
+//    private boolean isActive = true;
     private boolean isCheck = false;
 
     public ChessGame(User user1, User user2) {
         this.whitePlayer = new WhitePlayer(user1, this);
-//        user1.addPlayer(whitePlayer);
         this.blackPlayer = new BlackPlayer(user2, this);
+//        user1.addPlayer(whitePlayer);
 //        user2.addPlayer(blackPlayer);
         moves = new ArrayList<>();
     }
@@ -75,6 +75,5 @@ public class ChessGame {
         isWhitesTurn = true;
         isCheck = false;
         moves = new ArrayList<>();
-        isActive = true;
     }
 }
