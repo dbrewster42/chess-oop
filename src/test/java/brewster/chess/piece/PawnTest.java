@@ -1,6 +1,5 @@
 package brewster.chess.piece;
 
-import brewster.chess.exception.Promotion;
 import brewster.chess.model.constant.Team;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Rook;
@@ -14,7 +13,6 @@ import static brewster.chess.mother.PieceMother.getFoes;
 import static brewster.chess.mother.PieceMother.getSpots2;
 import static brewster.chess.mother.PieceMother.getWhitePawn;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class PawnTest {
     Piece pawn;
@@ -52,12 +50,6 @@ class PawnTest {
         List<Square> legalMoves = pawn.calculateLegalMoves(allSquares, foes);
         assertThat(legalMoves.size()).isEqualTo(2);
         assertThat(legalMoves).containsExactlyInAnyOrder(new Square(7, 4), new Square(8, 4));
-    }
-
-    @Test
-    void promotion() {
-        assertThrows(Promotion.class, () -> pawn.move(78));
-        assertThrows(Promotion.class, () -> pawn.move(51));
     }
 
     @Test

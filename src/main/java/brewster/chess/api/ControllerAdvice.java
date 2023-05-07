@@ -1,8 +1,6 @@
 package brewster.chess.api;
 
 import brewster.chess.exception.InvalidMoveException;
-import brewster.chess.exception.Promotion;
-import brewster.chess.model.response.PromotionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

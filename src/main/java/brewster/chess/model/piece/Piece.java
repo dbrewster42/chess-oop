@@ -5,6 +5,7 @@ import brewster.chess.model.constant.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,11 +15,11 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "Type")
+@Data
 @NoArgsConstructor
-//@DiscriminatorColumn(name = "Type")
 public abstract class Piece {
     @Id
     @GeneratedValue
@@ -31,10 +32,10 @@ public abstract class Piece {
     public abstract List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes);
     public abstract boolean isLegalAttack(Square destination, List<Square> allSquares);
 
-    public Piece(Team team, int x, int y, Type type) {
+    Piece(Team team, int x, int y, Type type) {
         this.team = team;
-        this.type = type;
         this.square = new Square(x, y);
+        this.type = type;
     }
 
     public boolean isOccupied(int x, int y, List<Square> squares) {
@@ -66,7 +67,7 @@ public abstract class Piece {
     }
 
     public int getLocation() {
-        return square.convertToInt();
+        return square.intValue();
     }
 
     public Square getSquare() {

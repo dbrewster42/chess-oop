@@ -55,9 +55,9 @@ public class ChessGameService {
     }
     public List<Integer> getLegalMoves(ChessGame game, int position) {
         return getPiece(game, position)
-            .calculateLegalMoves(game.getAllSquares(), game.getFoesPieces())
+            .calculateLegalMoves(game.getAllOccupiedSquares(), game.getFoesPieces())
             .stream()
-            .map(Square::convertToInt)
+            .map(Square::intValue)
             .collect(Collectors.toList());
     }
     public List<Integer> getLegalMoves(long id, int position) {
@@ -106,7 +106,7 @@ public class ChessGameService {
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
-            .squares(game.getAllSquares())
+            .occupiedSquares(game.getAllOccupiedSquares())
             .friends(game.getCurrentTeam())
             .foes(game.getFoesPieces())
             .build();

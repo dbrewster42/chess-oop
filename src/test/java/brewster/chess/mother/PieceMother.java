@@ -37,7 +37,7 @@ public class PieceMother {
 
     public static GamePiecesDto adjustDto(GamePiecesDto dto, Piece newFriend) {
         dto.getFriends().add(newFriend);
-        dto.getSquares().add(newFriend.getSquare());
+        dto.getOccupiedSquares().add(newFriend.getSquare());
         return dto;
     }
 
@@ -45,7 +45,7 @@ public class PieceMother {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getWhiteQueen()));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8), getQueen(BLACK, 8, 6)));
         return GamePiecesDto.builder()
-            .squares(getSpotsForGivenPieces(friends, foes))
+            .occupiedSquares(getSpotsForGivenPieces(friends, foes))
             .friends(friends)
             .foes(foes)
             .build();
@@ -56,7 +56,7 @@ public class PieceMother {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8)));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getQueen(WHITE, 8, 6)));
         return GamePiecesDto.builder()
-            .squares(getSpotsForGivenPieces(friends, foes))
+            .occupiedSquares(getSpotsForGivenPieces(friends, foes))
             .friends(friends)
             .foes(foes)
             .build();

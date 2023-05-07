@@ -49,7 +49,7 @@ public class ChessGame {
     public List<Piece> getAllPieces(){
         return Stream.concat(whitePlayer.getPieces().stream(), blackPlayer.getPieces().stream()).collect(Collectors.toList());
     }
-    public List<Square> getAllSquares(){
+    public List<Square> getAllOccupiedSquares(){
         return getAllPieces().stream()
             .map(Piece::getSquare)
             .collect(Collectors.toList());

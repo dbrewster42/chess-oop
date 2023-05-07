@@ -10,7 +10,8 @@ import java.util.List;
 @Getter
 @Builder
 public class GamePiecesDto {
-    private final List<Square> squares;
+    private final List<Square> occupiedSquares;
     private final List<Piece> friends;
     private final List<Piece> foes;
 }
+
