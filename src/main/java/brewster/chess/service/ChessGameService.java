@@ -46,6 +46,7 @@ public class ChessGameService {
         Map<Integer, List<Integer>> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
             List<Integer> pieceMoves = getLegalMoves(game, piece.getLocation());
+            //todo add special Moves
             if (!pieceMoves.isEmpty()) {
                 allMoves.put(piece.getLocation(), pieceMoves);
             }
@@ -64,41 +65,38 @@ public class ChessGameService {
     }
 
     public GameResponse movePiece(long id, MoveRequest request) {
-        return movePiece(findGameWithMoves(id), request);
-    }
-    GameResponse movePiece(ChessGame game, MoveRequest request) {
-        GamePiecesDto dto = getGamePiecesDto(game);
+        ChessGame game = findGameWithMoves(id);
         Piece piece = getPiece(game, request.getStart());
         piece.move(request.getEnd());
+        GamePiecesDto dto = getGamePiecesDto(game);
 
         if (checkService.isInCheckAfterMove(dto)) {
             piece.move(request.getStart());
             throw new InvalidMoveException(game.isCheck());
         }
         game.setCheck(false);
-        Optional<Piece> potentialFoe = potentialPiece(game.getFoesPieces(), request.getEnd());
-        potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));
-        
-        Optional.ofNullable(request.getSpecialMove()).ifPresent(s ->  performSpecialMove(game, request));
 
-//        boolean isPromotion = isPromotion(piece); //todo will incorporate via selectPieces and choose with MoveRequest
-//        if (isPromotion) {
-//            return new PromotionResponse(game, request);
-//        }
+        Optional<Piece> potentialFoe = potentialPiece(game.getFoesPieces(), request.getEnd());
+        potentialFoe
+            .ifPresent(foe -> game.getFoesPieces().remove(foe));
+        Optional.ofNullable(request.getSpecialMove())
+            .ifPresent(s ->  performSpecialMove(game, request));
+
         if (checkService.didCheck(dto)){
             game.setCheck(true);
             if (checkService.didCheckMate(dto)){
                 return checkMate(game);
             }
         }
-        moveMessageService.addMove(game, piece.getType().name, request, potentialFoe);
+        moveMessageService.addMove(game, piece.getType(), request, potentialFoe);
         return endTurn(game);
     }
 
-    private void performSpecialMove(ChessGame game, MoveRequest request) {
+
+    private void performSpecialMove(ChessGame game, MoveRequest request) { //todo error handling?
         switch (request.getSpecialMove()) {
             case Castle:
-                performCastle(request);
+                performCastle(game, request);
                 break;
             case Passant:
                 performPassant(game, request);
@@ -114,21 +112,23 @@ public class ChessGameService {
         game.getFoesPieces().remove(foe);
     }
 
-    private void performCastle(MoveRequest request) {
+    private void performCastle(ChessGame game, MoveRequest request) {
+        int x = request.getEnd() / 10;
+        int y = request.getEnd() % 10;
+        if (x == 3) {
+            Piece rook = getPiece(game, 10 + y);
+            rook.move(4, y);
+        } else if (x == 7)  {
+            Piece rook = getPiece(game, 80 + y);
+            rook.move(6, y);
+        }
     }
 
     public void performPromotion(ChessGame game, MoveRequest request) {
         List<Piece> pieces = game.getCurrentTeam();
-        Pawn piece = (Pawn) getPiece(pieces, request.getEnd()); //todo pass in piece?
+        Pawn piece = (Pawn) getPiece(pieces, request.getEnd());
         pieces.remove(piece);
         pieces.add(new PieceFactory(piece.getTeam(), request.getEnd(), request.getPromotionType()).getInstance());
-    }
-
-    private boolean isPromotion(Piece piece) {
-        if (piece instanceof Pawn) {
-            return piece.getSquare().y == 1 || piece.getSquare().y == 8;
-        }
-        return false;
     }
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
@@ -137,16 +137,6 @@ public class ChessGameService {
             .friends(game.getCurrentTeam())
             .foes(game.getFoesPieces())
             .build();
-    }
-
-    public GameResponse implementPromotion(long id, PromotionRequest request) {
-        ChessGame game = findGame(id);
-        List<Piece> pieces = game.getCurrentTeam();
-        Piece piece = getPiece(pieces, request.getOldPosition());
-        pieces.remove(piece);
-        pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
-//        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
-        return endTurn(game);
     }
 
     public GameResponse requestDraw(long id) {
@@ -200,6 +190,24 @@ public class ChessGameService {
         return pieces.stream()
             .filter(piece -> piece.isAtPosition(position))
             .findAny();
+    }
+
+
+    private boolean isPromotion(Piece piece) {
+        if (piece instanceof Pawn) {
+            return piece.getSquare().y == 1 || piece.getSquare().y == 8;
+        }
+        return false;
+    }
+
+    public GameResponse implementPromotion(long id, PromotionRequest request) {
+        ChessGame game = findGame(id);
+        List<Piece> pieces = game.getCurrentTeam();
+        Piece piece = getPiece(pieces, request.getOldPosition());
+        pieces.remove(piece);
+        pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
+//        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
+        return endTurn(game);
     }
 
 //    public List<Piece> getFoesPieces(ChessGame game){

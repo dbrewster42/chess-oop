@@ -79,10 +79,10 @@ public class ChessController {
     public GameResponse requestDraw(@PathVariable long id){
         return gameService.requestDraw(id);
     }
-    @PostMapping("/{id}/promotion")
-    public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
-        return gameService.implementPromotion(id, request);
-    }
+//    @PostMapping("/{id}/promotion")
+//    public GameResponse selectPromotion(@PathVariable long id, @RequestBody PromotionRequest request){
+//        return gameService.implementPromotion(id, request);
+//    }
 
 
 //    @PostMapping("/restart")

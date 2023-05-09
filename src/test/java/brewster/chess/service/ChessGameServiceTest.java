@@ -4,9 +4,9 @@ package brewster.chess.service;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
+import brewster.chess.model.piece.Piece;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
-import brewster.chess.model.piece.Piece;
 import brewster.chess.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,46 +32,46 @@ class ChessGameServiceTest {
     @BeforeEach
     void setup(){
         game = new ChessGame(createUser(), createUser2());
+        when(repository.findById(game.getId())).thenReturn(Optional.of(game));
+        when(repository.findGameWithMoves(game.getId())).thenReturn(Optional.of(game));
     }
 
     @Test
     void movePieceRemovesFoe(){
-        when(repository.findById(game.getId())).thenReturn(Optional.of(game));
+        sut.movePiece(game.getId(), getMoveRequest(52, 54));
+        sut.movePiece(game.getId(), getMoveRequest(57, 55));
 
-        sut.movePiece(game, getMoveRequest(52, 54));
-        sut.movePiece(game, getMoveRequest(57, 55));
+        sut.movePiece(game.getId(), getMoveRequest(61, 25));
+        sut.movePiece(game.getId(), getMoveRequest(17, 16));
 
-        sut.movePiece(game, getMoveRequest(61, 25));
-        sut.movePiece(game, getMoveRequest(17, 16));
-
-        sut.movePiece(game, getMoveRequest(25, 16));
+        sut.movePiece(game.getId(), getMoveRequest(25, 16));
         assertThat(sut.getLegalMoves(game.getId(), 27)).containsExactlyInAnyOrder(16, 26, 25);
-        sut.movePiece(game, getMoveRequest(27, 16));
+        sut.movePiece(game.getId(), getMoveRequest(27, 16));
         assertThat(game.getWhitePlayer().getPieces().size()).isEqualTo(15);
     }
 
     @Test
     void movePieceChecksCorrectTurn(){
-        assertThrows(PieceNotFound.class, () -> sut.movePiece(game, getMoveRequest(17, 16)));
+        assertThrows(PieceNotFound.class, () -> sut.movePiece(game.getId(), getMoveRequest(17, 16)));
     }
     @Test
     void movePieceSetsCheckAndRequiresItToBeDefeated(){
-        sut.movePiece(game, getMoveRequest(41, 47));
+        sut.movePiece(game.getId(), getMoveRequest(41, 47));
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
 
-        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(17, 16)));
+        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game.getId(), getMoveRequest(17, 16)));
     }
 
     @Test
     void movePieceChecksCannotMoveIntoCheck(){
-        sut.movePiece(game, getMoveRequest(41, 56));
+        sut.movePiece(game.getId(), getMoveRequest(41, 56));
 
-        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(57, 66)));
+        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game.getId(), getMoveRequest(57, 66)));
     }
     @Test
     void movePieceChecksCannotMoveIntoCheck2() {
-        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(51, 66)));
+        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game.getId(), getMoveRequest(51, 66)));
     }
 
     @Test
@@ -79,10 +79,10 @@ class ChessGameServiceTest {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());
 
-        sut.movePiece(game, getMoveRequest(31, 84));
-        sut.movePiece(game, getMoveRequest(27, 26));
+        sut.movePiece(game.getId(), getMoveRequest(31, 84));
+        sut.movePiece(game.getId(), getMoveRequest(27, 26));
 
-        GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
+        GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 48));
         assertThat(response.getStatus().isActive()).isFalse();
         assertThat(response.getMoves()).contains("rainmaker has checkmated Bobby! rainmaker wins!");
 //        assertThat(response.getMoves()).contains(game.getWhitePlayer().getName() + " has checkmated " + game.getBlackPlayer().getName());
@@ -90,7 +90,7 @@ class ChessGameServiceTest {
 
     @Test
     void CheckMateCanBeDefeatedByKingCapture() {
-        GameResponse response = sut.movePiece(game, getMoveRequest(41, 48));
+        GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 48));
 
         assertThat(game.isCheck()).isTrue();
         assertThat(game.isWhitesTurn()).isFalse();
@@ -101,17 +101,17 @@ class ChessGameServiceTest {
     void mustMoveOutOfCheck() {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());
-        sut.movePiece(game, getMoveRequest(31, 84));
-        sut.movePiece(game, getMoveRequest(48, 42));
+        sut.movePiece(game.getId(), getMoveRequest(31, 84));
+        sut.movePiece(game.getId(), getMoveRequest(48, 42));
 
-        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game, getMoveRequest(41, 48)));
+        assertThrows(InvalidMoveException.class, () -> sut.movePiece(game.getId(), getMoveRequest(41, 48)));
     }
 
     @Test
     void CheckMateCanBeDefeatedByBlock() {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());
-        GameResponse response = sut.movePiece(game, getMoveRequest(41, 55));
+        GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 55));
 
         assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
@@ -123,10 +123,10 @@ class ChessGameServiceTest {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());
 
-        sut.movePiece(game, getMoveRequest(31, 84));
-        sut.movePiece(game, getMoveRequest(48, 14));;
+        sut.movePiece(game.getId(), getMoveRequest(31, 84));
+        sut.movePiece(game.getId(), getMoveRequest(48, 14));;
 
-        GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
+        GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 57));
 
         assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
@@ -137,10 +137,10 @@ class ChessGameServiceTest {
         trimPieces(game.getWhitePlayer().getPieces());
         trimPieces(game.getBlackPlayer().getPieces());
 
-        sut.movePiece(game, getMoveRequest(31, 84));
-        sut.movePiece(game, getMoveRequest(27, 26));
+        sut.movePiece(game.getId(), getMoveRequest(31, 84));
+        sut.movePiece(game.getId(), getMoveRequest(27, 26));
 
-        GameResponse response = sut.movePiece(game, getMoveRequest(41, 57));
+        GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 57));
 
         assertThat(response.getStatus().isActive()).isTrue();
         assertThat(game.isCheck()).isTrue();
