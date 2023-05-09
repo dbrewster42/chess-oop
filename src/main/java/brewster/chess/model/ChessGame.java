@@ -46,6 +46,11 @@ public class ChessGame {
         this.blackPlayer = null;
     }
 
+    public ChessGame changeTurn() {
+        this.isWhitesTurn = !isWhitesTurn;
+        return this;
+    }
+
     public List<Piece> getAllPieces(){
         return Stream.concat(whitePlayer.getPieces().stream(), blackPlayer.getPieces().stream()).collect(Collectors.toList());
     }

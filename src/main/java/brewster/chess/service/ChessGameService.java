@@ -13,7 +13,6 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.model.response.PromotionResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class ChessGameService {
         }
         return allMoves;
     }
-    public List<Integer> getLegalMoves(ChessGame game, int position) {
+    private List<Integer> getLegalMoves(ChessGame game, int position) {
         return getPiece(game, position)
             .calculateLegalMoves(game.getAllOccupiedSquares(), game.getFoesPieces())
             .stream()
@@ -63,11 +62,11 @@ public class ChessGameService {
     public List<Integer> getLegalMoves(long id, int position) {
         return getLegalMoves(findGame(id), position);
     }
+
     public GameResponse movePiece(long id, MoveRequest request) {
         return movePiece(findGameWithMoves(id), request);
     }
-
-    public GameResponse movePiece(ChessGame game, MoveRequest request) {
+    GameResponse movePiece(ChessGame game, MoveRequest request) {
         GamePiecesDto dto = getGamePiecesDto(game);
         Piece piece = getPiece(game, request.getStart());
         piece.move(request.getEnd());
@@ -79,8 +78,10 @@ public class ChessGameService {
         game.setCheck(false);
         Optional<Piece> potentialFoe = potentialPiece(game.getFoesPieces(), request.getEnd());
         potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));
+        
+        Optional.ofNullable(request.getSpecialMove()).ifPresent(s ->  performSpecialMove(game, request));
 
-//        boolean isPromotion = isPromotion(piece); //todo will incorporate via selectPieces
+//        boolean isPromotion = isPromotion(piece); //todo will incorporate via selectPieces and choose with MoveRequest
 //        if (isPromotion) {
 //            return new PromotionResponse(game, request);
 //        }
@@ -90,11 +91,37 @@ public class ChessGameService {
                 return checkMate(game);
             }
         }
+        moveMessageService.addMove(game, piece.getType().name, request, potentialFoe);
+        return endTurn(game);
+    }
 
-        moveMessageService.updateMoveMessage(game, piece.getType().name, request, potentialFoe);
-        game.setWhitesTurn(!game.isWhitesTurn());
-        repository.save(game);
-        return getGameResponse(game);
+    private void performSpecialMove(ChessGame game, MoveRequest request) {
+        switch (request.getSpecialMove()) {
+            case Castle:
+                performCastle(request);
+                break;
+            case Passant:
+                performPassant(game, request);
+                break;
+            case Promotion:
+                performPromotion(game, request);
+        }
+    }
+
+    private void performPassant(ChessGame game, MoveRequest request) {
+        int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
+        Piece foe = getPiece(game, enemyLocation);
+        game.getFoesPieces().remove(foe);
+    }
+
+    private void performCastle(MoveRequest request) {
+    }
+
+    public void performPromotion(ChessGame game, MoveRequest request) {
+        List<Piece> pieces = game.getCurrentTeam();
+        Pawn piece = (Pawn) getPiece(pieces, request.getEnd()); //todo pass in piece?
+        pieces.remove(piece);
+        pieces.add(new PieceFactory(piece.getTeam(), request.getEnd(), request.getPromotionType()).getInstance());
     }
 
     private boolean isPromotion(Piece piece) {
@@ -119,7 +146,7 @@ public class ChessGameService {
         pieces.remove(piece);
         pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
 //        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
-        return getGameResponse(game);
+        return endTurn(game);
     }
 
     public GameResponse requestDraw(long id) {
@@ -139,8 +166,8 @@ public class ChessGameService {
         return repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 
-    private GameResponse getGameResponse(ChessGame game) {
-        //todo
+    private GameResponse endTurn(ChessGame game) {
+        repository.save(game.changeTurn());
         return new GameResponse(game);
     }
     private GameResponse checkMate(ChessGame game) {
