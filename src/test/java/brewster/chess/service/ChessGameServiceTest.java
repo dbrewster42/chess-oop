@@ -24,9 +24,10 @@ import static org.mockito.Mockito.when;
 
 class ChessGameServiceTest {
     private final GameRepository repository = mock(GameRepository.class);
+    private final SpecialMovesService specialMovesService = mock(SpecialMovesService.class);
     private final UserService userService = mock(UserService.class);
 
-    private final ChessGameService sut = new ChessGameService(repository, new CheckService(), userService, new MoveMessageService());
+    private final ChessGameService sut = new ChessGameService(repository, new CheckService(), specialMovesService, userService, new MoveMessageService());
     private ChessGame game;
 
     @BeforeEach

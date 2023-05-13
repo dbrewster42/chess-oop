@@ -5,6 +5,7 @@ import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
+import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.PieceFactory;
@@ -13,8 +14,11 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
+import brewster.chess.model.response.PieceMovesResponse;
+import brewster.chess.model.response.ValidMovesResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.model.GamePiecesDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,15 +28,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ChessGameService {
     private final GameRepository repository;
     private final CheckService checkService;
+    private final SpecialMovesService specialMovesService;
     private final UserService userService;
     private final MoveMessageService moveMessageService;
 
-    public ChessGameService(GameRepository repository, CheckService checkService, UserService userService, MoveMessageService moveMessageService) {
+    public ChessGameService(GameRepository repository, CheckService checkService, SpecialMovesService specialMovesService, UserService userService, MoveMessageService moveMessageService) {
         this.repository = repository;
         this.checkService = checkService;
+        this.specialMovesService = specialMovesService;
         this.userService = userService;
         this.moveMessageService = moveMessageService;
     }
@@ -41,20 +48,24 @@ public class ChessGameService {
         return new NewGameResponse(repository.save(new ChessGame(user1, user2)));
     }
 
-    public Map<Integer, List<Integer>> getAllMoves(long id) {
+    public ValidMovesResponse getAllMoves(long id) {
         ChessGame game = findGame(id);
-        Map<Integer, List<Integer>> allMoves = new HashMap<>();
+        Map<Integer, PieceMovesResponse> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
-            List<Integer> pieceMoves = getLegalMoves(game, piece.getLocation());
-            //todo add special Moves
-            if (!pieceMoves.isEmpty()) {
+            List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
+            //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
+            if (!standardMoves.isEmpty()) {
+                //todo castle + promotion
+                PieceMovesResponse pieceMoves = new PieceMovesResponse(standardMoves);
                 allMoves.put(piece.getLocation(), pieceMoves);
             }
         }
-        return allMoves;
+        return new ValidMovesResponse(allMoves, Type.promotionChoices());
+        //todo return promotion choices at beginning of game?
+        // or make conditional on there being a Promotion?
     }
     private List<Integer> getLegalMoves(ChessGame game, int position) {
-        return getPiece(game, position)
+        return game.getOwnPiece(position)
             .calculateLegalMoves(game.getAllOccupiedSquares(), game.getFoesPieces())
             .stream()
             .map(Square::intValue)
@@ -66,7 +77,7 @@ public class ChessGameService {
 
     public GameResponse movePiece(long id, MoveRequest request) {
         ChessGame game = findGameWithMoves(id);
-        Piece piece = getPiece(game, request.getStart());
+        Piece piece = game.getOwnPiece(request.getStart());
         piece.move(request.getEnd());
         GamePiecesDto dto = getGamePiecesDto(game);
 
@@ -76,11 +87,12 @@ public class ChessGameService {
         }
         game.setCheck(false);
 
-        Optional<Piece> potentialFoe = potentialPiece(game.getFoesPieces(), request.getEnd());
+        Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
         potentialFoe
             .ifPresent(foe -> game.getFoesPieces().remove(foe));
+        //todo pass moveMessage the specialMove
         Optional.ofNullable(request.getSpecialMove())
-            .ifPresent(s ->  performSpecialMove(game, request));
+            .ifPresent(s ->  specialMovesService.performSpecialMove(game, request));
 
         if (checkService.didCheck(dto)){
             game.setCheck(true);
@@ -93,43 +105,6 @@ public class ChessGameService {
     }
 
 
-    private void performSpecialMove(ChessGame game, MoveRequest request) { //todo error handling?
-        switch (request.getSpecialMove()) {
-            case Castle:
-                performCastle(game, request);
-                break;
-            case Passant:
-                performPassant(game, request);
-                break;
-            case Promotion:
-                performPromotion(game, request);
-        }
-    }
-
-    private void performPassant(ChessGame game, MoveRequest request) {
-        int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
-        Piece foe = getPiece(game, enemyLocation);
-        game.getFoesPieces().remove(foe);
-    }
-
-    private void performCastle(ChessGame game, MoveRequest request) {
-        int x = request.getEnd() / 10;
-        int y = request.getEnd() % 10;
-        if (x == 3) {
-            Piece rook = getPiece(game, 10 + y);
-            rook.move(4, y);
-        } else if (x == 7)  {
-            Piece rook = getPiece(game, 80 + y);
-            rook.move(6, y);
-        }
-    }
-
-    public void performPromotion(ChessGame game, MoveRequest request) {
-        List<Piece> pieces = game.getCurrentTeam();
-        Pawn piece = (Pawn) getPiece(pieces, request.getEnd());
-        pieces.remove(piece);
-        pieces.add(new PieceFactory(piece.getTeam(), request.getEnd(), request.getPromotionType()).getInstance());
-    }
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
@@ -177,20 +152,16 @@ public class ChessGameService {
         repository.delete(game);
     }
 
-    private Piece getPiece(ChessGame game, int position) {
-        return getPiece(game.getCurrentTeam(), position);
-    }
-    private Piece getPiece(List<Piece> pieces, int position) {
-        return pieces.stream()
-            .filter(piece -> piece.isAtPosition(position))
-            .findAny().orElseThrow(PieceNotFound::new);
-    }
-
-    private Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
-        return pieces.stream()
-            .filter(piece -> piece.isAtPosition(position))
-            .findAny();
-    }
+//    private Piece getPiece(List<Piece> pieces, int position) {
+//        return pieces.stream()
+//            .filter(piece -> piece.isAtPosition(position))
+//            .findAny().orElseThrow(PieceNotFound::new);
+//    }
+//    private Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
+//        return pieces.stream()
+//            .filter(piece -> piece.isAtPosition(position))
+//            .findAny();
+//    }
 
 
     private boolean isPromotion(Piece piece) {
@@ -200,15 +171,15 @@ public class ChessGameService {
         return false;
     }
 
-    public GameResponse implementPromotion(long id, PromotionRequest request) {
-        ChessGame game = findGame(id);
-        List<Piece> pieces = game.getCurrentTeam();
-        Piece piece = getPiece(pieces, request.getOldPosition());
-        pieces.remove(piece);
-        pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
-//        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
-        return endTurn(game);
-    }
+//    public GameResponse implementPromotion(long id, PromotionRequest request) {
+//        ChessGame game = findGame(id);
+//        List<Piece> pieces = game.getCurrentTeam();
+//        Piece piece = getPiece(pieces, request.getOldPosition());
+//        pieces.remove(piece);
+//        pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
+////        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
+//        return endTurn(game);
+//    }
 
 //    public List<Piece> getFoesPieces(ChessGame game){
 //        return getOpponent(game).getPieces();

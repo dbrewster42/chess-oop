@@ -1,5 +1,6 @@
 package brewster.chess.model;
 
+import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,6 +51,19 @@ public class ChessGame {
     public ChessGame changeTurn() {
         this.isWhitesTurn = !isWhitesTurn;
         return this;
+    }
+
+    public Piece getOwnPiece(int position) {
+        return potentialPiece(getCurrentTeam(), position).orElseThrow(PieceNotFound::new);
+    }
+    public Optional<Piece> getPotentialFoe(int position) {
+        return potentialPiece(getFoesPieces(), position);
+    }
+
+    private Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
+        return pieces.stream()
+            .filter(piece -> piece.isAtPosition(position))
+            .findAny();
     }
 
     public List<Piece> getAllPieces(){
