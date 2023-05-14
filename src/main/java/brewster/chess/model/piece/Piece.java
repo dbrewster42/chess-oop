@@ -17,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "Type")
+//@DiscriminatorColumn(name = "Type")
 @Data
 @NoArgsConstructor
 public abstract class Piece {
@@ -38,16 +38,20 @@ public abstract class Piece {
         this.type = type;
     }
 
-    public boolean isOccupied(int x, int y, List<Square> squares) {
-        return squares.contains(new Square(x, y));
+    public int getLocation() {
+        return square.intValue();
     }
 
-    public boolean isOpponent(List<Piece> foes, int x, int y) {
-        return foes.stream().anyMatch(p -> p.isAtPosition(x, y));
+    public Square getSquare() {
+        return square;
     }
 
-    public boolean isOnBoard(int x, int y) {
-        return x > 0 && x < 9 && y > 0 && y < 9;
+    public Team getTeam() {
+        return team;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public void move(int newPosition) {
@@ -66,20 +70,16 @@ public abstract class Piece {
         return square.x == x && square.y == y;
     }
 
-    public int getLocation() {
-        return square.intValue();
+    public boolean isOccupied(int x, int y, List<Square> squares) {
+        return squares.contains(new Square(x, y));
     }
 
-    public Square getSquare() {
-        return square;
+    public boolean isOpponent(List<Piece> foes, int x, int y) {
+        return foes.stream().anyMatch(p -> p.isAtPosition(x, y));
     }
 
-    public Team getTeam() {
-        return team;
-    }
-
-    public Type getType() {
-        return type;
+    public boolean isOnBoard(int x, int y) {
+        return x > 0 && x < 9 && y > 0 && y < 9;
     }
 
     List<Square> addDiagonalMoves(List<Square> allSquares, List<Piece> foes) {

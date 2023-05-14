@@ -1,17 +1,28 @@
 package brewster.chess.model.response;
 
-import brewster.chess.model.constant.SpecialMove;
-import lombok.Data;
+import brewster.chess.model.constant.Type;
+import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
-@Data
-public class PieceMovesResponse {
-    private List<Integer> validMoves;
-    private Map<Integer, SpecialMove> specialMoves;
-//    private Map<SpecialMove, List<Integer>> specialMoves;
-    public PieceMovesResponse(List<Integer> validMoves) {
+@Getter
+public class PieceMoves {
+    private final List<Integer> validMoves;
+//    private Map<Integer, SpecialMove> specialMoves;
+    private List<Integer> specialMoves;
+
+    private boolean isPromotion = false;
+    private List<Type> promotionOptions;
+
+    public PieceMoves(List<Integer> validMoves) {
         this.validMoves = validMoves;
+    }
+
+    public void addSpecialMoves(List<Integer> specialMoves) {
+        this.specialMoves = specialMoves;
+    }
+    public void addPromotionOptions() {
+        this.isPromotion = true;
+        this.promotionOptions = Type.promotionChoices();
     }
 }

@@ -7,6 +7,7 @@ import brewster.chess.model.request.NewGameRequest;
 import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
+import brewster.chess.model.response.PieceMoves;
 import brewster.chess.model.response.ValidMovesResponse;
 import brewster.chess.service.ChessGameService;
 import brewster.chess.service.UserService;
@@ -56,8 +57,13 @@ public class ChessController {
         log.info("selecting piece - {}", position);
         return gameService.getLegalMoves(id, position);
     }
+//    @GetMapping("/{id}/validMoves")
+//    public ValidMovesResponse getLegalMoves(@PathVariable long id){
+//        log.info("fetching all legal moves");
+//        return gameService.getAllMoves(id);
+//    }
     @GetMapping("/{id}/validMoves")
-    public ValidMovesResponse getLegalMoves(@PathVariable long id){
+    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
         log.info("fetching all legal moves");
         return gameService.getAllMoves(id);
     }

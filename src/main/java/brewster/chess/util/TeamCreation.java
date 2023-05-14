@@ -12,7 +12,6 @@ import brewster.chess.model.piece.Rook;
 import java.util.ArrayList;
 import java.util.List;
 
-import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Team.WHITE;
 
 public class TeamCreation {

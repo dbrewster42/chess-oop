@@ -4,6 +4,7 @@ import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
+import brewster.chess.model.response.PieceMoves;
 import brewster.chess.model.response.StatusResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 
 import static brewster.chess.mother.RequestMother.getNewGameRequest;
 import static brewster.chess.mother.RequestMother.getUserRequest;
@@ -60,13 +62,17 @@ class IntegrationTest {
     @Test
     @Order(3)
     void getLegalMoves(){
-        assertThat(sut.getLegalMoves(id).values().size()).isEqualTo(10);
-        List<Integer> allMoves = sut.getLegalMoves(id).values().stream()
+        Map<Integer, PieceMoves> allMoves = sut.getAllMoves(id);
+
+        assertThat(allMoves.size()).isEqualTo(10);
+        int allMovesCount = allMoves.values()
+            .stream().map(PieceMoves::getValidMoves)
             .reduce((a, b) -> {
                 a.addAll(b);
                 return a;
-            }).orElseThrow();
-        assertThat(allMoves.size()).isEqualTo(20);
+            }).orElseThrow()
+            .size();
+        assertThat(allMovesCount).isEqualTo(20);
     }
 
     @Test
@@ -108,16 +114,21 @@ class IntegrationTest {
         assertThat(status.isCheck()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(31);
         assertThat(response.getMoves())
-            .containsExactly("rainmaker has moved his Pawn from E2 to E4",
-                "Bobby has moved his Pawn from D7 to D5",
-                "rainmaker has moved his Bishop from F1 to A6",
-                "Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP",
-                "rainmaker has moved his Queen from D1 to F3");
-//        assertThat(response.getMoves()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
-//                "2. Bobby has moved his Pawn from D7 to D5\n" +
-//                "3. rainmaker has moved his Bishop from F1 to A6\n" +
-//                "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
-//                "5. rainmaker has moved his Queen from D1 to F3\n");
+            .containsExactly("rainmaker has moved his PAWN from E2 to E4",
+                "Bobby has moved his PAWN from D7 to D5",
+                "rainmaker has moved his BISHOP from F1 to A6",
+                "Bobby has moved his PAWN from G7 to A6 and has captured a BISHOP",
+                "rainmaker has moved his QUEEN from D1 to F3");
+//            .containsExactly("rainmaker has moved his Pawn from E2 to E4",
+//                "Bobby has moved his Pawn from D7 to D5",
+//                "rainmaker has moved his Bishop from F1 to A6",
+//                "Bobby has moved his Pawn from G7 to A6 and has captured a Bishop",
+//                "rainmaker has moved his Queen from D1 to F3");
+////        assertThat(response.getMoves()).isEqualTo("1. rainmaker has moved his Pawn from E2 to E4\n" +
+////                "2. Bobby has moved his Pawn from D7 to D5\n" +
+////                "3. rainmaker has moved his Bishop from F1 to A6\n" +
+////                "4. Bobby has moved his Pawn from G7 to A6 and has captured a BISHOP\n" +
+////                "5. rainmaker has moved his Queen from D1 to F3\n");
     }
 
     private MoveRequest getMoveRequest(int start, int end){

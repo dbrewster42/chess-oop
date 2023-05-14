@@ -1,6 +1,7 @@
 package brewster.chess.service;
 
 import brewster.chess.model.ChessGame;
+import brewster.chess.model.constant.SpecialMove;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.request.MoveRequest;
@@ -9,11 +10,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class MoveMessageService {
+public class MoveMessageService { //todo make moveService with Move?
     private static final String COLUMNS = " ABCDEFGH";
 
     public void addMove(ChessGame game, Type type, MoveRequest request, Optional<Piece> potentialFoe){
         StringBuilder message = standardMessage(game, type, request);
+        Optional<SpecialMove> potentialSpecialMove = Optional.ofNullable(request.getSpecialMove());
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
         if (game.isCheck()) { message.append(" - CHECK!"); }
         game.getMoves().add(message.toString());
@@ -24,6 +26,10 @@ public class MoveMessageService {
         return new StringBuilder(game.getCurrentPlayerName() + " has moved his " + type + pieceMovement(request));
 //        return new StringBuilder(game.getCurrentPlayerName()).append(" has moved his ").append(pieceName).append(getPieceMovement(request));
     }
+//    private StringBuilder specialOptions(StringBuilder message, ChessGame game, Optional<Piece> potentialFoe) {
+//        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
+//        if (game.isCheck()) { message.append(" - CHECK!"); }
+//    }
 
     private String pieceMovement(MoveRequest request) {
         return squareName(" from ", request.getStart()) + squareName(" to ", request.getEnd());

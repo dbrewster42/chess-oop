@@ -19,13 +19,6 @@ public class PieceFactory implements Factory<Piece> {
         this.type = type;
     }
 
-    public PieceFactory(Team team, int x, int y, Type type) {
-        this.team = team;
-        this.x = x;
-        this.y = y;
-        this.type = type;
-    }
-
     @Override
     public Piece getInstance() {
         switch (type) {
@@ -39,7 +32,6 @@ public class PieceFactory implements Factory<Piece> {
                 return new Knight(team, x, y);
             default:
                 throw new PieceNotFound();
-// todo include pawn or king?  // return new Pawn(team, x, y);
         }
     }
 

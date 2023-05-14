@@ -2,19 +2,16 @@ package brewster.chess.service;
 
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
-import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
-import brewster.chess.model.piece.PieceFactory;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
-import brewster.chess.model.request.PromotionRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
-import brewster.chess.model.response.PieceMovesResponse;
+import brewster.chess.model.response.PieceMoves;
 import brewster.chess.model.response.ValidMovesResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.model.GamePiecesDto;
@@ -48,21 +45,19 @@ public class ChessGameService {
         return new NewGameResponse(repository.save(new ChessGame(user1, user2)));
     }
 
-    public ValidMovesResponse getAllMoves(long id) {
+    public  Map<Integer, PieceMoves> getAllMoves(long id) {
         ChessGame game = findGame(id);
-        Map<Integer, PieceMovesResponse> allMoves = new HashMap<>();
+        Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
             List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
             if (!standardMoves.isEmpty()) {
                 //todo castle + promotion
-                PieceMovesResponse pieceMoves = new PieceMovesResponse(standardMoves);
+                PieceMoves pieceMoves = new PieceMoves(standardMoves);
                 allMoves.put(piece.getLocation(), pieceMoves);
             }
         }
-        return new ValidMovesResponse(allMoves, Type.promotionChoices());
-        //todo return promotion choices at beginning of game?
-        // or make conditional on there being a Promotion?
+        return allMoves;
     }
     private List<Integer> getLegalMoves(ChessGame game, int position) {
         return game.getOwnPiece(position)
