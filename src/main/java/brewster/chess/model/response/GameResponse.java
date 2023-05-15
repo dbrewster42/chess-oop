@@ -13,12 +13,14 @@ public class GameResponse {
     private StatusResponse status;
     private List<String> moves;
     private Map<Integer, String> pieces;
+    private Map<Integer, PieceMoves> allMoves;
 
 
-    public GameResponse(ChessGame game) {
+    public GameResponse(ChessGame game, Map<Integer, PieceMoves> allMoves) {
         this.moves = game.getMoves();
         this.pieces = convertPiecesToResponse(game);
         this.status = new StatusResponse(game);
+        this.allMoves = allMoves;
     }
 
     public GameResponse(String player1, String player2) {

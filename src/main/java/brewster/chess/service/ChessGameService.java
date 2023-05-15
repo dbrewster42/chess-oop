@@ -4,7 +4,6 @@ import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
-import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
@@ -12,7 +11,6 @@ import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.model.response.PieceMoves;
-import brewster.chess.model.response.ValidMovesResponse;
 import brewster.chess.repository.GameRepository;
 import brewster.chess.service.model.GamePiecesDto;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +44,9 @@ public class ChessGameService {
     }
 
     public  Map<Integer, PieceMoves> getAllMoves(long id) {
-        ChessGame game = findGame(id);
+        return getAllMoves(findGame(id));
+    }
+    private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
             List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
@@ -100,7 +100,6 @@ public class ChessGameService {
     }
 
 
-
     private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
             .occupiedSquares(game.getAllOccupiedSquares())
@@ -128,7 +127,7 @@ public class ChessGameService {
 
     private GameResponse endTurn(ChessGame game) {
         repository.save(game.changeTurn());
-        return new GameResponse(game);
+        return new GameResponse(game, getAllMoves(game));
     }
     private GameResponse checkMate(ChessGame game) {
         User winner = game.getCurrentPlayer().getUser().addWin();
@@ -146,73 +145,5 @@ public class ChessGameService {
         userService.save(player2);
         repository.delete(game);
     }
-
-//    private Piece getPiece(List<Piece> pieces, int position) {
-//        return pieces.stream()
-//            .filter(piece -> piece.isAtPosition(position))
-//            .findAny().orElseThrow(PieceNotFound::new);
-//    }
-//    private Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
-//        return pieces.stream()
-//            .filter(piece -> piece.isAtPosition(position))
-//            .findAny();
-//    }
-
-
-    private boolean isPromotion(Piece piece) {
-        if (piece instanceof Pawn) {
-            return piece.getSquare().y == 1 || piece.getSquare().y == 8;
-        }
-        return false;
-    }
-
-//    public GameResponse implementPromotion(long id, PromotionRequest request) {
-//        ChessGame game = findGame(id);
-//        List<Piece> pieces = game.getCurrentTeam();
-//        Piece piece = getPiece(pieces, request.getOldPosition());
-//        pieces.remove(piece);
-//        pieces.add(new PieceFactory(piece.getTeam(), request.getNewPosition(), request.getType()).getInstance());
-////        pieces.add(new Queen(piece.getTeam(), request.getNewPosition() / 10, request.getNewPosition() % 10));
-//        return endTurn(game);
-//    }
-
-//    public List<Piece> getFoesPieces(ChessGame game){
-//        return getOpponent(game).getPieces();
-//    }
-//    public List<Piece> getCurrentTeam(ChessGame game){
-//        return getCurrentPlayer(game).getPieces();
-//    }
-//    public Player getCurrentPlayer(ChessGame game){
-//        return game.isWhitesTurn() ? game.getWhitePlayer() : game.getBlackPlayer();
-//    }
-//    public Player getOpponent(ChessGame game){
-//        return game.isWhitesTurn() ? game.getBlackPlayer() : game.getWhitePlayer();
-//    }
-//
-//    public List<Square> getAllSquares(ChessGame game){
-//        return game.getAllPieces().stream()
-//                .map(Piece::getSquare)
-//                .collect(Collectors.toList());
-//    }
-////    public List<Spot> convertToSpots(Player player){
-////        return player.getPieces().stream().map(Piece::getSpot).collect(Collectors.toList());
-////    }
-////    public boolean isOccupied(Game game, int location){
-////        return getAllPieces(game).anyMatch(piece -> piece.isAtPosition(location));
-////    }
-
-
-
-//    void removeFoeIfCaptured(ChessGame game, int end) {
-//        getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny()
-//                .ifPresent(foe -> getFoesPieces(game).remove(foe));
-//    }
-//
-//    private boolean isAttack(ChessGame game, int end) {
-//        return getFoesPieces(game).stream().anyMatch(p -> p.isAtPosition(end));
-//    }
-//    private Optional<Piece> isFoeCaptured(ChessGame game, int end) {
-//        return getFoesPieces(game).stream().filter(p -> p.isAtPosition(end)).findAny();
-//    }
 
 }

@@ -18,15 +18,6 @@ public class Pawn extends Piece {
         super(team, x, y, PAWN);
     }
 
-//    @Override
-//    public void move(int newSpot) {
-//        int x = newSpot / 10;
-//        int y = newSpot % 10;
-////        if (y == 1 || y == 8){
-////            throw new Promotion(spot, x, y);
-////        }
-//        spot.move(newSpot);
-//    }
 
     @Override
     public List<Square> calculateLegalMoves(List<Square> squares, List<Piece> foes) {
@@ -43,8 +34,7 @@ public class Pawn extends Piece {
                 }
             }
         }
-        addIfAttackPossible(legalMoves, squares, foes, x - 1, y);
-        addIfAttackPossible(legalMoves, squares, foes, x + 1, y);
+        addValidAttacks(legalMoves, squares, foes, x, y);
 
         return legalMoves;
     }
@@ -62,11 +52,13 @@ public class Pawn extends Piece {
         return (direction == 1 && getSquare().y == 2) || (direction == -1 && getSquare().y == 7);
     }
 
-    private void addIfAttackPossible(List<Square> moves, List<Square> squares, List<Piece> foes, int x, int y){
+    private void addValidAttacks(List<Square> moves, List<Square> squares, List<Piece> foes, int x, int y){
+        addAttackIfValid(moves, squares, foes, x - 1, y);
+        addAttackIfValid(moves, squares, foes, x + 1, y);
+    }
+    private void addAttackIfValid(List<Square> moves, List<Square> squares, List<Piece> foes, int x, int y){
         if (isOccupied(x, y, squares) && isOpponent(foes, x, y)){
             moves.add(new Square(x, y));
         }
     }
-
-
 }
