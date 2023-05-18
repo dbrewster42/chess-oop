@@ -5,23 +5,22 @@ import lombok.Data;
 
 import java.util.Map;
 
-import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
-
 @Data
 public class NewGameResponse {
     private long id;
-    private StatusResponse status;
+//    private StatusResponse status;
     private String whitePlayer;
     private String blackPlayer;
-    private Map<Integer, String> pieces;
+//    private Map<Integer, String> pieces;
+    private Map<Integer, PieceMoves> allMoves;
 
 
-    public NewGameResponse(ChessGame game){
+    public NewGameResponse(ChessGame game, Map<Integer, PieceMoves> allMoves){
         this.id = game.getId();
-        this.status = new StatusResponse(game);
+//        this.status = new StatusResponse(game);
         this.whitePlayer = game.getWhitePlayer().getName();
         this.blackPlayer = game.getBlackPlayer().getName();
-        this.pieces = convertPiecesToResponse(game);
+        this.allMoves = allMoves;
     }
 
 }

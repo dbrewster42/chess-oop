@@ -50,16 +50,20 @@ public class ChessController {
         return gameService.startGame(user1, user2);
     }
 
-    @GetMapping("/{id}/{position}")
-    public List<Integer> selectPiece(@PathVariable long id, @PathVariable int position){
-        log.info("selecting piece - {}", position);
-        return gameService.getLegalMoves(id, position);
-    }
-
-    @GetMapping("/{id}")
-    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
+//    @GetMapping("/{id}/{position}")
+//    public List<Integer> selectPiece(@PathVariable long id, @PathVariable int position){
+//        log.info("selecting piece - {}", position);
+//        return gameService.getLegalMoves(id, position);
+//    }
+//    @GetMapping("/{id}")
+//    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
+//        log.info("fetching all legal moves");
+//        return gameService.getAllMoves(id);
+//    }
+        @GetMapping("/{id}")
+    public Map<Integer, String> getPieces(@PathVariable long id){
         log.info("fetching all legal moves");
-        return gameService.getAllMoves(id);
+        return gameService.getPieces(id);
     }
 
     @PostMapping("/{id}")

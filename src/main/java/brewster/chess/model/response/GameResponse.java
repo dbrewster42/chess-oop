@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-import static brewster.chess.util.ImageMatch.convertPiecesToResponse;
+import static brewster.chess.util.ImageMatch.getPiecesMap;
 
 @Data
 public class GameResponse {
@@ -18,7 +18,7 @@ public class GameResponse {
 
     public GameResponse(ChessGame game, Map<Integer, PieceMoves> allMoves) {
         this.moves = game.getMoves();
-        this.pieces = convertPiecesToResponse(game);
+        this.pieces = getPiecesMap(game);
         this.status = new StatusResponse(game);
         this.allMoves = allMoves;
     }

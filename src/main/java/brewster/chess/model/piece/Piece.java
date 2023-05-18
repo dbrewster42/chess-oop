@@ -131,7 +131,7 @@ public abstract class Piece {
             x += xDirection;
             y += yDirection;
         }
-        throw new RuntimeException("isMoveUnblocked() should not have been called because Spot cannot be reached");
+        throw new RuntimeException("isMoveUnblocked() should not have been called because Square cannot be reached");
     }
 
     boolean isOnDiagonalLine(Square destination, List<Square> allSquares) {

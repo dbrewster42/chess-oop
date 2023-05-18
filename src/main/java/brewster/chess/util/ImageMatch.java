@@ -8,18 +8,18 @@ import java.util.Map;
 
 public class ImageMatch {
 
-    public static Map<Integer, String> convertPiecesToResponse(ChessGame game){
-        Map<Integer, String> spotAndPicture = new HashMap<>();
+    public static Map<Integer, String> getPiecesMap(ChessGame game){
+        Map<Integer, String> pieces = new HashMap<>();
         for (Piece piece : game.getWhitePlayer().getPieces()){
-            spotAndPicture.put(piece.getLocation(), convertToImage(piece, 'w'));
+            pieces.put(piece.getLocation(), convertToImage('w', piece));
         }
         for (Piece piece : game.getBlackPlayer().getPieces()){
-            spotAndPicture.put(piece.getLocation(), convertToImage(piece, 'b'));
+            pieces.put(piece.getLocation(), convertToImage('b', piece));
         }
-        return spotAndPicture;
+        return pieces;
     }
 
-    private static String convertToImage(Piece piece, char prefix){
+    private static String convertToImage(char prefix, Piece piece){
         return prefix + piece.getType().name.toLowerCase() + ".svg.png";
     }
 }

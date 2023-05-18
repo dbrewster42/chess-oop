@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static brewster.chess.util.ImageMatch.getPiecesMap;
+
 @Service
 @Slf4j
 public class ChessGameService {
@@ -40,11 +42,16 @@ public class ChessGameService {
     }
 
     public NewGameResponse startGame(User user1, User user2) {
-        return new NewGameResponse(repository.save(new ChessGame(user1, user2)));
+        ChessGame newGame = repository.save(new ChessGame(user1, user2));
+        return new NewGameResponse(newGame, getAllMoves(newGame));
     }
 
-    public  Map<Integer, PieceMoves> getAllMoves(long id) {
-        return getAllMoves(findGame(id));
+//    public Map<Integer, PieceMoves> getAllMoves(long id) {
+//        return getAllMoves(findGame(id));
+//    }
+    public Map<Integer, String> getPieces(long id) {
+        ChessGame game = findGame(id);
+        return getPiecesMap(game);
     }
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
@@ -57,6 +64,7 @@ public class ChessGameService {
                 allMoves.put(piece.getLocation(), pieceMoves);
             }
         }
+        log.info("all moves - {}", allMoves);
         return allMoves;
     }
     private List<Integer> getLegalMoves(ChessGame game, int position) {
