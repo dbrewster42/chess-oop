@@ -1,14 +1,14 @@
 package brewster.chess.mother;
 
 import brewster.chess.model.constant.Team;
-import brewster.chess.piece.King;
-import brewster.chess.piece.Knight;
-import brewster.chess.piece.Pawn;
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.Queen;
+import brewster.chess.model.piece.King;
+import brewster.chess.model.piece.Knight;
+import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Queen;
+import brewster.chess.model.piece.Square;
 import brewster.chess.service.model.GamePiecesDto;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,8 @@ import static brewster.chess.model.constant.Team.WHITE;
 
 public class PieceMother {
 
-    public static List<Point> getSpotsForGivenPieces(List<Piece> friends, List<Piece> foes){
-        return Stream.concat(friends.stream(), foes.stream()).map(Piece::getSpot).collect(Collectors.toList());
+    public static List<Square> getSpotsForGivenPieces(List<Piece> friends, List<Piece> foes){
+        return Stream.concat(friends.stream(), foes.stream()).map(Piece::getSquare).collect(Collectors.toList());
     }
 
     public static List<Piece> getAllPieces() {
@@ -37,39 +37,45 @@ public class PieceMother {
 
     public static GamePiecesDto adjustDto(GamePiecesDto dto, Piece newFriend) {
         dto.getFriends().add(newFriend);
-        dto.getSpots().add(newFriend.getSpot());
+        dto.getOccupiedSquares().add(newFriend.getSquare());
         return dto;
     }
 
     public static GamePiecesDto createKingQueenDto() {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getWhiteQueen()));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8), getQueen(BLACK, 8, 6)));
-        List<Point> spots = getSpotsForGivenPieces(friends, foes);
-        return new GamePiecesDto(spots, friends, foes);
+        return GamePiecesDto.builder()
+            .occupiedSquares(getSpotsForGivenPieces(friends, foes))
+            .friends(friends)
+            .foes(foes)
+            .build();
 
     }
 
     public static GamePiecesDto createStalemateDto() {
         List<Piece> friends = new ArrayList<>(Arrays.asList(getKing(BLACK, 7, 8)));
         List<Piece> foes = new ArrayList<>(Arrays.asList(getKing(WHITE, 5, 7), getQueen(WHITE, 8, 6)));
-        List<Point> spots = getSpotsForGivenPieces(friends, foes);
-        return new GamePiecesDto(spots, friends, foes);
+        return GamePiecesDto.builder()
+            .occupiedSquares(getSpotsForGivenPieces(friends, foes))
+            .friends(friends)
+            .foes(foes)
+            .build();
     }
 
     public static List<Piece> getFoes(){
         return Stream.of(getBlackKing(), getBlackPawn(), getBlackQueen()).collect(Collectors.toList());
     }
 
-    public static List<Point> getSpotsForKing(){
-        return Stream.of(new Point(5, 8), new Point(8, 2), new Point(8, 7)).collect(Collectors.toList());
+    public static List<Square> getSpotsForKing(){
+        return Stream.of(new Square(5, 8), new Square(8, 2), new Square(8, 7)).collect(Collectors.toList());
     }
 
-    public static List<Point> getSpots2(){
-        return Stream.of(new Point(4, 1), new Point(5, 1), new Point(5, 8), new Point(8, 2), new Point(8, 7), new Point(4, 8)).collect(Collectors.toList());
+    public static List<Square> getSpots2(){
+        return Stream.of(new Square(4, 1), new Square(5, 1), new Square(5, 8), new Square(8, 2), new Square(8, 7), new Square(4, 8)).collect(Collectors.toList());
     }
 
-    public static List<Point> getSpots3(){
-        return Stream.of(new Point(4, 1), new Point(5, 1), new Point(5, 8), new Point(5, 2), new Point(5, 7), new Point(4, 8)).collect(Collectors.toList());
+    public static List<Square> getSpots3(){
+        return Stream.of(new Square(4, 1), new Square(5, 1), new Square(5, 8), new Square(5, 2), new Square(5, 7), new Square(4, 8)).collect(Collectors.toList());
     }
 
     public static Piece getWhiteKing(){

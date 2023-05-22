@@ -1,16 +1,17 @@
 package brewster.chess.service.model;
 
-import brewster.chess.piece.Piece;
-import lombok.AllArgsConstructor;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Square;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.awt.Point;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class GamePiecesDto {
-    private final List<Point> spots;
+    private final List<Square> occupiedSquares;
     private final List<Piece> friends;
     private final List<Piece> foes;
 }
+

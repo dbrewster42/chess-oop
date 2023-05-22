@@ -1,33 +1,28 @@
 package brewster.chess.util;
 
 import brewster.chess.model.constant.Team;
-import brewster.chess.piece.Bishop;
-import brewster.chess.piece.King;
-import brewster.chess.piece.Knight;
-import brewster.chess.piece.Pawn;
-import brewster.chess.piece.Piece;
-import brewster.chess.piece.Queen;
-import brewster.chess.piece.Rook;
+import brewster.chess.model.piece.Bishop;
+import brewster.chess.model.piece.King;
+import brewster.chess.model.piece.Knight;
+import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.piece.Piece;
+import brewster.chess.model.piece.Queen;
+import brewster.chess.model.piece.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static brewster.chess.model.constant.Team.BLACK;
 import static brewster.chess.model.constant.Team.WHITE;
 
 public class TeamCreation {
-    public static List<Piece> getNewTeam(boolean isWhite) {
-        int y = 8;
-        int pawnY = 7;
-        Team team = BLACK;
-        if (isWhite){
-            y = 1;
-            pawnY = 2;
-            team = WHITE;
+    public static List<Piece> generatePieces(Team team) {
+        if (team == WHITE){
+            return generatePieces(1, 2, team);
+        }  else {
+            return generatePieces(8, 7, team);
         }
-        return getNewTeam(y, pawnY, team);
     }
-    public static List<Piece> getNewTeam(int y, int pawnY, Team team) {
+    private static List<Piece> generatePieces(int y, int pawnY, Team team) {
         List<Piece> allPieces = new ArrayList<>();
 
         allPieces.add(new King(team, 5, y));

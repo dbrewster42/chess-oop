@@ -1,8 +1,9 @@
 package brewster.chess.model.constant;
 
-import lombok.Getter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
 public enum Type {
 
     ROOK("Rook"),
@@ -12,8 +13,12 @@ public enum Type {
     QUEEN("Queen"),
     PAWN("Pawn");
 
-    private String name;
+    public final String name;
     Type(String name){
         this.name = name;
+    }
+
+    public static List<Type> promotionChoices() {
+        return Arrays.stream(Type.values()).filter(type -> PAWN != type).collect(Collectors.toList());
     }
 }

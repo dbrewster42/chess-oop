@@ -1,4 +1,4 @@
-package brewster.chess.piece;
+package brewster.chess.model.piece;
 
 import brewster.chess.Factory;
 import brewster.chess.exception.PieceNotFound;
@@ -19,41 +19,20 @@ public class PieceFactory implements Factory<Piece> {
         this.type = type;
     }
 
-    public PieceFactory(Team team, int x, int y, Type type) {
-        this.team = team;
-        this.x = x;
-        this.y = y;
-        this.type = type;
-    }
-
     @Override
     public Piece getInstance() {
-        Piece piece;
         switch (type) {
             case QUEEN:
-                piece = new Queen(team, x, y);
-                break;
+                return new Queen(team, x, y);
             case ROOK:
-                piece = new Rook(team, x, y);
-                break;
+                return new Rook(team, x, y);
             case BISHOP:
-                piece = new Bishop(team, x, y);
-                break;
+                return new Bishop(team, x, y);
             case KNIGHT:
-                piece = new Knight(team, x, y);
-                break;
+                return new Knight(team, x, y);
             default:
                 throw new PieceNotFound();
-// todo include pawn or king?  // piece = new Pawn(team, x, y);
         }
-        return piece;
     }
 
-//    public Piece getInstance(Piece piece){
-////        this.team = piece.getTeam();
-////        this.x = x;
-////        this.y = y;
-////        this.type = type;
-////    }
-//    }
 }

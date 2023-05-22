@@ -1,48 +1,34 @@
 package brewster.chess.model.response;
 
-import brewster.chess.model.Game;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.ChessGame;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
+
+import static brewster.chess.util.ImageMatch.getPiecesMap;
 
 @Data
 public class GameResponse {
-    private boolean active;
-    private boolean check;
-    private String message;
-//    private String playersName;
-    private boolean isWhite;
-    private List<Piece> whitePlayers;
-    private List<Piece> blackPlayers;
+    private StatusResponse status;
+    private List<String> moves;
+    private Map<Integer, String> pieces;
+    private Map<Integer, PieceMoves> allMoves;
 
-//    public GameResponse(String message, boolean isWhite, List<Piece> whitePlayers, List<Piece> blackPlayers) {
-//        this.message = message;
-//        this.isWhite = isWhite;
-//        this.whitePlayers = whitePlayers;
-//        this.blackPlayers = blackPlayers;
-//        this.active = true;
-//        this.check = false;
-//    }
-    public GameResponse(Game game, String message) {
-        this.message = message;
-        this.isWhite = game.isWhitesTurn();
-        this.whitePlayers = game.getPlayer1().getPieces();
-        this.blackPlayers = game.getPlayer2().getPieces();
-        this.check = game.isCheck();
-        this.active = true;
-    }
-    public GameResponse(String message, boolean isWhite, List<Piece> whitePlayers, List<Piece> blackPlayers, boolean isCheck) {
-        this.message = message;
-        this.isWhite = isWhite;
-        this.whitePlayers = whitePlayers;
-        this.blackPlayers = blackPlayers;
-        this.check = isCheck;
-        this.active = true;
+
+    public GameResponse(ChessGame game, Map<Integer, PieceMoves> allMoves) {
+        this.moves = game.getMoves();
+        this.pieces = getPiecesMap(game);
+        this.status = new StatusResponse(game);
+        this.allMoves = allMoves;
     }
 
-    public GameResponse(boolean active, String message) {
-        this.active = active;
-        this.message = message;
+    public GameResponse(String player1, String player2) {
+        this.status = new StatusResponse();
+        this.moves = List.of(player1 + " has checkmated " + player2 + "! " + player1 + " wins!");
+    }
+    public GameResponse() {
+        this.status = new StatusResponse();
+        this.moves = List.of("The game has ended in a draw");
     }
 }

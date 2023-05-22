@@ -1,34 +1,26 @@
 package brewster.chess.model.response;
 
-import brewster.chess.model.Game;
-import brewster.chess.model.Player;
-import brewster.chess.piece.Piece;
+import brewster.chess.model.ChessGame;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
 public class NewGameResponse {
     private long id;
-    private String whitePlayerName;
-    private String blackPlayerName;
-    private List<Piece> whitePlayers;
-    private List<Piece> blackPlayers;
+//    private StatusResponse status;
+    private String whitePlayer;
+    private String blackPlayer;
+//    private Map<Integer, String> pieces;
+    private Map<Integer, PieceMoves> allMoves;
 
-    public NewGameResponse(long id, Player whitePlayer, Player blackPlayer){
-        this.id = id;
-        this.whitePlayerName = whitePlayer.getName();
-        this.blackPlayerName = blackPlayer.getName();
-        this.whitePlayers = whitePlayer.getPieces();
-        this.blackPlayers = blackPlayer.getPieces();
-    }
 
-    public NewGameResponse(Game game, String whitePlayerName, String blackPlayerName){
+    public NewGameResponse(ChessGame game, Map<Integer, PieceMoves> allMoves){
         this.id = game.getId();
-//        this.whitePlayerName = game.getPlayer1().getUser().getName();
-        this.whitePlayerName = whitePlayerName;
-        this.blackPlayerName = blackPlayerName;
-        this.whitePlayers = game.getPlayer1().getPieces();
-        this.blackPlayers = game.getPlayer2().getPieces();
+//        this.status = new StatusResponse(game);
+        this.whitePlayer = game.getWhitePlayer().getName();
+        this.blackPlayer = game.getBlackPlayer().getName();
+        this.allMoves = allMoves;
     }
+
 }
