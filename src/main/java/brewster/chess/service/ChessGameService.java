@@ -81,19 +81,20 @@ public class ChessGameService {
     public GameResponse movePiece(long id, MoveRequest request) {
         ChessGame game = findGameWithMoves(id);
         Piece piece = game.getOwnPiece(request.getStart());
-        piece.move(request.getEnd());
         GamePiecesDto dto = getGamePiecesDto(game);
 
+        piece.move(request.getEnd());
+        Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
+        potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));
+
         if (checkService.isInCheckAfterMove(dto)) {
+            log.info("check was not defeated");
             piece.move(request.getStart());
+            potentialFoe.ifPresent(foe -> game.getFoesPieces().add(foe));
             throw new InvalidMoveException(game.isCheck());
         }
         game.setCheck(false);
 
-        Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
-        potentialFoe
-            .ifPresent(foe -> game.getFoesPieces().remove(foe));
-        //todo pass moveMessage the specialMove
         Optional.ofNullable(request.getSpecialMove())
             .ifPresent(s ->  specialMovesService.performSpecialMove(game, request));
 

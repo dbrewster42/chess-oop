@@ -15,21 +15,28 @@ public class MoveMessageService { //todo make moveService with Move?
 
     public void addMove(ChessGame game, Type type, MoveRequest request, Optional<Piece> potentialFoe){
         StringBuilder message = standardMessage(game, type, request);
-        Optional<SpecialMove> potentialSpecialMove = Optional.ofNullable(request.getSpecialMove());
+        Optional.ofNullable(request.getSpecialMove()).ifPresent(specialMove -> message.append(addSpecialMoveMessage(specialMove)));
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
         if (game.isCheck()) { message.append(" - CHECK!"); }
         game.getMoves().add(message.toString());
-//        game.setMoves(message.append("\n").toString());
+    }
+
+    private String addSpecialMoveMessage(SpecialMove specialMove) {
+        switch (specialMove) {
+            case Castle:
+                return " and performed a castle"; //todo
+            case Passant:
+                return " in an En Passant";
+            case Promotion:
+                return " and was promoted to a Queen"; //todo
+            default:
+                throw new RuntimeException("oh no");
+        }
     }
 
     private StringBuilder standardMessage(ChessGame game, Type type, MoveRequest request) {
         return new StringBuilder(game.getCurrentPlayerName() + " has moved his " + type + pieceMovement(request));
-//        return new StringBuilder(game.getCurrentPlayerName()).append(" has moved his ").append(pieceName).append(getPieceMovement(request));
     }
-//    private StringBuilder specialOptions(StringBuilder message, ChessGame game, Optional<Piece> potentialFoe) {
-//        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
-//        if (game.isCheck()) { message.append(" - CHECK!"); }
-//    }
 
     private String pieceMovement(MoveRequest request) {
         return squareName(" from ", request.getStart()) + squareName(" to ", request.getEnd());
