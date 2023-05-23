@@ -83,6 +83,10 @@ public class ChessGameService {
         Piece piece = game.getOwnPiece(request.getStart());
         GamePiecesDto dto = getGamePiecesDto(game);
 
+
+        if (!piece.isLegalAttack(new Square(request.getEnd()), dto.getOccupiedSquares())) {
+            throw new InvalidMoveException("Illegal move");
+        }
         piece.move(request.getEnd());
         Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
         potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));

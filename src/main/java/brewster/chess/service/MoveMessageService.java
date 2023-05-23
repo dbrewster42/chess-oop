@@ -15,20 +15,20 @@ public class MoveMessageService { //todo make moveService with Move?
 
     public void addMove(ChessGame game, Type type, MoveRequest request, Optional<Piece> potentialFoe){
         StringBuilder message = standardMessage(game, type, request);
-        Optional.ofNullable(request.getSpecialMove()).ifPresent(specialMove -> message.append(addSpecialMoveMessage(specialMove)));
+        Optional.ofNullable(request.getSpecialMove()).ifPresent(s -> message.append(addSpecialMoveMessage(request)));
         potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
         if (game.isCheck()) { message.append(" - CHECK!"); }
         game.getMoves().add(message.toString());
     }
 
-    private String addSpecialMoveMessage(SpecialMove specialMove) {
-        switch (specialMove) {
+    private String addSpecialMoveMessage(MoveRequest request) {
+        switch (request.getSpecialMove()) {
             case Castle:
-                return " and performed a castle"; //todo
+                return " and performed a castle";
             case Passant:
                 return " in an En Passant";
             case Promotion:
-                return " and was promoted to a Queen"; //todo
+                return " and was promoted to a " + request.getPromotionType();
             default:
                 throw new RuntimeException("oh no");
         }

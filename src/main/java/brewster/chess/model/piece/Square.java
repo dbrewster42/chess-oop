@@ -13,6 +13,10 @@ public class Square implements Serializable {
         this.x = x;
         this.y = y;
     }
+    public Square(int position) {
+        this.x = position / 10;
+        this.y = position % 10;
+    }
 
     public void move(int x, int y) {
         this.x = x;

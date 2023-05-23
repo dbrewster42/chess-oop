@@ -1,5 +1,6 @@
 package brewster.chess.service;
 
+import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
@@ -13,7 +14,11 @@ import java.util.List;
 @Service
 @Slf4j
 public class SpecialMovesService {
-    public void performSpecialMove(ChessGame game, MoveRequest request) { //todo error handling?
+
+    public boolean isEligibleForPassant(ChessGame game) {
+        return false;
+    }
+    public void performSpecialMove(ChessGame game, MoveRequest request) {
         switch (request.getSpecialMove()) {
             case Castle:
                 performCastle(game, request);
@@ -29,10 +34,10 @@ public class SpecialMovesService {
 
     private void performPassant(ChessGame game, MoveRequest request) {
         int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
-        game.getPotentialFoe(enemyLocation)
-            .ifPresent(foe -> game.getFoesPieces().remove(foe));
-//        Piece foe = game.getPotentialFoe(enemyLocation);
-//        game.getFoesPieces().remove(foe);
+//        game.getPotentialFoe(enemyLocation)
+//            .ifPresent(foe -> game.getFoesPieces().remove(foe));
+        Piece foe = game.getPotentialFoe(enemyLocation).orElseThrow(PieceNotFound::new);
+        game.getFoesPieces().remove(foe);
     }
 
     private void performCastle(ChessGame game, MoveRequest request) {
@@ -47,7 +52,7 @@ public class SpecialMovesService {
         }
     }
 
-    public void performPromotion(ChessGame game, MoveRequest request) {
+    private void performPromotion(ChessGame game, MoveRequest request) {
         Piece pawn = game.getOwnPiece(request.getEnd());
         List<Piece> pieces = game.getCurrentTeam();
         pieces.remove(pawn);
