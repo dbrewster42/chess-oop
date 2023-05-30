@@ -39,9 +39,9 @@ public class CheckService {
         return isSquareUnderAttack(square, dto.getFriends(), dto.getOccupiedSquares());
     }
 
-    private boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> allSquares){
-        for (Piece friend : attackingTeam){
-            if (friend.isLegalAttack(square, allSquares)){
+    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
+        for (Piece attacker : attackingTeam){
+            if (attacker.isLegalAttack(square, occupiedSquares)){
                 return true;
             }
         }

@@ -60,7 +60,7 @@ public class ChessGame {
         return potentialPiece(getFoesPieces(), position);
     }
 
-    private Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
+    public Optional<Piece> potentialPiece(List<Piece> pieces, int position) {
         return pieces.stream()
             .filter(piece -> piece.isAtPosition(position))
             .findAny();

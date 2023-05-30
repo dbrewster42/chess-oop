@@ -4,7 +4,8 @@ import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
-import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.constant.Type;
+import brewster.chess.model.piece.King;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
@@ -59,6 +60,9 @@ public class ChessGameService {
             List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
             if (!standardMoves.isEmpty()) {
+                if (piece.getType() == Type.PAWN || piece.getType() == Type.KING) {
+
+                }
                 //todo castle + promotion
                 PieceMoves pieceMoves = new PieceMoves(standardMoves);
                 allMoves.put(piece.getLocation(), pieceMoves);
@@ -82,11 +86,10 @@ public class ChessGameService {
         ChessGame game = findGameWithMoves(id);
         Piece piece = game.getOwnPiece(request.getStart());
         GamePiecesDto dto = getGamePiecesDto(game);
-
-
-        if (!piece.isLegalAttack(new Square(request.getEnd()), dto.getOccupiedSquares())) {
+        if (!isValidMove(piece, request.getEnd(), dto)) {
             throw new InvalidMoveException("Illegal move");
         }
+
         piece.move(request.getEnd());
         Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
         potentialFoe.ifPresent(foe -> game.getFoesPieces().remove(foe));
@@ -110,6 +113,10 @@ public class ChessGameService {
         }
         moveMessageService.addMove(game, piece.getType(), request, potentialFoe);
         return endTurn(game);
+    }
+
+    private boolean isValidMove(Piece piece, int targetSquare, GamePiecesDto dto) {
+        return piece.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes()).contains(new Square(targetSquare));
     }
 
 

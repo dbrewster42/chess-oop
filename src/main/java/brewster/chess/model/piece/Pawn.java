@@ -13,6 +13,7 @@ import static brewster.chess.model.constant.Type.PAWN;
 @Entity
 @NoArgsConstructor
 public class Pawn extends Piece {
+    public boolean canPromote = false;
 
     public Pawn(Team team, int x, int y) {
         super(team, x, y, PAWN);
@@ -25,6 +26,7 @@ public class Pawn extends Piece {
         int direction = getDirection();
         int x = square.x;
         int y = square.y + direction;
+        if (y == 1 || y == 8) { canPromote = true; }
 
         if (!isOccupied(x, y, squares)){
             legalMoves.add(new Square(x, y));
