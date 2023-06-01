@@ -5,8 +5,6 @@ import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.constant.SpecialMove;
-import brewster.chess.model.constant.Type;
-import brewster.chess.model.piece.King;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
@@ -48,9 +46,6 @@ public class ChessGameService {
         return new NewGameResponse(newGame, getAllMoves(newGame));
     }
 
-//    public Map<Integer, PieceMoves> getAllMoves(long id) {
-//        return getAllMoves(findGame(id));
-//    }
     public Map<Integer, String> getPieces(long id) {
         ChessGame game = findGame(id);
         return getPiecesMap(game);
@@ -58,12 +53,10 @@ public class ChessGameService {
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
-            List<Integer> eligibleMoves = getLegalMoves(game, piece.getLocation());
+            List<Integer> validMoves = getLegalMoves(game, piece.getLocation());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
-            if (!eligibleMoves.isEmpty()) {
-                Map<Integer, SpecialMove> specialMoves = specialMovesService.getSpecialMove(piece, game, eligibleMoves);
-                PieceMoves pieceMoves = new PieceMoves(eligibleMoves, specialMoves);
-                allMoves.put(piece.getLocation(), pieceMoves);
+            if (!validMoves.isEmpty()) {
+                allMoves.put(piece.getLocation(), specialMovesService.withAnySpecialMoves(piece, game, validMoves));
             }
         }
         log.info("all moves - {}", allMoves);
@@ -84,7 +77,7 @@ public class ChessGameService {
         ChessGame game = findGameWithMoves(id);
         Piece piece = game.getOwnPiece(request.getStart());
         GamePiecesDto dto = getGamePiecesDto(game);
-        if (!isValidMove(piece, request.getEnd(), dto)) {
+        if (!isValidMove(piece, request, dto)) {
             throw new InvalidMoveException("Illegal move");
         }
 
@@ -113,8 +106,9 @@ public class ChessGameService {
         return endTurn(game);
     }
 
-    private boolean isValidMove(Piece piece, int targetSquare, GamePiecesDto dto) {
-        return piece.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes()).contains(new Square(targetSquare));
+    private boolean isValidMove(Piece piece, MoveRequest request, GamePiecesDto dto) {
+        if (request.getSpecialMove() != null) { return true; } //todo
+        return piece.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes()).contains(new Square(request.getEnd()));
     }
 
 

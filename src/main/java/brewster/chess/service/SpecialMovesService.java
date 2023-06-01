@@ -9,6 +9,7 @@ import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.PieceFactory;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
+import brewster.chess.model.response.PieceMoves;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,30 +30,31 @@ public class SpecialMovesService {
         this.checkService = checkService;
     }
 
-    public Map<Integer, SpecialMove> getSpecialMove(Piece piece, ChessGame game, List<Integer> eligibleMoves) {
+    public PieceMoves withAnySpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
             if (pawn.canPromote) {
-                List<Integer> promotions = eligibleMoves.stream().map(square -> square % 10).filter(y -> y == 1 || y == 8).collect(Collectors.toList());
+                List<Integer> promotions = validMoves.stream().map(square -> square % 10).filter(y -> y == 1 || y == 8).collect(Collectors.toList());
                 if (!promotions.isEmpty()) {
                     Map<Integer, SpecialMove> specialMoves = new HashMap<>();
                     promotions.forEach(p -> specialMoves.put(p, SpecialMove.Promotion));
-                    return specialMoves;
+                    return new PieceMoves(validMoves, specialMoves, Type.promotionChoices());
                 }
             }
         } else if (piece.getType() == Type.KING) {
             if (piece.getSquare().x == 5) {
                 List<Integer> castles = eligibleCastles(piece, game);
-                if (castles.isEmpty()) { return null; }
-                Map<Integer, SpecialMove> specialMoves = new HashMap<>();
-                castles.forEach(castle -> {
-                    eligibleMoves.add(castle);
-                    specialMoves.put(castle, SpecialMove.Castle);
-                });
-                return specialMoves;
+                if (!castles.isEmpty()) {
+                    Map<Integer, SpecialMove> specialMoves = new HashMap<>();
+                    castles.forEach(castle -> {
+                        validMoves.add(castle);
+                        specialMoves.put(castle, SpecialMove.Castle);
+                    });
+                    return new PieceMoves(validMoves, specialMoves);
+                }
             }
         }
-        return null;
+        return new PieceMoves(validMoves);
     }
     public void performSpecialMove(ChessGame game, MoveRequest request) {
         switch (request.getSpecialMove()) {

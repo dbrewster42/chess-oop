@@ -11,26 +11,21 @@ import java.util.Map;
 public class PieceMoves {
     private final List<Integer> validMoves;
     private Map<Integer, SpecialMove> specialMoves;
-//    private List<Integer> specialMoves;
 
     private boolean isPromotion = false;
     private List<Type> promotionOptions;
 
+    public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves, List<Type> promotionOptions) {
+        this.validMoves = validMoves;
+        this.specialMoves = specialMoves;
+        this.promotionOptions = promotionOptions;
+        this.isPromotion = true;
+    }
     public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves) {
         this.validMoves = validMoves;
-        if (specialMoves != null) {
-            this.specialMoves = specialMoves;
-            if (specialMoves.containsValue(SpecialMove.Promotion)) {
-                addPromotionOptions();
-            }
-        }
-    }
-
-    public void addSpecialMoves(Map<Integer, SpecialMove> specialMoves) {
         this.specialMoves = specialMoves;
     }
-    public void addPromotionOptions() {
-        this.isPromotion = true;
-        this.promotionOptions = Type.promotionChoices();
+    public PieceMoves(List<Integer> validMoves) {
+        this.validMoves = validMoves;
     }
 }
