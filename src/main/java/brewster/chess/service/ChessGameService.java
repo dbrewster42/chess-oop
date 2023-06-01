@@ -4,6 +4,7 @@ import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
+import brewster.chess.model.constant.SpecialMove;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.King;
 import brewster.chess.model.piece.Piece;
@@ -57,14 +58,11 @@ public class ChessGameService {
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
-            List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
+            List<Integer> eligibleMoves = getLegalMoves(game, piece.getLocation());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
-            if (!standardMoves.isEmpty()) {
-                if (piece.getType() == Type.PAWN || piece.getType() == Type.KING) {
-
-                }
-                //todo castle + promotion
-                PieceMoves pieceMoves = new PieceMoves(standardMoves);
+            if (!eligibleMoves.isEmpty()) {
+                Map<Integer, SpecialMove> specialMoves = specialMovesService.getSpecialMove(piece, game, eligibleMoves);
+                PieceMoves pieceMoves = new PieceMoves(eligibleMoves, specialMoves);
                 allMoves.put(piece.getLocation(), pieceMoves);
             }
         }

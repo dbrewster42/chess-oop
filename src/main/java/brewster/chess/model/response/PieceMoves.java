@@ -16,8 +16,14 @@ public class PieceMoves {
     private boolean isPromotion = false;
     private List<Type> promotionOptions;
 
-    public PieceMoves(List<Integer> validMoves) {
+    public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves) {
         this.validMoves = validMoves;
+        if (specialMoves != null) {
+            this.specialMoves = specialMoves;
+            if (specialMoves.containsValue(SpecialMove.Promotion)) {
+                addPromotionOptions();
+            }
+        }
     }
 
     public void addSpecialMoves(Map<Integer, SpecialMove> specialMoves) {

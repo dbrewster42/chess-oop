@@ -2,9 +2,7 @@ package brewster.chess.service;
 
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
-import brewster.chess.model.SpecialMoveReq;
 import brewster.chess.model.constant.SpecialMove;
-import brewster.chess.model.constant.Team;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Pawn;
 import brewster.chess.model.piece.Piece;
@@ -31,18 +29,6 @@ public class SpecialMovesService {
         this.checkService = checkService;
     }
 
-
-    public SpecialMove eligibleSpecialMove(Piece piece, ChessGame game) {
-        if (piece.getType() == Type.PAWN) {
-            if (piece.getSquare().y == 2 && piece.getTeam() == Team.WHITE || piece.getSquare().y == 7 && piece.getTeam() == Team.BLACK) {
-                return SpecialMove.Promotion;
-            }
-        } else if (piece.getType() == Type.KING) {
-
-        }
-        return null;
-    }
-
     public Map<Integer, SpecialMove> getSpecialMove(Piece piece, ChessGame game, List<Integer> eligibleMoves) {
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
@@ -54,17 +40,8 @@ public class SpecialMovesService {
                     return specialMoves;
                 }
             }
-            //todo passant
-
         } else if (piece.getType() == Type.KING) {
             if (piece.getSquare().x == 5) {
-//                int direction = -1;
-//                Map<Integer, SpecialMove> specialMoves = new HashMap<>();
-//                if (isClearToSide(direction, piece, game)) {
-//                    int castle = (piece.getSquare().x + direction + direction) * 10 + piece.getSquare().y;
-//                    eligibleMoves.add(castle);
-//                    specialMoves.put(castle, Castle);
-//                }
                 List<Integer> castles = eligibleCastles(piece, game);
                 if (castles.isEmpty()) { return null; }
                 Map<Integer, SpecialMove> specialMoves = new HashMap<>();
@@ -77,6 +54,20 @@ public class SpecialMovesService {
         }
         return null;
     }
+    public void performSpecialMove(ChessGame game, MoveRequest request) {
+        switch (request.getSpecialMove()) {
+            case Castle:
+                performCastle(game, request);
+                break;
+            case Passant:
+                performPassant(game, request);
+                break;
+            case Promotion:
+                performPromotion(game, request);
+                break;
+        }
+    }
+
     private List<Integer> eligibleCastles(Piece piece, ChessGame game) {
         List<Integer> castles = new ArrayList<>();
         if (isClearToSide(-1, piece, game)) {
@@ -88,21 +79,6 @@ public class SpecialMovesService {
         return castles;
     }
 
-//    private Map<Integer, SpecialMove> eligibleCastles(Piece piece, ChessGame game) {
-//        Map<Integer, SpecialMove> specialMoves = new HashMap<>();
-//        if (isClearToSide(-1, piece, game)) {
-//            int castle = (piece.getSquare().x - 2) * 10 + piece.getSquare().y;
-////            eligibleMoves.add(castle);
-//            specialMoves.put(castle, Castle);
-//        }
-//        if (isClearToSide(1, piece, game)) {
-//            int castle = (piece.getSquare().x + 2) * 10 + piece.getSquare().y;
-////            eligibleMoves.add(castle);
-//            specialMoves.put(castle, Castle);
-//        }
-//        return specialMoves
-//    }
-//    private boolean isEligible
     private boolean isClearToSide(int direction, Piece piece, ChessGame game) {
         int x = piece.getSquare().x + direction;
         int y = piece.getSquare().y;
@@ -121,33 +97,11 @@ public class SpecialMovesService {
 
     private boolean isRookInPosition(int x, int y, ChessGame game) {
         Optional<Piece> rook = game.potentialPiece(game.getCurrentTeam(), x * 10 + y);
-        if (rook.isPresent() && rook.get().getType() == Type.ROOK) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isEligibleForPassant(ChessGame game) {
-        return false;
-    }
-    public void performSpecialMove(ChessGame game, MoveRequest request) {
-        switch (request.getSpecialMove()) {
-            case Castle:
-                performCastle(game, request);
-                break;
-            case Passant:
-                performPassant(game, request);
-                break;
-            case Promotion:
-                performPromotion(game, request);
-                break;
-        }
+        return rook.isPresent() && rook.get().getType() == Type.ROOK;
     }
 
     private void performPassant(ChessGame game, MoveRequest request) {
         int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
-//        game.getPotentialFoe(enemyLocation)
-//            .ifPresent(foe -> game.getFoesPieces().remove(foe));
         Piece foe = game.getPotentialFoe(enemyLocation).orElseThrow(PieceNotFound::new);
         game.getFoesPieces().remove(foe);
     }
