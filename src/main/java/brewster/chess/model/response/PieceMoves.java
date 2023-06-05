@@ -12,15 +12,15 @@ public class PieceMoves {
     private final List<Integer> validMoves;
     private Map<Integer, SpecialMove> specialMoves;
 
-    private boolean isPromotion = false;
-    private List<Type> promotionOptions;
-
-    public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves, List<Type> promotionOptions) {
-        this.validMoves = validMoves;
-        this.specialMoves = specialMoves;
-        this.promotionOptions = promotionOptions;
-        this.isPromotion = true;
-    }
+//    private boolean isPromotion = false;
+//    private List<Type> promotionOptions;
+//
+//    public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves, List<Type> promotionOptions) {
+//        this.validMoves = validMoves;
+//        this.specialMoves = specialMoves;
+//        this.promotionOptions = promotionOptions;
+//        this.isPromotion = true;
+//    }
     public PieceMoves(List<Integer> validMoves, Map<Integer, SpecialMove> specialMoves) {
         this.validMoves = validMoves;
         this.specialMoves = specialMoves;

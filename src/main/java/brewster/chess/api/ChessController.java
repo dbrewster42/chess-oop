@@ -4,12 +4,14 @@ package brewster.chess.api;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
+import brewster.chess.model.request.RejoinRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.service.ChessGameService;
 import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +45,11 @@ public class ChessController {
         User user2 = userService.getUser(request.getUser2());
 
         return gameService.startGame(user1, user2);
+    }
+
+    @GetMapping("/rejoin")
+    public GameResponse rejoinGame(@RequestBody RejoinRequest rejoinRequest){
+        return gameService.rejoinGame(rejoinRequest.getGameId());
     }
 
 

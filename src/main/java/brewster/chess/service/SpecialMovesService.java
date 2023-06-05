@@ -38,7 +38,7 @@ public class SpecialMovesService {
                 if (!promotions.isEmpty()) {
                     Map<Integer, SpecialMove> specialMoves = new HashMap<>();
                     promotions.forEach(p -> specialMoves.put(p, SpecialMove.Promotion));
-                    return new PieceMoves(validMoves, specialMoves, Type.promotionChoices());
+                    return new PieceMoves(validMoves, specialMoves);
                 }
             }
         } else if (piece.getType() == Type.KING) {

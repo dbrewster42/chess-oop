@@ -3,8 +3,9 @@ package brewster.chess.service;
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
+import brewster.chess.model.Move;
 import brewster.chess.model.User;
-import brewster.chess.model.constant.SpecialMove;
+import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
@@ -43,7 +44,12 @@ public class ChessGameService {
 
     public NewGameResponse startGame(User user1, User user2) {
         ChessGame newGame = repository.save(new ChessGame(user1, user2));
-        return new NewGameResponse(newGame, getAllMoves(newGame));
+        return new NewGameResponse(newGame, Type.promotionChoices());
+    }
+
+    public GameResponse rejoinGame(long id) {
+        ChessGame oldGame = repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
+        return new GameResponse(oldGame, getAllMoves(oldGame), ""); //todo
     }
 
     public Map<Integer, String> getPieces(long id) {
@@ -92,6 +98,7 @@ public class ChessGameService {
             throw new InvalidMoveException(game.isCheck());
         }
         game.setCheck(false);
+        game.getMoves().add(new Move(piece.getType(), request, potentialFoe));
 
         Optional.ofNullable(request.getSpecialMove())
             .ifPresent(s ->  specialMovesService.performSpecialMove(game, request));
@@ -102,8 +109,11 @@ public class ChessGameService {
                 return checkMate(game);
             }
         }
-        moveMessageService.addMove(game, piece.getType(), request, potentialFoe);
-        return endTurn(game);
+
+        String moveMessage = moveMessageService.getMoveMessage(game, piece.getType(), request, potentialFoe);
+        return endTurn(game, moveMessage);
+
+
     }
 
     private boolean isValidMove(Piece piece, MoveRequest request, GamePiecesDto dto) {
@@ -137,9 +147,9 @@ public class ChessGameService {
         return repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 
-    private GameResponse endTurn(ChessGame game) {
+    private GameResponse endTurn(ChessGame game, String moveMessage) {
         repository.save(game.changeTurn());
-        return new GameResponse(game, getAllMoves(game));
+        return new GameResponse(game, getAllMoves(game), moveMessage);
     }
     private GameResponse checkMate(ChessGame game) {
         User winner = game.getCurrentPlayer().getUser().addWin();

@@ -30,7 +30,8 @@ public class ChessGame {
     @OneToOne(cascade = CascadeType.ALL)
     private final Player blackPlayer;
     @ElementCollection
-    private List<String> moves;
+//    private List<String> moves;
+    private List<Move> moves;
 
     private boolean isWhitesTurn = true;
 //    private boolean isActive = true;

@@ -1,6 +1,7 @@
 package brewster.chess.api;
 
-import brewster.chess.exception.UserNotFound;
+import brewster.chess.model.ChessGame;
+import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.service.UserService;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
@@ -36,5 +40,22 @@ public class UserController {
         User user = userService.getUser(request.getName());
 //        if (isValid)
         return user.getName() + " has been retrieved from the db";
+    }
+
+    @GetMapping("/info")
+    public List<Player> info(@RequestBody String name){
+        log.info("getting active games - {}", name);
+        return userService.getUser(name).getPlayers();
+    }
+
+    @GetMapping("/activeGames")
+    public List<Long> activeGames(@RequestBody String name){
+        log.info("getting active games - {}", name);
+        return userService.getUsersGames(name).stream().map(ChessGame::getId).collect(Collectors.toList());
+    }
+    @GetMapping("/activePlayers")
+    public List<Player> activePlayers(@RequestBody String name){
+        log.info("getting active games - {}", name);
+        return userService.getUsersPlayers(name);
     }
 }
