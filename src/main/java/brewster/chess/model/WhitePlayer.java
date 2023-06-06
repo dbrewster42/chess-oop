@@ -11,17 +11,13 @@ import static brewster.chess.util.TeamCreation.generatePieces;
 @Getter
 @Entity
 public class WhitePlayer extends Player {
-
     @OneToOne(mappedBy = "whitePlayer")
     private final ChessGame game;
 
     public WhitePlayer(User user, ChessGame game) {
-        this.user = user;
+        super(user, generatePieces(Team.WHITE));
         this.game = game;
-        this.pieces = generatePieces(Team.WHITE);
     }
     public WhitePlayer(){ game = null; }
-
-
 
 }

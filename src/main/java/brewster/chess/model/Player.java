@@ -22,16 +22,16 @@ public abstract class Player {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
-
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    List<Piece> pieces;
     @ManyToOne
-    User user;
+    private User user;
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    private List<Piece> pieces;
 
-    public Player(){
-        this.user = null;
-        this.pieces = null;
+    public Player(User user, List<Piece> pieces) {
+        this.user = user;
+        this.pieces = pieces;
     }
+    public Player() { }
 
     public abstract ChessGame getGame();
     public String getName() {

@@ -112,15 +112,12 @@ public class ChessGameService {
 
         String moveMessage = moveMessageService.getMoveMessage(game, piece.getType(), request, potentialFoe);
         return endTurn(game, moveMessage);
-
-
     }
 
     private boolean isValidMove(Piece piece, MoveRequest request, GamePiecesDto dto) {
         if (request.getSpecialMove() != null) { return true; } //todo
         return piece.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes()).contains(new Square(request.getEnd()));
     }
-
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
