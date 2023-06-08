@@ -24,7 +24,6 @@ public class Move {
 
 //    private String pieceName;
     private Type pieceType;
-
     private int start;
     private int end;
 

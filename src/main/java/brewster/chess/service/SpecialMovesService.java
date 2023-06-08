@@ -34,7 +34,7 @@ public class SpecialMovesService {
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
             if (pawn.canPromote) {
-                List<Integer> promotions = validMoves.stream().map(square -> square % 10).filter(y -> y == 1 || y == 8).collect(Collectors.toList());
+                List<Integer> promotions = validMoves.stream().filter(square -> square % 10 == 1 || square % 10 == 8).collect(Collectors.toList());
                 if (!promotions.isEmpty()) {
                     Map<Integer, SpecialMove> specialMoves = new HashMap<>();
                     promotions.forEach(p -> specialMoves.put(p, SpecialMove.Promotion));
