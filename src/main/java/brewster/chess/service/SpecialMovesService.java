@@ -30,7 +30,7 @@ public class SpecialMovesService {
         this.checkService = checkService;
     }
 
-    public PieceMoves withAnySpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
+    public PieceMoves includeSpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
             if (pawn.canPromote) {
@@ -87,9 +87,7 @@ public class SpecialMovesService {
         List<Square> occupiedSquares = game.getAllOccupiedSquares();
         while (x > 1 && x < 8) {
             Square square = new Square(x, y);
-            if (occupiedSquares.contains(square)) {
-                return false;
-            } else if (checkService.isSquareUnderAttack(square, game.getFoesPieces(), occupiedSquares)) {
+            if (occupiedSquares.contains(square) || checkService.isSquareUnderAttack(square, game.getFoesPieces(), occupiedSquares)) {
                 return false;
             }
             x += direction;
@@ -121,6 +119,7 @@ public class SpecialMovesService {
     }
 
     private void performPromotion(ChessGame game, MoveRequest request) {
+        log.info("performing promotion to {}", request.getPromotionType());
         Piece pawn = game.getOwnPiece(request.getEnd());
         List<Piece> pieces = game.getCurrentTeam();
         pieces.remove(pawn);

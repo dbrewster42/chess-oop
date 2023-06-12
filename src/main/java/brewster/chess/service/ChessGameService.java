@@ -62,7 +62,7 @@ public class ChessGameService {
             List<Integer> validMoves = getLegalMoves(game, piece.getLocation());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
             if (!validMoves.isEmpty()) {
-                allMoves.put(piece.getLocation(), specialMovesService.withAnySpecialMoves(piece, game, validMoves));
+                allMoves.put(piece.getLocation(), specialMovesService.includeSpecialMoves(piece, game, validMoves));
             }
         }
         log.info("all moves - {}", allMoves);

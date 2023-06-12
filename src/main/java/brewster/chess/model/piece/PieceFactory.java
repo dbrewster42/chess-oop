@@ -16,14 +16,12 @@ public class PieceFactory implements Factory<Piece> {
         this.team = team;
         this.x = position / 10;
         this.y = position % 10;
-        this.type = type;
+        this.type = type == null ? Type.QUEEN : type;
     }
 
     @Override
     public Piece getInstance() {
         switch (type) {
-            case QUEEN:
-                return new Queen(team, x, y);
             case ROOK:
                 return new Rook(team, x, y);
             case BISHOP:
@@ -31,7 +29,7 @@ public class PieceFactory implements Factory<Piece> {
             case KNIGHT:
                 return new Knight(team, x, y);
             default:
-                throw new PieceNotFound();
+                return new Queen(team, x, y);
         }
     }
 

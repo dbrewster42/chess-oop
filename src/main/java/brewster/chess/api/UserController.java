@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping("/info")
     public List<Player> info(@RequestBody String name){
-        log.info("getting active games - {}", name);
+        log.info("getting info - {}", name);
         return userService.getUser(name).getPlayers();
     }
 
@@ -55,7 +55,7 @@ public class UserController {
     }
     @GetMapping("/activePlayers")
     public List<Player> activePlayers(@RequestBody String name){
-        log.info("getting active games - {}", name);
+        log.info("getting active players - {}", name);
         return userService.getUsersPlayers(name);
     }
 }

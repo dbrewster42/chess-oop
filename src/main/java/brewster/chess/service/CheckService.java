@@ -5,6 +5,7 @@ import brewster.chess.model.piece.Knight;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.service.model.GamePiecesDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CheckService {
-
 
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
         return isSquareUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getOccupiedSquares());
@@ -25,6 +26,7 @@ public class CheckService {
         List<Square> kingsMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getOccupiedSquares(), dto.getFriends());
         for (Square kingsMove : kingsMoves){
             if (isMoveOpen(kingsMove, dto)){
+                log.info("King can move out of check to {}", kingsMove);
                 return false;
             }
         }
@@ -65,9 +67,11 @@ public class CheckService {
             if (foe.isLegalAttack(attackerSquare, dto.getOccupiedSquares())){
                 if (foe instanceof King){
                     if (!isSquareDefended(attackerSquare, dto)) {
+                        log.info("can be taken by the king at {}", attackerSquare);
                         return false;
                     }
                 } else {
+                    log.info("can be taken at {}", attackerSquare);
                     return false;
                 }
             }
@@ -81,6 +85,7 @@ public class CheckService {
         }
         for (Square block : getSquaresToBlock(dto, attacker)){
             if (isSquareDefended(block, dto)){
+                log.info("can be blocked at {}", block);
                 return false;
             }
         }

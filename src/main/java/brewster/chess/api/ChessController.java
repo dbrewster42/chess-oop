@@ -77,6 +77,7 @@ public class ChessController {
 
     @PostMapping("/{id}/draw")
     public GameResponse requestDraw(@PathVariable long id){
+        log.info("requesting draw");
         return gameService.requestDraw(id);
     }
     @PostMapping("/{id}/forfeit")
