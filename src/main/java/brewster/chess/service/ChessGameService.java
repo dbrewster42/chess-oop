@@ -115,8 +115,7 @@ public class ChessGameService {
     }
 
     private boolean isValidMove(Piece piece, MoveRequest request, GamePiecesDto dto) {
-        if (request.getSpecialMove() != null) { return true; } //todo
-        return piece.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes()).contains(new Square(request.getEnd()));
+        return request.getSpecialMove() != null || piece.isLegalMove(new Square(request.getEnd()), dto.getOccupiedSquares(), dto.getFoes());
     }
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
@@ -133,7 +132,7 @@ public class ChessGameService {
             if (!game.isCheck()) {
                 return draw(game);
             } else {
-                log.info("ERROR. YOU DONE MESSED UP NOW");
+                log.info("ERROR. YOU DONE MESSED UP BUT I'M SAVING YOUR SORRY SELF");
                 return checkMate(game.changeTurn());
             }
             //todo update user win totals with a draw. by calling user service?

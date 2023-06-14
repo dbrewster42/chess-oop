@@ -47,6 +47,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean isLegalBlock(Square destination, List<Square> allSquares) {
+        if (square.x != destination.x || allSquares.contains(destination)) { return false; }
         int direction = getDirection();
         return destination.y - square.y == direction || (hasNotMoved(direction) && destination.y - square.y == direction * 2) ;
     }

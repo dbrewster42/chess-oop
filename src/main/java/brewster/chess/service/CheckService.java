@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class CheckService {
 
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
-        return isSquareUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getOccupiedSquares(), false);
+        return isSquareUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getOccupiedSquares());
     }
     public boolean didCheck(GamePiecesDto dto) {
-        return isSquareUnderAttack(dto.getFoes().get(0).getSquare(), dto.getFriends(), dto.getOccupiedSquares(), true);
+        return isSquareUnderAttack(dto.getFoes().get(0).getSquare(), dto.getFriends(), dto.getOccupiedSquares());
 //        return isSquareDefended(dto.getFoes().get(0).getSquare(), dto);
     }
     public boolean didCheckMate(GamePiecesDto dto) {
@@ -42,9 +42,8 @@ public class CheckService {
 //        return isSquareUnderAttack(square, dto.getFriends(), dto.getOccupiedSquares());
 //    }
 
-    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares, boolean excludeKing){
+    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
         for (Piece attacker : attackingTeam){
-            if (excludeKing && attacker instanceof King) { continue; }
             if (attacker.isLegalAttack(square, occupiedSquares)){
                 log.info("{} can reach this square {}", attacker, square);
                 return true;
@@ -69,7 +68,7 @@ public class CheckService {
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(attackerSquare, dto.getOccupiedSquares())){
                 if (foe instanceof King){
-                    if (!isSquareUnderAttack(attackerSquare, dto.getFriends(), dto.getOccupiedSquares(), false)) {
+                    if (!isSquareUnderAttack(attackerSquare, dto.getFriends(), dto.getOccupiedSquares())) {
 //                    if (!isSquareDefended(attackerSquare, dto)) {
                         log.info("can be taken by the king at {}", attackerSquare);
                         return false;
@@ -88,12 +87,18 @@ public class CheckService {
             return true;
         }
         for (Square block : getSquaresToBlock(dto, attacker)){
-            isLegalBlock
-            if (isSquareUnderAttack(block, dto.getFoes(), dto.getOccupiedSquares(), true)) {
-//            if (isSquareDefended(block, dto)){
-                log.info("can be blocked at {}", block);
-                return false;
+            for (Piece defender : dto.getFoes()){
+                if (!(defender instanceof King) && defender.isLegalBlock(block, dto.getOccupiedSquares())){
+                    log.info("{} can reach this blocking square {}", defender, block);
+                    return false;
+                }
             }
+//            isLegalBlock
+//            if (isSquareUnderAttack(block, dto.getFoes(), dto.getOccupiedSquares(), true)) {
+////            if (isSquareDefended(block, dto)){
+//                log.info("can be blocked at {}", block);
+//                return false;
+//            }
         }
         return true;
     }
@@ -106,10 +111,14 @@ public class CheckService {
         Square enemyKingSquare = dto.getFoes().get(0).getSquare();
         Square attackerSquare = attacker.getSquare();
 
+//        int xDirection = getDirection(attackerSquare.x - enemyKing.getSquare().x);
+//        int yDirection = getDirection(attackerSquare.y - enemyKing.getSquare().y);
+//
+//        return enemyKing.addMovesAlongLine(new ArrayList<>(), dto.getOccupiedSquares(), dto.getFoes(), xDirection, yDirection);
         int xDirection = getDirection(enemyKingSquare.x - attackerSquare.x);
         int yDirection = getDirection(enemyKingSquare.y - attackerSquare.y);
 
-        return attacker.addMovesAlongLine(new ArrayList<>(), dto.getOccupiedSquares(), dto.getFoes(), xDirection, yDirection);
+        return attacker.addMovesAlongLine(new ArrayList<>(), dto.getOccupiedSquares(), dto.getFoes(), xDirection, yDirection, false);
     }
 
     private int getDirection(int dif){
