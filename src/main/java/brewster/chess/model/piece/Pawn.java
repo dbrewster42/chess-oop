@@ -27,7 +27,6 @@ public class Pawn extends Piece {
         int x = square.x;
         int y = square.y + direction;
         if (y == 1 || y == 8) { canPromote = true; }
-
         if (!isOccupied(x, y, squares)){
             legalMoves.add(new Square(x, y));
             if (hasNotMoved(direction)){
@@ -45,6 +44,18 @@ public class Pawn extends Piece {
     public boolean isLegalAttack(Square destination, List<Square> allSquares) {
         return destination.y - square.y == getDirection() && Math.abs(destination.x - square.x) == 1;
     }
+
+    @Override
+    public boolean isLegalBlock(Square destination, List<Square> allSquares) {
+        int direction = getDirection();
+        return destination.y - square.y == direction || (hasNotMoved(direction) && destination.y - square.y == direction * 2) ;
+    }
+//    @Override
+//    public boolean isLegalMove(Square destination, List<Square> allSquares) { //todo probably best to use calculateLegalMoves instead
+////        int direction = getDirection();
+////        return destination.y - square.y == direction || (hasNotMoved(direction) && destination.y - square.y == direction * 2) ;
+//        return calculateLegalMoves(allSquares)
+//    }
 
     private int getDirection(){
         return team == WHITE ? 1 : -1;

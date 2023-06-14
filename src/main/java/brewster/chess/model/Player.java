@@ -24,7 +24,7 @@ public abstract class Player {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private User user;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Piece> pieces;

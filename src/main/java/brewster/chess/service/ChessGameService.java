@@ -129,10 +129,16 @@ public class ChessGameService {
 
     public GameResponse requestDraw(long id) {
         ChessGame game = findGame(id);
-        if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
+        if (checkService.isStaleMate(getGamePiecesDto(game))){
+            if (!game.isCheck()) {
+                return draw(game);
+            } else {
+                log.info("ERROR. YOU DONE MESSED UP NOW");
+                return checkMate(game.changeTurn());
+            }
             //todo update user win totals with a draw. by calling user service?
-            return draw(game);
         }
+        log.info("nope");
         //todo request other player for Draw
         return null;
     }

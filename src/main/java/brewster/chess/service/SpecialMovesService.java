@@ -87,7 +87,7 @@ public class SpecialMovesService {
         List<Square> occupiedSquares = game.getAllOccupiedSquares();
         while (x > 1 && x < 8) {
             Square square = new Square(x, y);
-            if (occupiedSquares.contains(square) || checkService.isSquareUnderAttack(square, game.getFoesPieces(), occupiedSquares)) {
+            if (occupiedSquares.contains(square) || checkService.isSquareUnderAttack(square, game.getFoesPieces(), occupiedSquares, false)) {
                 return false;
             }
             x += direction;

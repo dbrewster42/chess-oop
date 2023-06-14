@@ -31,6 +31,8 @@ public abstract class Piece {
 
     public abstract List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes);
     public abstract boolean isLegalAttack(Square destination, List<Square> allSquares);
+    public boolean isLegalBlock(Square destination, List<Square> allSquares) { return isLegalAttack(destination, allSquares); }
+
 
     Piece(Team team, int x, int y, Type type) {
         this.team = team;

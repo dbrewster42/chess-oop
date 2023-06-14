@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 public class CheckService {
 
     public boolean isInCheckAfterMove(GamePiecesDto dto) {
-        return isSquareUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getOccupiedSquares());
+        return isSquareUnderAttack(dto.getFriends().get(0).getSquare(), dto.getFoes(), dto.getOccupiedSquares(), false);
     }
     public boolean didCheck(GamePiecesDto dto) {
-        return isSquareDefended(dto.getFoes().get(0).getSquare(), dto);
+        return isSquareUnderAttack(dto.getFoes().get(0).getSquare(), dto.getFriends(), dto.getOccupiedSquares(), true);
+//        return isSquareDefended(dto.getFoes().get(0).getSquare(), dto);
     }
     public boolean didCheckMate(GamePiecesDto dto) {
         List<Square> kingsMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getOccupiedSquares(), dto.getFriends());
@@ -37,21 +38,19 @@ public class CheckService {
         return cannotBeTakenOrBlocked(dto, allAttackers.get(0));
     }
 
-    private boolean isSquareDefended(Square square, GamePiecesDto dto){
-        return isSquareUnderAttack(square, dto.getFriends(), dto.getOccupiedSquares());
-    }
+//    private boolean isSquareDefended(Square square, GamePiecesDto dto){
+//        return isSquareUnderAttack(square, dto.getFriends(), dto.getOccupiedSquares());
+//    }
 
-    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
+    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares, boolean excludeKing){
         for (Piece attacker : attackingTeam){
+            if (excludeKing && attacker instanceof King) { continue; }
             if (attacker.isLegalAttack(square, occupiedSquares)){
+                log.info("{} can reach this square {}", attacker, square);
                 return true;
             }
         }
         return false;
-    }
-
-    private boolean cannotBeTakenOrBlocked(GamePiecesDto dto, Piece attacker) {
-        return canNotBeTaken(dto, attacker) && canNotBeBlocked(dto, attacker);
     }
 
     private List<Piece> findAllAttackers(GamePiecesDto dto) {
@@ -61,12 +60,17 @@ public class CheckService {
             .collect(Collectors.toList());
     }
 
+    private boolean cannotBeTakenOrBlocked(GamePiecesDto dto, Piece attacker) {
+        return canNotBeTaken(dto, attacker) && canNotBeBlocked(dto, attacker);
+    }
+
     private boolean canNotBeTaken(GamePiecesDto dto, Piece attacker) {
         Square attackerSquare = attacker.getSquare();
         for (Piece foe : dto.getFoes()){
             if (foe.isLegalAttack(attackerSquare, dto.getOccupiedSquares())){
                 if (foe instanceof King){
-                    if (!isSquareDefended(attackerSquare, dto)) {
+                    if (!isSquareUnderAttack(attackerSquare, dto.getFriends(), dto.getOccupiedSquares(), false)) {
+//                    if (!isSquareDefended(attackerSquare, dto)) {
                         log.info("can be taken by the king at {}", attackerSquare);
                         return false;
                     }
@@ -84,7 +88,9 @@ public class CheckService {
             return true;
         }
         for (Square block : getSquaresToBlock(dto, attacker)){
-            if (isSquareDefended(block, dto)){
+            isLegalBlock
+            if (isSquareUnderAttack(block, dto.getFoes(), dto.getOccupiedSquares(), true)) {
+//            if (isSquareDefended(block, dto)){
                 log.info("can be blocked at {}", block);
                 return false;
             }
