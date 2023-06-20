@@ -1,7 +1,6 @@
 package brewster.chess.api;
 
 import brewster.chess.model.ChessGame;
-import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.service.UserService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
@@ -48,25 +46,20 @@ public class UserController {
         log.info("getting info - {}", name);
         return userService.getUser(name);
     }
-    @GetMapping("/info2/{name}")
-    public List<Player> info2(@PathVariable String name){
-        log.info("getting info - {}", name);
-        return userService.getUser(name).getPlayers();
-    }
 
     @GetMapping("/activeGames/{name}")
     public List<Long> activeGames(@PathVariable String name){
         log.info("getting active games - {}", name);
-        return userService.getUsersGames(name).stream().map(ChessGame::getId).collect(Collectors.toList());
+        return userService.getUsersGames(name);
     }
     @GetMapping("/activeGames2/{name}")
     public List<ChessGame> activeGames2(@PathVariable String name){
         log.info("getting active games - {}", name);
-        return userService.getUsersGames2(name);
+        return userService.getUsersGameInfo(name);
     }
-    @GetMapping("/activePlayers/{name}")
-    public List<Player> activePlayers(@PathVariable String name){
-        log.info("getting active players - {}", name);
-        return userService.getUsersPlayers(name);
-    }
+//    @GetMapping("/activePlayers/{name}")
+//    public List<Player> activePlayers(@PathVariable String name){
+//        log.info("getting active players - {}", name);
+//        return userService.getUsersPlayers(name);
+//    }
 }

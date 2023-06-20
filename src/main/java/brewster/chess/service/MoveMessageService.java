@@ -12,12 +12,11 @@ import java.util.Optional;
 public class MoveMessageService { //todo make moveService with Move?
     private static final String COLUMNS = " ABCDEFGH";
 
-    public String getMoveMessage(ChessGame game, Type type, MoveRequest request, Optional<Piece> potentialFoe){
-        StringBuilder message = standardMessage(game, type, request);
+    public String getMoveMessage(Piece piece, MoveRequest request, boolean isCheck, Optional<Piece> potentialFoe){
+        StringBuilder message = standardMessage(piece, request);
         Optional.ofNullable(request.getSpecialMove()).ifPresent(s -> message.append(addSpecialMoveMessage(request)));
-        potentialFoe.ifPresent(foe -> message.append(" and has captured a ").append(foe.getType()));
-        if (game.isCheck()) { message.append(" - CHECK!"); }
-//        message.insert(message.length() - 2, "MATE");
+        potentialFoe.ifPresent(foe -> message.append(" and captures a ").append(foe.getType()));
+        if (isCheck) { message.append(" - CHECK!"); }
         return message.toString();
 //        game.getMoves().add(message.toString());
     }
@@ -35,12 +34,12 @@ public class MoveMessageService { //todo make moveService with Move?
         }
     }
 
-    private StringBuilder standardMessage(ChessGame game, Type type, MoveRequest request) {
-        return new StringBuilder(game.getCurrentPlayerName() + " has moved his " + type + pieceMovement(request));
+    private StringBuilder standardMessage(Piece piece, MoveRequest request) {
+        return new StringBuilder(piece.getTeam() + " " + piece.getType() + pieceMovement(request));
     }
 
     private String pieceMovement(MoveRequest request) {
-        return squareName(" from ", request.getStart()) + squareName(" to ", request.getEnd());
+        return squareName(" ", request.getStart()) + squareName(" to ", request.getEnd());
     }
     private String squareName(String prefix, int location) {
         return prefix + COLUMNS.charAt(location / 10) + location % 10;

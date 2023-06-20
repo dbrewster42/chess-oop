@@ -69,6 +69,7 @@ public class ChessController {
 
     @PostMapping("/restart")
     public NewGameResponse restart(@RequestBody NewGameRequest request){
+        log.info("the request is {}", request);
         User user1 = userService.getUser(request.getUser1());
         User user2 = userService.getUser(request.getUser2());
 

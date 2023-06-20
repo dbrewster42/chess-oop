@@ -109,8 +109,8 @@ public class ChessGameService {
                 return checkMate(game);
             }
         }
-
-        String moveMessage = moveMessageService.getMoveMessage(game, piece.getType(), request, potentialFoe);
+        log.info("The piece is a {} and a {}", piece.getClass().getSimpleName(), piece.getClass().getCanonicalName());
+        String moveMessage = moveMessageService.getMoveMessage(piece, request, game.isCheck(), potentialFoe);
         return endTurn(game, moveMessage);
     }
 
@@ -153,7 +153,7 @@ public class ChessGameService {
         repository.save(game.changeTurn());
         return new GameResponse(game, getAllMoves(game), moveMessage);
     }
-    private GameResponse checkMate(ChessGame game) {
+    private GameResponse checkMate(ChessGame game) { //todo include move?
         User winner = game.getCurrentPlayer().getUser().addWin();
         User loser = game.getOpponent().getUser().addLoss();
         endGame(game, winner, loser);
