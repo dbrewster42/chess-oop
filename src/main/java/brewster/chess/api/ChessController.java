@@ -4,12 +4,14 @@ package brewster.chess.api;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
+import brewster.chess.model.request.RejoinRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.service.ChessGameService;
 import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,11 @@ public class ChessController {
         return gameService.startGame(user1, user2);
     }
 
+    @GetMapping("/rejoin")
+    public GameResponse rejoinGame(@RequestBody RejoinRequest rejoinRequest){
+        return gameService.rejoinGame(rejoinRequest.getGameId());
+    }
+
 
 //    @GetMapping("/{id}")
 //    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
@@ -62,6 +69,7 @@ public class ChessController {
 
     @PostMapping("/restart")
     public NewGameResponse restart(@RequestBody NewGameRequest request){
+        log.info("the request is {}", request);
         User user1 = userService.getUser(request.getUser1());
         User user2 = userService.getUser(request.getUser2());
 
@@ -70,6 +78,7 @@ public class ChessController {
 
     @PostMapping("/{id}/draw")
     public GameResponse requestDraw(@PathVariable long id){
+        log.info("requesting draw");
         return gameService.requestDraw(id);
     }
     @PostMapping("/{id}/forfeit")

@@ -1,16 +1,19 @@
 package brewster.chess.api;
 
-import brewster.chess.exception.UserNotFound;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
@@ -37,4 +40,26 @@ public class UserController {
 //        if (isValid)
         return user.getName() + " has been retrieved from the db";
     }
+
+    @GetMapping("/info/{name}")
+    public User info(@PathVariable String name){
+        log.info("getting info - {}", name);
+        return userService.getUser(name);
+    }
+
+    @GetMapping("/activeGames/{name}")
+    public List<Long> activeGames(@PathVariable String name){
+        log.info("getting active games - {}", name);
+        return userService.getUsersGames(name);
+    }
+    @GetMapping("/activeGames2/{name}")
+    public List<ChessGame> activeGames2(@PathVariable String name){
+        log.info("getting active games - {}", name);
+        return userService.getUsersGameInfo(name);
+    }
+//    @GetMapping("/activePlayers/{name}")
+//    public List<Player> activePlayers(@PathVariable String name){
+//        log.info("getting active players - {}", name);
+//        return userService.getUsersPlayers(name);
+//    }
 }

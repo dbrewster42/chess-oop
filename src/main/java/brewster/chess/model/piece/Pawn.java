@@ -13,6 +13,7 @@ import static brewster.chess.model.constant.Type.PAWN;
 @Entity
 @NoArgsConstructor
 public class Pawn extends Piece {
+    private transient boolean canPromote = false;
 
     public Pawn(Team team, int x, int y) {
         super(team, x, y, PAWN);
@@ -25,7 +26,7 @@ public class Pawn extends Piece {
         int direction = getDirection();
         int x = square.x;
         int y = square.y + direction;
-
+        if (y == 1 || y == 8) { canPromote = true; }
         if (!isOccupied(x, y, squares)){
             legalMoves.add(new Square(x, y));
             if (hasNotMoved(direction)){
@@ -42,6 +43,17 @@ public class Pawn extends Piece {
     @Override
     public boolean isLegalAttack(Square destination, List<Square> allSquares) {
         return destination.y - square.y == getDirection() && Math.abs(destination.x - square.x) == 1;
+    }
+
+    @Override
+    public boolean isLegalBlock(Square destination, List<Square> allSquares) {
+        if (square.x != destination.x || allSquares.contains(destination)) { return false; }
+        int direction = getDirection();
+        return destination.y - square.y == direction || (hasNotMoved(direction) && destination.y - square.y == direction * 2) ;
+    }
+
+    public boolean canPromote(){
+        return canPromote;
     }
 
     private int getDirection(){

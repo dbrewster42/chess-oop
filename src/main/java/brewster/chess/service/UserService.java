@@ -1,11 +1,16 @@
 package brewster.chess.service;
 
 import brewster.chess.exception.UserNotFound;
+import brewster.chess.model.ChessGame;
+import brewster.chess.model.Player;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,8 +27,15 @@ public class UserService {
     public User createUser(UserRequest request) {
         return userRepository.save(new User(request.getName(), request.getEmail()));
     }
-
     public User getUser(String name) {
        return userRepository.findById(name).orElseThrow(UserNotFound::new);
     }
+    public List<Long> getUsersGames(String name) {
+        return userRepository.findUserPlayers(name).stream().map(Player::getGame).map(ChessGame::getId).collect(Collectors.toList());
+    }
+
+    public List<ChessGame> getUsersGameInfo(String name) {
+        return userRepository.findUserPlayers(name).stream().map(Player::getGame).collect(Collectors.toList());
+    }
+
 }

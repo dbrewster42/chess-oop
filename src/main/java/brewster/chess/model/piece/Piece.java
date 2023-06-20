@@ -5,7 +5,6 @@ import brewster.chess.model.constant.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "Type")
 @Data
 @NoArgsConstructor
 public abstract class Piece {
@@ -28,9 +26,12 @@ public abstract class Piece {
     @NotNull Type type;
     @NotNull Square square;
 
-
     public abstract List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes);
     public abstract boolean isLegalAttack(Square destination, List<Square> allSquares);
+    public boolean isLegalBlock(Square destination, List<Square> allSquares) { return isLegalAttack(destination, allSquares); }
+    public boolean isLegalMove(Square destination, List<Square> allSquares, List<Piece> foes) {
+        return calculateLegalMoves(allSquares, foes).contains(destination);
+    }
 
     Piece(Team team, int x, int y, Type type) {
         this.team = team;
@@ -38,7 +39,7 @@ public abstract class Piece {
         this.type = type;
     }
 
-    public int getLocation() {
+    public int location() {
         return square.intValue();
     }
 
@@ -100,14 +101,18 @@ public abstract class Piece {
         return moves;
     }
 
-    public List<Square> addMovesAlongLine(List<Square> moves, List<Square> allSquares, List<Piece> foes, int xDirection, int yDirection) {
+    void addMovesAlongLine(List<Square> moves, List<Square> allSquares, List<Piece> foes, int xDirection, int yDirection) {
+        addMovesAlongLine(moves, allSquares, foes, xDirection, yDirection, true);
+    }
+
+    public List<Square> addMovesAlongLine(List<Square> moves, List<Square> allSquares, List<Piece> foes, int xDirection, int yDirection, boolean includeCapture) {
         int x = square.x + xDirection;
         int y = square.y + yDirection;
         while (isOnBoard(x, y)) {
             if (!isOccupied(x, y, allSquares)) {
                 moves.add(new Square(x, y));
             } else {
-                if (isOpponent(foes, x, y)) {
+                if (includeCapture && isOpponent(foes, x, y)) {
                     moves.add(new Square(x, y));
                 }
                 break;

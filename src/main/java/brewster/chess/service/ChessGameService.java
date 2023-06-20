@@ -3,8 +3,9 @@ package brewster.chess.service;
 import brewster.chess.exception.GameNotFound;
 import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
+import brewster.chess.model.Move;
 import brewster.chess.model.User;
-import brewster.chess.model.piece.Pawn;
+import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
@@ -43,12 +44,14 @@ public class ChessGameService {
 
     public NewGameResponse startGame(User user1, User user2) {
         ChessGame newGame = repository.save(new ChessGame(user1, user2));
-        return new NewGameResponse(newGame, getAllMoves(newGame));
+        return new NewGameResponse(newGame, Type.promotionChoices());
     }
 
-//    public Map<Integer, PieceMoves> getAllMoves(long id) {
-//        return getAllMoves(findGame(id));
-//    }
+    public GameResponse rejoinGame(long id) {
+        ChessGame oldGame = repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
+        return new GameResponse(oldGame, getAllMoves(oldGame), ""); //todo
+    }
+
     public Map<Integer, String> getPieces(long id) {
         ChessGame game = findGame(id);
         return getPiecesMap(game);
@@ -56,12 +59,10 @@ public class ChessGameService {
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
-            List<Integer> standardMoves = getLegalMoves(game, piece.getLocation());
+            List<Integer> validMoves = getLegalMoves(game, piece.location());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
-            if (!standardMoves.isEmpty()) {
-                //todo castle + promotion
-                PieceMoves pieceMoves = new PieceMoves(standardMoves);
-                allMoves.put(piece.getLocation(), pieceMoves);
+            if (!validMoves.isEmpty()) {
+                allMoves.put(piece.location(), specialMovesService.includeSpecialMoves(piece, game, validMoves));
             }
         }
         log.info("all moves - {}", allMoves);
@@ -82,6 +83,9 @@ public class ChessGameService {
         ChessGame game = findGameWithMoves(id);
         Piece piece = game.getOwnPiece(request.getStart());
         GamePiecesDto dto = getGamePiecesDto(game);
+        if (!isValidMove(piece, request, dto)) {
+            throw new InvalidMoveException("Illegal move");
+        }
 
         piece.move(request.getEnd());
         Optional<Piece> potentialFoe = game.getPotentialFoe(request.getEnd());
@@ -94,6 +98,7 @@ public class ChessGameService {
             throw new InvalidMoveException(game.isCheck());
         }
         game.setCheck(false);
+        game.getMoves().add(new Move(piece.getType(), request, potentialFoe));
 
         Optional.ofNullable(request.getSpecialMove())
             .ifPresent(s ->  specialMovesService.performSpecialMove(game, request));
@@ -104,10 +109,14 @@ public class ChessGameService {
                 return checkMate(game);
             }
         }
-        moveMessageService.addMove(game, piece.getType(), request, potentialFoe);
-        return endTurn(game);
+        log.info("The piece is a {} and a {}", piece.getClass().getSimpleName(), piece.getClass().getCanonicalName());
+        String moveMessage = moveMessageService.getMoveMessage(piece, request, game.isCheck(), potentialFoe);
+        return endTurn(game, moveMessage);
     }
 
+    private boolean isValidMove(Piece piece, MoveRequest request, GamePiecesDto dto) {
+        return request.getSpecialMove() != null || piece.isLegalMove(new Square(request.getEnd()), dto.getOccupiedSquares(), dto.getFoes());
+    }
 
     private GamePiecesDto getGamePiecesDto(ChessGame game){
         return GamePiecesDto.builder()
@@ -119,10 +128,16 @@ public class ChessGameService {
 
     public GameResponse requestDraw(long id) {
         ChessGame game = findGame(id);
-        if (!game.isCheck() && checkService.isStaleMate(getGamePiecesDto(game))){
+        if (checkService.isStaleMate(getGamePiecesDto(game))){
+            if (!game.isCheck()) {
+                return draw(game);
+            } else {
+                log.info("ERROR. YOU DONE MESSED UP BUT I'M SAVING YOUR SORRY SELF");
+                return checkMate(game.changeTurn());
+            }
             //todo update user win totals with a draw. by calling user service?
-            return draw(game);
         }
+        log.info("nope");
         //todo request other player for Draw
         return null;
     }
@@ -134,11 +149,11 @@ public class ChessGameService {
         return repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 
-    private GameResponse endTurn(ChessGame game) {
+    private GameResponse endTurn(ChessGame game, String moveMessage) {
         repository.save(game.changeTurn());
-        return new GameResponse(game, getAllMoves(game));
+        return new GameResponse(game, getAllMoves(game), moveMessage);
     }
-    private GameResponse checkMate(ChessGame game) {
+    private GameResponse checkMate(ChessGame game) { //todo include move?
         User winner = game.getCurrentPlayer().getUser().addWin();
         User loser = game.getOpponent().getUser().addLoss();
         endGame(game, winner, loser);

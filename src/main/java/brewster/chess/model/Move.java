@@ -1,31 +1,30 @@
 package brewster.chess.model;
 
 import brewster.chess.model.constant.SpecialMove;
+import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
+import brewster.chess.model.request.MoveRequest;
 import lombok.Data;
 
+import javax.persistence.Embeddable;
+import java.util.Optional;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
-@Entity
 @Data
+@Embeddable
 public class Move {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-//    private ChessGame game;
-    private String pieceName;
+    private Type pieceType;
     private int start;
     private int end;
 
-//    @Column(n)
     private SpecialMove specialMove;
-    private String potentialFoe;
-//    @OneToOne
-//    private Piece potentialFoe;
+    private Type potentialFoe;
+
+    public Move(Type pieceType, MoveRequest request, Optional<Piece> potentialFoe) {
+        this.pieceType = pieceType;
+        this.start = request.getStart();
+        this.end = request.getEnd();
+        this.specialMove = request.getSpecialMove();
+        potentialFoe.ifPresent(piece -> this.potentialFoe = piece.getType());
+    }
+    public Move() {}
 }
