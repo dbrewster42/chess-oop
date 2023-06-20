@@ -5,7 +5,6 @@ import brewster.chess.model.constant.Type;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "Type")
 @Data
 @NoArgsConstructor
 public abstract class Piece {
@@ -28,7 +26,6 @@ public abstract class Piece {
     @NotNull Type type;
     @NotNull Square square;
 
-
     public abstract List<Square> calculateLegalMoves(List<Square> allSquares, List<Piece> foes);
     public abstract boolean isLegalAttack(Square destination, List<Square> allSquares);
     public boolean isLegalBlock(Square destination, List<Square> allSquares) { return isLegalAttack(destination, allSquares); }
@@ -36,15 +33,13 @@ public abstract class Piece {
         return calculateLegalMoves(allSquares, foes).contains(destination);
     }
 
-
-
     Piece(Team team, int x, int y, Type type) {
         this.team = team;
         this.square = new Square(x, y);
         this.type = type;
     }
 
-    public int getLocation() {
+    public int location() {
         return square.intValue();
     }
 

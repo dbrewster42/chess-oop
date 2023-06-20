@@ -1,6 +1,7 @@
 package brewster.chess.model;
 
 import brewster.chess.model.constant.Team;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import static brewster.chess.util.TeamCreation.generatePieces;
 @Entity
 public class BlackPlayer extends Player {
     @OneToOne(mappedBy = "blackPlayer")
+    @JsonIgnore
     private final ChessGame game;
 
     public BlackPlayer(User user, ChessGame game) {

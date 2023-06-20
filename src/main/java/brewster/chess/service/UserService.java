@@ -29,14 +29,19 @@ public class UserService {
     }
 
     public User getUser(String name) {
-       return userRepository.findById(name).orElseThrow(UserNotFound::new);
+       return userRepository.findById(name)
+           .orElseThrow(UserNotFound::new);
     }
     public List<ChessGame> getUsersGames(String name) {
-        return userRepository.findUserPlayers(name).stream().map(Player::getGame).collect(Collectors.toList());
+        return userRepository.findUserGames(name);
+//        return userRepository.findUserPlayers(name).stream().map(Player::getGame).collect(Collectors.toList());
     }
 
     public List<Player> getUsersPlayers(String name) {
         return userRepository.findUserPlayers(name);
+    }
+    public List<ChessGame> getUsersGames2(String name) {
+        return userRepository.findUserGames2(name);
     }
 
 }

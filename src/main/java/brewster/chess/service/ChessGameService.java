@@ -59,10 +59,10 @@ public class ChessGameService {
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
-            List<Integer> validMoves = getLegalMoves(game, piece.getLocation());
+            List<Integer> validMoves = getLegalMoves(game, piece.location());
             //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
             if (!validMoves.isEmpty()) {
-                allMoves.put(piece.getLocation(), specialMovesService.includeSpecialMoves(piece, game, validMoves));
+                allMoves.put(piece.location(), specialMovesService.includeSpecialMoves(piece, game, validMoves));
             }
         }
         log.info("all moves - {}", allMoves);

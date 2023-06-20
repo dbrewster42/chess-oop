@@ -33,7 +33,7 @@ public class SpecialMovesService {
     public PieceMoves includeSpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
-            if (pawn.canPromote) {
+            if (pawn.canPromote()) {
                 List<Integer> promotions = validMoves.stream().filter(square -> square % 10 == 1 || square % 10 == 8).collect(Collectors.toList());
                 if (!promotions.isEmpty()) {
                     Map<Integer, SpecialMove> specialMoves = new HashMap<>();

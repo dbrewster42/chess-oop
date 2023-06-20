@@ -1,6 +1,7 @@
 package brewster.chess.model;
 
 import brewster.chess.model.piece.Piece;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.CascadeType;
@@ -25,8 +26,10 @@ public abstract class Player {
     private long id;
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonIgnore
     private User user;
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Piece> pieces;
 
     public Player(User user, List<Piece> pieces) {

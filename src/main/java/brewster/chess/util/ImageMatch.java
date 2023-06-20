@@ -11,10 +11,10 @@ public class ImageMatch {
     public static Map<Integer, String> getPiecesMap(ChessGame game){
         Map<Integer, String> pieces = new HashMap<>();
         for (Piece piece : game.getWhitePlayer().getPieces()){
-            pieces.put(piece.getLocation(), convertToImage('w', piece));
+            pieces.put(piece.location(), convertToImage('w', piece));
         }
         for (Piece piece : game.getBlackPlayer().getPieces()){
-            pieces.put(piece.getLocation(), convertToImage('b', piece));
+            pieces.put(piece.location(), convertToImage('b', piece));
         }
         return pieces;
     }
