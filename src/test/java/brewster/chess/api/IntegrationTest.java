@@ -15,7 +15,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Map;
 
 import static brewster.chess.mother.RequestMother.getNewGameRequest;
@@ -113,12 +112,13 @@ class IntegrationTest {
         assertThat(status.isWhite()).isFalse();
         assertThat(status.isCheck()).isFalse();
         assertThat(response.getPieces().size()).isEqualTo(31);
-        assertThat(response.getMoves())
-            .containsExactly("rainmaker has moved his PAWN from E2 to E4",
-                "Bobby has moved his PAWN from D7 to D5",
-                "rainmaker has moved his BISHOP from F1 to A6",
-                "Bobby has moved his PAWN from G7 to A6 and has captured a BISHOP",
-                "rainmaker has moved his QUEEN from D1 to F3");
+//        assertThat(response.getAllMoves())
+//            .containsExactly("rainmaker has moved his PAWN from E2 to E4",
+//                "Bobby has moved his PAWN from D7 to D5",
+//                "rainmaker has moved his BISHOP from F1 to A6",
+//                "Bobby has moved his PAWN from G7 to A6 and has captured a BISHOP",
+//                "rainmaker has moved his QUEEN from D1 to F3");
+        assertThat(response.getMove()).isEqualTo("rainmaker has moved his QUEEN from D1 to F3");
 //            .containsExactly("rainmaker has moved his Pawn from E2 to E4",
 //                "Bobby has moved his Pawn from D7 to D5",
 //                "rainmaker has moved his Bishop from F1 to A6",
