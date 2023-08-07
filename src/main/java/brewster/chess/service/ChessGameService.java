@@ -47,9 +47,9 @@ public class ChessGameService {
         return new NewGameResponse(newGame, Type.promotionChoices());
     }
 
-    public GameResponse rejoinGame(long id) {
+    public NewGameResponse rejoinGame(long id) {
         ChessGame oldGame = repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
-        return new GameResponse(oldGame, getAllMoves(oldGame), ""); //todo
+        return new NewGameResponse(oldGame, Type.promotionChoices()); //todo
     }
 
     public Map<Integer, String> getPieces(long id) {

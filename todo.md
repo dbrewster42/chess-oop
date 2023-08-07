@@ -15,6 +15,7 @@ how to map relationship between player and game? 1 to 1 but how does it know whi
 need simple way of player rejoining active game
 add updatedTime column so last game can be seen
 with front end, have option to see all active games (include opponent, # of moves, updated time, and (not shown) id)
+need to rework how front end begins game because pieces are not being read
 
 [//]: # (### simplicity vs pojo)
 

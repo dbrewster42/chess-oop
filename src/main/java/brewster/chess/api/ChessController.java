@@ -74,16 +74,18 @@ public class ChessController {
         User user2 = userService.getUser(request.getUser2());
 
         return gameService.startGame(user1, user2);
-
     }
 
     @GetMapping("/rejoin/{gameId}")
-    public GameResponse rejoinGame(@PathVariable long id){
+    public NewGameResponse rejoinGame(@PathVariable long id){
+        log.info("restarting game {}", id);
         return gameService.rejoinGame(id);
     }
 
-    @GetMapping("/rejoin")
-    public GameResponse rejoinAnyGame(@RequestBody String name){
+    @PostMapping("/rejoin")
+    public NewGameResponse rejoinAnyGame(@RequestBody NewGameRequest newGameRequest){
+        String name = newGameRequest.getUser1();
+        log.info("restarting game for [{}]", name);
         Long id = activeGames(name).stream().findFirst().orElseThrow(() -> new RuntimeException("The user is not in any active games"));
         return gameService.rejoinGame(id);
     }
