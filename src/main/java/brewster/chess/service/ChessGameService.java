@@ -5,6 +5,7 @@ import brewster.chess.exception.InvalidMoveException;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.Move;
 import brewster.chess.model.User;
+import brewster.chess.model.constant.SpecialMove;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
@@ -60,14 +61,16 @@ public class ChessGameService {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
             List<Integer> validMoves = getLegalMoves(game, piece.location());
-            //todo add passantCheck. Probably more efficient if this is 2nd check with the 1st being a 2 space pawn move
-            if (!validMoves.isEmpty()) {
-                allMoves.put(piece.location(), specialMovesService.includeSpecialMoves(piece, game, validMoves));
-            }
+            Map<Integer, SpecialMove> specialMoves = specialMovesService.getSpecialMoves(piece, game, validMoves);
+            PieceMoves movesWithAnySpecials = specialMoves.isEmpty()
+                ? new PieceMoves(validMoves)
+                : new PieceMoves(validMoves, specialMoves);
+            allMoves.put(piece.location(), movesWithAnySpecials);
         }
         log.info("all moves - {}", allMoves);
         return allMoves;
     }
+
     private List<Integer> getLegalMoves(ChessGame game, int position) {
         return game.getOwnPiece(position)
             .calculateLegalMoves(game.getAllOccupiedSquares(), game.getFoesPieces())
@@ -132,10 +135,9 @@ public class ChessGameService {
             if (!game.isCheck()) {
                 return draw(game);
             } else {
-                log.info("ERROR. YOU DONE MESSED UP BUT I'M SAVING YOUR SORRY SELF");
+                log.warn("ERROR. YOU DONE MESSED UP and missed the checkmate BUT I'M SAVING YOUR SORRY SELF");
                 return checkMate(game.changeTurn());
             }
-            //todo update user win totals with a draw. by calling user service?
         }
         log.info("nope");
         //todo request other player for Draw
@@ -160,7 +162,9 @@ public class ChessGameService {
         return new GameResponse(winner.getName(), loser.getName());
     }
     private GameResponse draw(ChessGame game) {
-        endGame(game, game.getCurrentPlayer().getUser(), game.getOpponent().getUser());
+        User player1 = game.getCurrentPlayer().getUser().addDraw();
+        User player2 = game.getOpponent().getUser().addDraw();
+        endGame(game, player1, player2);
         return new GameResponse();
     }
 

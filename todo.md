@@ -1,7 +1,9 @@
 
 ## Abram chat
-1. return all valid moves at once and let front end select from that list, thus limiting the calls
-2. include promotion options and special moves in the validMoves method return
+
+[//]: # (1. return all valid moves at once and let front end select from that list, thus limiting the calls)
+
+[//]: # (2. include promotion options and special moves in the validMoves method return)
 3. User must know the games it is in. Does player need user? 
 4. Add board. Both board and piece keep track of location
 5. game should control the pieces directly. Is player needed?
@@ -50,9 +52,11 @@ need to rework how front end begins game because pieces are not being read
 
 
 
-### promotion
-what to do if in check after promotion?
-must check for check afterwards and get move message.
+[//]: # (### promotion)
+
+[//]: # (what to do if in check after promotion?)
+
+[//]: # (must check for check afterwards and get move message.)
 
 #### moves list
 switched over to returning only latest move. should it return all moves?

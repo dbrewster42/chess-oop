@@ -1,3 +1,3 @@
-       _    Game          User
+       ____ Game          User
      /     /    \       /
 Pieces   Board    Player

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
@@ -24,17 +26,15 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@RequestBody UserRequest request){
+    public String createUser(@Valid @RequestBody UserRequest request){
         log.info("new user - {}", request);
         User user = userService.createUser(request);
-//        if (isValid)
         return user.getName() + " has been saved in the db";
     }
     @GetMapping
-    public String login(@RequestBody UserRequest request){
+    public String login(@Valid @RequestBody UserRequest request){
         log.info("login - {}", request);
         User user = userService.getUser(request.getName());
-//        if (isValid)
         return user.getName() + " has been retrieved from the db";
     }
 

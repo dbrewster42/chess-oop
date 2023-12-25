@@ -85,7 +85,7 @@ class ChessGameServiceTest {
 
         GameResponse response = sut.movePiece(game.getId(), getMoveRequest(41, 48));
         assertThat(response.getStatus().isActive()).isFalse();
-        assertThat(response.getMoves()).contains("rainmaker has checkmated Bobby! rainmaker wins!");
+        assertThat(response.getMove()).isEqualTo("rainmaker has checkmated Bobby! rainmaker wins!");
 //        assertThat(response.getMoves()).contains(game.getWhitePlayer().getName() + " has checkmated " + game.getBlackPlayer().getName());
     }
 
