@@ -1,5 +1,6 @@
 package brewster.chess.api;
 
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.UserResponse;
@@ -47,15 +48,11 @@ public class UserController {
     }
 
     @GetMapping("/activeGames")
-    public List<Long> activeGames(@RequestBody String name){
+    public List<ChessGame> activeGames(@RequestBody String name){
         log.info("getting active games - {}", name);
-        return userService.getUsersGames(name);
+        return userService.getUsersGameInfo(name);
     }
-//    @GetMapping("/activeGames2")
-//    public List<ChessGame> activeGames2(@RequestBody String name){
-//        log.info("getting active games - {}", name);
-//        return userService.getUsersGameInfo(name);
-//    }
+
 
 //    @GetMapping("/activePlayers/{name}")
 //    public List<Player> activePlayers(@PathVariable String name){

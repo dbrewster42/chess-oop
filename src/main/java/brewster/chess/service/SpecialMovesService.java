@@ -43,14 +43,15 @@ public class SpecialMovesService {
             } else {
                 Move lastMove = game.getMoves().get(game.getMoves().size() - 1);
                 if (canPassant(piece, lastMove)) {
-                    int diff = lastMove.getEnd() > lastMove.getStart() ? -10 : 10;
+                    int diff = lastMove.getEnd() > lastMove.getStart() ? -1 : 1;
                     int passant = lastMove.getEnd() + diff;
+                    log.info("last move {} diff {} and passant {}", lastMove.getEnd(), diff, passant);
                     validMoves.add(passant);
                     specialMoves.put(passant, SpecialMove.Passant);
                 }
             }
         } else if (piece.getType() == Type.KING) {
-            if (piece.getSquare().x == 5) {
+            if (piece.getSquare().x == 5 && !game.isCheck()) {
                 List<Integer> castles = eligibleCastles(piece, game);
                 if (!castles.isEmpty()) {
                     castles.forEach(castle -> {
@@ -63,6 +64,7 @@ public class SpecialMovesService {
         return specialMoves;
     }
     public void performSpecialMove(ChessGame game, MoveRequest request) {
+        log.info("performing special move {}", request);
         switch (request.getSpecialMove()) {
             case Castle:
                 performCastle(game, request);
@@ -83,13 +85,16 @@ public class SpecialMovesService {
         return false;
     }
 
-    private List<Integer> eligibleCastles(Piece piece, ChessGame game) {
+    private List<Integer> eligibleCastles(Piece king, ChessGame game) {
         List<Integer> castles = new ArrayList<>();
-        if (isClearToSide(-1, piece, game)) {
-            castles.add((piece.getSquare().x - 2) * 10 + piece.getSquare().y);
+        if (game.getMoves().stream().anyMatch(move -> move.getStart() == king.getSquare().intValue())) {
+            return castles;
         }
-        if (isClearToSide(1, piece, game)) {
-            castles.add((piece.getSquare().x + 2) * 10 + piece.getSquare().y);
+        if (isClearToSide(-1, king, game)) {
+            castles.add((king.getSquare().x - 2) * 10 + king.getSquare().y);
+        }
+        if (isClearToSide(1, king, game)) {
+            castles.add((king.getSquare().x + 2) * 10 + king.getSquare().y);
         }
         return castles;
     }
@@ -114,7 +119,7 @@ public class SpecialMovesService {
     }
 
     private void performPassant(ChessGame game, MoveRequest request) {
-        int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
+        int enemyLocation = request.getEnd() / 10 * 10 + request.getStart() % 10;
         Piece foe = game.getPotentialFoe(enemyLocation).orElseThrow(PieceNotFound::new);
         game.getFoesPieces().remove(foe);
     }

@@ -108,11 +108,13 @@ public class ChessGameService {
 
         if (checkService.didCheck(dto)){
             game.setCheck(true);
+            log.info("CHECK");
             if (checkService.didCheckMate(dto)){
+                log.info("CHECKMATE!");
                 return checkMate(game);
             }
         }
-        log.info("The piece is a {} and a {}", piece.getClass().getSimpleName(), piece.getClass().getCanonicalName());
+        log.info("The piece is a {}", piece.getClass().getSimpleName());
         String moveMessage = moveMessageService.getMoveMessage(piece, request, game.isCheck(), potentialFoe);
         return endTurn(game, moveMessage);
     }
@@ -127,6 +129,11 @@ public class ChessGameService {
             .friends(game.getCurrentTeam())
             .foes(game.getFoesPieces())
             .build();
+    }
+
+    public GameResponse forfeit(long id) {
+        ChessGame game = findGame(id);
+        return checkMate(game.changeTurn());
     }
 
     public GameResponse requestDraw(long id) {
@@ -144,7 +151,7 @@ public class ChessGameService {
         return null;
     }
 
-    private ChessGame findGame(long id){
+    public ChessGame findGame(long id){
         return repository.findById(id).orElseThrow(GameNotFound::new);
     }
     private ChessGame findGameWithMoves(long id){

@@ -1,3 +1,13 @@
+## bugs
+
+[//]: # (passant )
+promotion- 1. type should not be null. 2. should pass check to front end 3. should piece be re-pointed?
+
+[//]: # (checkmate - king cannot block itself from check)
+[//]: # (castle- king cannot castle if it has moved)
+end game - show last move
+remove King from promotion options
+print the reason for why move is illegal
 
 ## Abram chat
 

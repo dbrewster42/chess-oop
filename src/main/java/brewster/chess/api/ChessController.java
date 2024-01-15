@@ -1,6 +1,7 @@
 package brewster.chess.api;
 
 import brewster.chess.exception.GameNotFound;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
@@ -39,6 +40,14 @@ public class ChessController {
         }
         return gameService.movePiece(id, request);
     }
+    @GetMapping("/{id}/gameinfo")
+    public String getInfo(@PathVariable long id) {
+        ChessGame chessGame = gameService.findGame(id);
+        chessGame.getCurrentTeam().forEach(v -> {
+            log.info("{} piece at {}", v.getType(), v.getSquare());
+        });
+        return "done";
+    }
 
     @PostMapping("/{id}/draw")
     public GameResponse requestDraw(@PathVariable long id){
@@ -47,7 +56,7 @@ public class ChessController {
     }
     @PostMapping("/{id}/forfeit")
     public GameResponse forfeit(@PathVariable long id){
-        return gameService.requestDraw(id);
+        return gameService.forfeit(id);
     }
 
     //    @GetMapping("/{id}")
@@ -81,12 +90,12 @@ public class ChessController {
     }
 
     @PostMapping("/rejoin")
-    public NewGameResponse rejoinAnyGame(@RequestBody NewGameRequest newGameRequest){
-        String name = newGameRequest.getUser1();
+    public NewGameResponse rejoinAnyGame(@RequestBody String name){
         log.info("restarting game for [{}]", name);
-        Long id = userService.getUsersGames(name).stream().findFirst()
+        ChessGame game = userService.getUsersGameInfo(name).stream().findFirst()
             .orElseThrow(() -> new GameNotFound("The user is not in any active games"));
-        return gameService.rejoinGame(id);
+        log.info("game restarting - {}", game);
+        return gameService.rejoinGame(game.getId());
     }
 
 }

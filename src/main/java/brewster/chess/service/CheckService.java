@@ -24,10 +24,10 @@ public class CheckService {
 //        return isSquareDefended(dto.getFoes().get(0).getSquare(), dto);
     }
     public boolean didCheckMate(GamePiecesDto dto) {
-        List<Square> kingsMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getOccupiedSquares(), dto.getFriends());
-        for (Square kingsMove : kingsMoves){
-            if (isMoveOpen(kingsMove, dto)){
-                log.info("King can move out of check to {}", kingsMove);
+        List<Square> foeKingMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getOccupiedSquares(), dto.getFriends());
+        for (Square foeKingMove : foeKingMoves){
+            if (isKingsMoveOpen(foeKingMove, dto)){
+                log.info("King can move out of check to {}", foeKingMove);
                 return false;
             }
         }
@@ -127,13 +127,30 @@ public class CheckService {
         return dif;
     }
 
-    private boolean isMoveOpen(Square kingsMove, GamePiecesDto dto){
+    private boolean isKingsMoveOpen(Square kingsMove, GamePiecesDto dto){
         for (Piece friend : dto.getFriends()){
-            if (!kingsMove.equals(friend.getSquare()) && friend.isLegalAttack(kingsMove, dto.getOccupiedSquares())){
+            //todo why does it matter if a piece is there?  -          if (!kingsMove.equals(friend.getSquare()) && friend.isLegalAttack(kingsMove, dto.getOccupiedSquares())){
+            if (friend.isLegalAttack(kingsMove, getOccupiedSquaresWithoutFoeKing(dto))){
                 return false;
             }
         }
         return true;
+    }
+
+    private List<Square> getOccupiedSquaresWithoutFoeKing(GamePiecesDto dto) {
+        List<Square> occupiedSquares = dto.getOccupiedSquares();
+        occupiedSquares.remove(dto.getFoes().get(0).getSquare());
+        return occupiedSquares;
+    }
+    private List<Square> getOccupiedSquaresWithoutSquare(Square square, GamePiecesDto dto) {
+        List<Square> occupiedSquares = dto.getOccupiedSquares();
+        occupiedSquares.remove(square);
+        return occupiedSquares;
+    }
+    private List<Square> getOccupiedSquaresWithoutPiece(Piece piece, GamePiecesDto dto) {
+        List<Square> occupiedSquares = dto.getOccupiedSquares();
+        occupiedSquares.remove(piece.getSquare());
+        return occupiedSquares;
     }
 
     public boolean isStaleMate(GamePiecesDto dto) {
