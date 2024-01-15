@@ -1,6 +1,6 @@
 package brewster.chess.api;
 
-import brewster.chess.model.ChessGame;
+import brewster.chess.exception.GameNotFound;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 
 @CrossOrigin(origins= "http://localhost:3000")
@@ -86,19 +84,10 @@ public class ChessController {
     public NewGameResponse rejoinAnyGame(@RequestBody NewGameRequest newGameRequest){
         String name = newGameRequest.getUser1();
         log.info("restarting game for [{}]", name);
-        Long id = activeGames(name).stream().findFirst().orElseThrow(() -> new RuntimeException("The user is not in any active games"));
+        Long id = userService.getUsersGames(name).stream().findFirst()
+            .orElseThrow(() -> new GameNotFound("The user is not in any active games"));
         return gameService.rejoinGame(id);
     }
 
-    @GetMapping("/activeGames")
-    public List<Long> activeGames(@RequestBody String name){
-        log.info("getting active games - {}", name);
-        return userService.getUsersGames(name);
-    }
-    @GetMapping("/activeGames2")
-    public List<ChessGame> activeGames2(@RequestBody String name){
-        log.info("getting active games - {}", name);
-        return userService.getUsersGameInfo(name);
-    }
 }
 
