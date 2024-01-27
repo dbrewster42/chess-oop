@@ -1,4 +1,11 @@
+## features to be implemented
+login
+play others online
+better error messages - print the reason for why move is illegal
+time limit to finish game (or whoever's turn it is loses)
+
 ## bugs
+rejoining game does not show pieces correctly and wants white to move first
 
 [//]: # (passant )
 promotion- 1. type should not be null. 2. should pass check to front end 3. should piece be re-pointed?
@@ -6,8 +13,6 @@ promotion- 1. type should not be null. 2. should pass check to front end 3. shou
 [//]: # (checkmate - king cannot block itself from check)
 [//]: # (castle- king cannot castle if it has moved)
 end game - show last move
-remove King from promotion options
-print the reason for why move is illegal
 
 ## Abram chat
 
@@ -54,11 +59,6 @@ need to rework how front end begins game because pieces are not being read
 [//]: # (### game over response)
 
 [//]: # (should it have its own POJO? should have separate POJO for draw request?)
-
-
-
-### update user stats
-### message system
 
 
 

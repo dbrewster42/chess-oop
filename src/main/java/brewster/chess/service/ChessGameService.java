@@ -45,12 +45,12 @@ public class ChessGameService {
 
     public NewGameResponse startGame(User user1, User user2) {
         ChessGame newGame = repository.save(new ChessGame(user1, user2));
-        return new NewGameResponse(newGame, Type.promotionChoices());
+        return new NewGameResponse(newGame);
     }
 
     public NewGameResponse rejoinGame(long id) {
         ChessGame oldGame = repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
-        return new NewGameResponse(oldGame, Type.promotionChoices()); //todo
+        return new NewGameResponse(oldGame); //todo
     }
 
     public Map<Integer, String> getPieces(long id) {

@@ -90,9 +90,9 @@ public class ChessController {
     }
 
     @PostMapping("/rejoin")
-    public NewGameResponse rejoinAnyGame(@RequestBody String name){
-        log.info("restarting game for [{}]", name);
-        ChessGame game = userService.getUsersGameInfo(name).stream().findFirst()
+    public NewGameResponse rejoinAnyGame(@RequestBody NewGameRequest request){
+        log.info("restarting game for [{}]", request.getUser1());
+        ChessGame game = userService.getUsersGameInfo(request.getUser1()).stream().findFirst()
             .orElseThrow(() -> new GameNotFound("The user is not in any active games"));
         log.info("game restarting - {}", game);
         return gameService.rejoinGame(game.getId());
