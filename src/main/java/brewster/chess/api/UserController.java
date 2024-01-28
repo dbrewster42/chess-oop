@@ -3,6 +3,7 @@ package brewster.chess.api;
 import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.UserRequest;
+import brewster.chess.model.response.UserResponse;
 import brewster.chess.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins= "http://localhost:3000")
@@ -27,36 +29,31 @@ public class UserController {
     }
 
     @PostMapping
-    public String createUser(@RequestBody UserRequest request){
+    public String createUser(@Valid @RequestBody UserRequest request){
         log.info("new user - {}", request);
         User user = userService.createUser(request);
-//        if (isValid)
         return user.getName() + " has been saved in the db";
     }
     @GetMapping
-    public String login(@RequestBody UserRequest request){
+    public String login(@Valid @RequestBody UserRequest request){
         log.info("login - {}", request);
         User user = userService.getUser(request.getName());
-//        if (isValid)
         return user.getName() + " has been retrieved from the db";
     }
 
     @GetMapping("/info/{name}")
-    public User info(@PathVariable String name){
+    public UserResponse info(@PathVariable String name){
         log.info("getting info - {}", name);
-        return userService.getUser(name);
+        return new UserResponse(userService.getUser(name));
     }
 
-    @GetMapping("/activeGames/{name}")
-    public List<Long> activeGames(@PathVariable String name){
-        log.info("getting active games - {}", name);
-        return userService.getUsersGames(name);
-    }
-    @GetMapping("/activeGames2/{name}")
-    public List<ChessGame> activeGames2(@PathVariable String name){
+    @GetMapping("/activeGames")
+    public List<ChessGame> activeGames(@RequestBody String name){
         log.info("getting active games - {}", name);
         return userService.getUsersGameInfo(name);
     }
+
+
 //    @GetMapping("/activePlayers/{name}")
 //    public List<Player> activePlayers(@PathVariable String name){
 //        log.info("getting active players - {}", name);

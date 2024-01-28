@@ -2,6 +2,7 @@ package brewster.chess.service;
 
 import brewster.chess.exception.PieceNotFound;
 import brewster.chess.model.ChessGame;
+import brewster.chess.model.Move;
 import brewster.chess.model.constant.SpecialMove;
 import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Pawn;
@@ -9,7 +10,6 @@ import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.PieceFactory;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
-import brewster.chess.model.response.PieceMoves;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -30,33 +30,41 @@ public class SpecialMovesService {
         this.checkService = checkService;
     }
 
-    public PieceMoves includeSpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
+
+    public Map<Integer, SpecialMove> getSpecialMoves(Piece piece, ChessGame game, List<Integer> validMoves) {
+        Map<Integer, SpecialMove> specialMoves = new HashMap<>();
         if (piece.getType() == Type.PAWN) {
             Pawn pawn = (Pawn) piece;
             if (pawn.canPromote()) {
                 List<Integer> promotions = validMoves.stream().filter(square -> square % 10 == 1 || square % 10 == 8).collect(Collectors.toList());
                 if (!promotions.isEmpty()) {
-                    Map<Integer, SpecialMove> specialMoves = new HashMap<>();
                     promotions.forEach(p -> specialMoves.put(p, SpecialMove.Promotion));
-                    return new PieceMoves(validMoves, specialMoves);
+                }
+            } else {
+                Move lastMove = game.getMoves().get(game.getMoves().size() - 1);
+                if (canPassant(piece, lastMove)) {
+                    int diff = lastMove.getEnd() > lastMove.getStart() ? -1 : 1;
+                    int passant = lastMove.getEnd() + diff;
+                    log.info("last move {} diff {} and passant {}", lastMove.getEnd(), diff, passant);
+                    validMoves.add(passant);
+                    specialMoves.put(passant, SpecialMove.Passant);
                 }
             }
         } else if (piece.getType() == Type.KING) {
-            if (piece.getSquare().x == 5) {
+            if (piece.getSquare().x == 5 && !game.isCheck()) {
                 List<Integer> castles = eligibleCastles(piece, game);
                 if (!castles.isEmpty()) {
-                    Map<Integer, SpecialMove> specialMoves = new HashMap<>();
                     castles.forEach(castle -> {
                         validMoves.add(castle);
                         specialMoves.put(castle, SpecialMove.Castle);
                     });
-                    return new PieceMoves(validMoves, specialMoves);
                 }
             }
         }
-        return new PieceMoves(validMoves);
+        return specialMoves;
     }
     public void performSpecialMove(ChessGame game, MoveRequest request) {
+        log.info("performing special move {}", request);
         switch (request.getSpecialMove()) {
             case Castle:
                 performCastle(game, request);
@@ -70,13 +78,23 @@ public class SpecialMovesService {
         }
     }
 
-    private List<Integer> eligibleCastles(Piece piece, ChessGame game) {
-        List<Integer> castles = new ArrayList<>();
-        if (isClearToSide(-1, piece, game)) {
-            castles.add((piece.getSquare().x - 2) * 10 + piece.getSquare().y);
+    private boolean canPassant(Piece piece, Move lastMove) {
+        if (Math.abs(lastMove.getStart() - lastMove.getEnd()) == 2) {
+            return Math.abs(piece.getSquare().intValue() - lastMove.getEnd()) == 10;
         }
-        if (isClearToSide(1, piece, game)) {
-            castles.add((piece.getSquare().x + 2) * 10 + piece.getSquare().y);
+        return false;
+    }
+
+    private List<Integer> eligibleCastles(Piece king, ChessGame game) {
+        List<Integer> castles = new ArrayList<>();
+        if (game.getMoves().stream().anyMatch(move -> move.getStart() == king.getSquare().intValue())) {
+            return castles;
+        }
+        if (isClearToSide(-1, king, game)) {
+            castles.add((king.getSquare().x - 2) * 10 + king.getSquare().y);
+        }
+        if (isClearToSide(1, king, game)) {
+            castles.add((king.getSquare().x + 2) * 10 + king.getSquare().y);
         }
         return castles;
     }
@@ -101,7 +119,7 @@ public class SpecialMovesService {
     }
 
     private void performPassant(ChessGame game, MoveRequest request) {
-        int enemyLocation = request.getEnd() / 10 + request.getStart() % 10;
+        int enemyLocation = request.getEnd() / 10 * 10 + request.getStart() % 10;
         Piece foe = game.getPotentialFoe(enemyLocation).orElseThrow(PieceNotFound::new);
         game.getFoesPieces().remove(foe);
     }

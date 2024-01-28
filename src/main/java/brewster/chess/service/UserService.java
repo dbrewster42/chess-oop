@@ -31,7 +31,7 @@ public class UserService {
        return userRepository.findById(name).orElseThrow(UserNotFound::new);
     }
     public List<Long> getUsersGames(String name) {
-        return userRepository.findUserPlayers(name).stream().map(Player::getGame).map(ChessGame::getId).collect(Collectors.toList());
+        return getUsersGameInfo(name).stream().map(ChessGame::getId).collect(Collectors.toList());
     }
 
     public List<ChessGame> getUsersGameInfo(String name) {

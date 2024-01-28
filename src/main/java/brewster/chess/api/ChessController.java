@@ -1,10 +1,10 @@
 package brewster.chess.api;
 
-
+import brewster.chess.exception.GameNotFound;
+import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
-import brewster.chess.model.request.RejoinRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.service.ChessGameService;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/chess")
 @Slf4j
 public class ChessController {
     public final UserService userService;
@@ -32,32 +32,6 @@ public class ChessController {
         this.gameService = gameService;
     }
 
-
-//    @PostMapping
-//    public NewGameResponse startNewGame(@RequestBody String name){
-//        //todo sockets
-////        return gameService.startGame(userService.findById(name).orElseThrow(UserNotFound::new));
-//    }
-    @PostMapping
-    public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){
-        log.info("start new game - {}", request);
-        User user1 = userService.getUser(request.getUser1());
-        User user2 = userService.getUser(request.getUser2());
-
-        return gameService.startGame(user1, user2);
-    }
-
-    @GetMapping("/rejoin")
-    public GameResponse rejoinGame(@RequestBody RejoinRequest rejoinRequest){
-        return gameService.rejoinGame(rejoinRequest.getGameId());
-    }
-
-
-//    @GetMapping("/{id}")
-//    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
-//        log.info("fetching all legal moves");
-//        return gameService.getAllMoves(id);
-//    }
     @PostMapping("/{id}")
     public GameResponse movePiece(@PathVariable long id, @RequestBody MoveRequest request) {
         log.info("moving piece - {}", request);
@@ -65,6 +39,39 @@ public class ChessController {
             throw new RuntimeException("Bad request");
         }
         return gameService.movePiece(id, request);
+    }
+    @GetMapping("/{id}/gameinfo")
+    public String getInfo(@PathVariable long id) {
+        ChessGame chessGame = gameService.findGame(id);
+        chessGame.getCurrentTeam().forEach(v -> {
+            log.info("{} piece at {}", v.getType(), v.getSquare());
+        });
+        return "done";
+    }
+
+    @PostMapping("/{id}/draw")
+    public GameResponse requestDraw(@PathVariable long id){
+        log.info("requesting draw");
+        return gameService.requestDraw(id);
+    }
+    @PostMapping("/{id}/forfeit")
+    public GameResponse forfeit(@PathVariable long id){
+        return gameService.forfeit(id);
+    }
+
+    //    @GetMapping("/{id}")
+//    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
+//        log.info("fetching all legal moves");
+//        return gameService.getAllMoves(id);
+//    }
+
+    @PostMapping
+    public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){
+        log.info("start new game - {}", request);
+        User user1 = userService.getUser(request.getUser1());
+        User user2 = userService.getUser(request.getUser2());
+
+        return gameService.startGame(user1, user2);
     }
 
     @PostMapping("/restart")
@@ -76,14 +83,20 @@ public class ChessController {
         return gameService.startGame(user1, user2);
     }
 
-    @PostMapping("/{id}/draw")
-    public GameResponse requestDraw(@PathVariable long id){
-        log.info("requesting draw");
-        return gameService.requestDraw(id);
+    @GetMapping("/rejoin/{gameId}")
+    public NewGameResponse rejoinGame(@PathVariable long id){
+        log.info("restarting game {}", id);
+        return gameService.rejoinGame(id);
     }
-    @PostMapping("/{id}/forfeit")
-    public GameResponse giveUp(@PathVariable long id){
-        return gameService.requestDraw(id);
+
+    @PostMapping("/rejoin")
+    public NewGameResponse rejoinAnyGame(@RequestBody NewGameRequest request){
+        log.info("restarting game for [{}]", request.getUser1());
+        ChessGame game = userService.getUsersGameInfo(request.getUser1()).stream().findFirst()
+            .orElseThrow(() -> new GameNotFound("The user is not in any active games"));
+        log.info("game restarting - {}", game);
+        return gameService.rejoinGame(game.getId());
     }
+
 }
 

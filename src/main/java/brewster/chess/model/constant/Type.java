@@ -19,6 +19,6 @@ public enum Type {
     }
 
     public static List<Type> promotionChoices() {
-        return Arrays.stream(Type.values()).filter(type -> PAWN != type).collect(Collectors.toList());
+        return Arrays.stream(Type.values()).filter(type -> PAWN != type && type != KING).collect(Collectors.toList());
     }
 }
