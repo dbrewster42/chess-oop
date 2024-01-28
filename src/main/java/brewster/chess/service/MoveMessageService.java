@@ -1,7 +1,5 @@
 package brewster.chess.service;
 
-import brewster.chess.model.ChessGame;
-import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.request.MoveRequest;
 import org.springframework.stereotype.Service;
@@ -9,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class MoveMessageService { //todo make moveService with Move?
+public class MoveMessageService {
     private static final String COLUMNS = " ABCDEFGH";
 
     public String getMoveMessage(Piece piece, MoveRequest request, boolean isCheck, Optional<Piece> potentialFoe){

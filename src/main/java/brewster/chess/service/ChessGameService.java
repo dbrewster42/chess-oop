@@ -6,7 +6,6 @@ import brewster.chess.model.ChessGame;
 import brewster.chess.model.Move;
 import brewster.chess.model.User;
 import brewster.chess.model.constant.SpecialMove;
-import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;

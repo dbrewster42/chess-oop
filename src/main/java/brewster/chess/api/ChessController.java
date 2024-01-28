@@ -54,16 +54,11 @@ public class ChessController {
         log.info("requesting draw");
         return gameService.requestDraw(id);
     }
+
     @PostMapping("/{id}/forfeit")
     public GameResponse forfeit(@PathVariable long id){
         return gameService.forfeit(id);
     }
-
-    //    @GetMapping("/{id}")
-//    public Map<Integer, PieceMoves> getAllMoves(@PathVariable long id){
-//        log.info("fetching all legal moves");
-//        return gameService.getAllMoves(id);
-//    }
 
     @PostMapping
     public NewGameResponse startLocalGame(@RequestBody NewGameRequest request){

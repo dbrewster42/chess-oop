@@ -21,7 +21,6 @@ public class CheckService {
     }
     public boolean didCheck(GamePiecesDto dto) {
         return isSquareUnderAttack(dto.getFoes().get(0).getSquare(), dto.getFriends(), dto.getOccupiedSquares());
-//        return isSquareDefended(dto.getFoes().get(0).getSquare(), dto);
     }
     public boolean didCheckMate(GamePiecesDto dto) {
         List<Square> foeKingMoves = dto.getFoes().get(0).calculateLegalMoves(dto.getOccupiedSquares(), dto.getFriends());
@@ -37,12 +36,7 @@ public class CheckService {
         }
         return cannotBeTakenOrBlocked(dto, allAttackers.get(0));
     }
-
-//    private boolean isSquareDefended(Square square, GamePiecesDto dto){
-//        return isSquareUnderAttack(square, dto.getFriends(), dto.getOccupiedSquares());
-//    }
-
-    public boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
+    boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
         for (Piece attacker : attackingTeam){
             if (attacker.isLegalAttack(square, occupiedSquares)){
                 log.info("{} can reach this square {}", attacker, square);
@@ -69,7 +63,6 @@ public class CheckService {
             if (foe.isLegalAttack(attackerSquare, dto.getOccupiedSquares())){
                 if (foe instanceof King){
                     if (!isSquareUnderAttack(attackerSquare, dto.getFriends(), dto.getOccupiedSquares())) {
-//                    if (!isSquareDefended(attackerSquare, dto)) {
                         log.info("can be taken by the king at {}", attackerSquare);
                         return false;
                     }
@@ -93,12 +86,6 @@ public class CheckService {
                     return false;
                 }
             }
-//            isLegalBlock
-//            if (isSquareUnderAttack(block, dto.getFoes(), dto.getOccupiedSquares(), true)) {
-////            if (isSquareDefended(block, dto)){
-//                log.info("can be blocked at {}", block);
-//                return false;
-//            }
         }
         return true;
     }
@@ -111,10 +98,6 @@ public class CheckService {
         Square enemyKingSquare = dto.getFoes().get(0).getSquare();
         Square attackerSquare = attacker.getSquare();
 
-//        int xDirection = getDirection(attackerSquare.x - enemyKing.getSquare().x);
-//        int yDirection = getDirection(attackerSquare.y - enemyKing.getSquare().y);
-//
-//        return enemyKing.addMovesAlongLine(new ArrayList<>(), dto.getOccupiedSquares(), dto.getFoes(), xDirection, yDirection);
         int xDirection = getDirection(enemyKingSquare.x - attackerSquare.x);
         int yDirection = getDirection(enemyKingSquare.y - attackerSquare.y);
 
@@ -129,7 +112,6 @@ public class CheckService {
 
     private boolean isKingsMoveOpen(Square kingsMove, GamePiecesDto dto){
         for (Piece friend : dto.getFriends()){
-            //todo why does it matter if a piece is there?  -          if (!kingsMove.equals(friend.getSquare()) && friend.isLegalAttack(kingsMove, dto.getOccupiedSquares())){
             if (friend.isLegalAttack(kingsMove, getOccupiedSquaresWithoutFoeKing(dto))){
                 return false;
             }
@@ -140,16 +122,6 @@ public class CheckService {
     private List<Square> getOccupiedSquaresWithoutFoeKing(GamePiecesDto dto) {
         List<Square> occupiedSquares = dto.getOccupiedSquares();
         occupiedSquares.remove(dto.getFoes().get(0).getSquare());
-        return occupiedSquares;
-    }
-    private List<Square> getOccupiedSquaresWithoutSquare(Square square, GamePiecesDto dto) {
-        List<Square> occupiedSquares = dto.getOccupiedSquares();
-        occupiedSquares.remove(square);
-        return occupiedSquares;
-    }
-    private List<Square> getOccupiedSquaresWithoutPiece(Piece piece, GamePiecesDto dto) {
-        List<Square> occupiedSquares = dto.getOccupiedSquares();
-        occupiedSquares.remove(piece.getSquare());
         return occupiedSquares;
     }
 
