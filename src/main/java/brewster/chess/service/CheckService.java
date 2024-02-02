@@ -31,10 +31,22 @@ public class CheckService {
             }
         }
         List<Piece> allAttackers = findAllAttackers(dto);
-        if (allAttackers.size() > 1){
-            return true;
-        }
+        if (allAttackers.size() > 1){ return true; }
         return cannotBeTakenOrBlocked(dto, allAttackers.get(0));
+    }
+    public boolean isStaleMate(GamePiecesDto dto) {
+        for (Piece friend : dto.getFriends()){
+            for (Square square : friend.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes())){
+                int startPosition = friend.getSquare().intValue();
+                friend.move(square.intValue());
+                boolean isValidMove = !isInCheckAfterMove(dto);
+                friend.move(startPosition);
+                if (isValidMove){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     boolean isSquareUnderAttack(Square square, List<Piece> attackingTeam, List<Square> occupiedSquares){
         for (Piece attacker : attackingTeam){
@@ -105,9 +117,7 @@ public class CheckService {
     }
 
     private int getDirection(int dif){
-        if (dif > 1) { dif = 1; }
-        else if (dif < -1) { dif = -1; }
-        return dif;
+        return Integer.compare(dif, 0);
     }
 
     private boolean isKingsMoveOpen(Square kingsMove, GamePiecesDto dto){
@@ -123,20 +133,5 @@ public class CheckService {
         List<Square> occupiedSquares = dto.getOccupiedSquares();
         occupiedSquares.remove(dto.getFoes().get(0).getSquare());
         return occupiedSquares;
-    }
-
-    public boolean isStaleMate(GamePiecesDto dto) {
-        for (Piece friend : dto.getFriends()){
-            for (Square square : friend.calculateLegalMoves(dto.getOccupiedSquares(), dto.getFoes())){
-                int startPosition = friend.getSquare().intValue();
-                friend.move(square.intValue());
-                boolean isValidMove = !isInCheckAfterMove(dto);
-                friend.move(startPosition);
-                if (isValidMove){
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

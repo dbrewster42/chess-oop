@@ -27,6 +27,9 @@ public class UserService {
     public User createUser(UserRequest request) {
         return userRepository.save(new User(request.getName(), request.getEmail()));
     }
+    public User createQuickUser(String name) {
+        return userRepository.save(new User(name, name + "@gmail.com"));
+    }
     public User getUser(String name) {
        return userRepository.findById(name).orElseThrow(UserNotFound::new);
     }
