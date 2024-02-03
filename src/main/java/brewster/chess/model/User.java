@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
+//@Table(name = "UserEntity")
 @Table
 @Getter
 @Entity

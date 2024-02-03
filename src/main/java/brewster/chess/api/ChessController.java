@@ -5,7 +5,6 @@ import brewster.chess.model.ChessGame;
 import brewster.chess.model.User;
 import brewster.chess.model.request.MoveRequest;
 import brewster.chess.model.request.NewGameRequest;
-import brewster.chess.model.request.UserRequest;
 import brewster.chess.model.response.GameResponse;
 import brewster.chess.model.response.NewGameResponse;
 import brewster.chess.service.ChessGameService;
@@ -70,7 +69,7 @@ public class ChessController {
         return gameService.startGame(user1, user2);
     }
     @PostMapping("/quick-game")
-    public NewGameResponse startLocalGame(){
+    public NewGameResponse startQuickGame(){
         log.info("starting quick game");
         return gameService.startQuickGame();
     }

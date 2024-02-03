@@ -15,7 +15,6 @@ public class Move {
     private Type pieceType;
     private int start;
     private int end;
-
     private SpecialMove specialMove;
     private Type potentialFoe;
 
