@@ -130,8 +130,6 @@ public class CheckService {
     }
 
     private List<Square> getOccupiedSquaresWithoutFoeKing(GamePiecesDto dto) {
-        List<Square> occupiedSquares = dto.getOccupiedSquares();
-        occupiedSquares.remove(dto.getFoes().get(0).getSquare());
-        return occupiedSquares;
+        return dto.getOccupiedSquares().stream().filter(square -> square != dto.getFoes().get(0).getSquare()).collect(Collectors.toList());
     }
 }
