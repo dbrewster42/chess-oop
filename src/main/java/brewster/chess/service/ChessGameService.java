@@ -6,7 +6,6 @@ import brewster.chess.model.ChessGame;
 import brewster.chess.model.Move;
 import brewster.chess.model.User;
 import brewster.chess.model.constant.SpecialMove;
-import brewster.chess.model.constant.Type;
 import brewster.chess.model.piece.Piece;
 import brewster.chess.model.piece.Square;
 import brewster.chess.model.request.MoveRequest;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static brewster.chess.util.ImageMatch.getPiecesMap;
 
 @Service
 @Slf4j
@@ -48,15 +46,18 @@ public class ChessGameService {
         return new NewGameResponse(newGame);
     }
 
+    public NewGameResponse startQuickGame() {
+        User user1 = userService.createQuickUser("player1");
+        User user2 = userService.createQuickUser("player2");
+        ChessGame newGame = repository.save(new ChessGame(user1, user2));
+        return new NewGameResponse(newGame);
+    }
+
     public NewGameResponse rejoinGame(long id) {
         ChessGame oldGame = repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
         return new NewGameResponse(oldGame); //todo
     }
 
-    public Map<Integer, String> getPieces(long id) {
-        ChessGame game = findGame(id);
-        return getPiecesMap(game);
-    }
     private Map<Integer, PieceMoves> getAllMoves(ChessGame game) {
         Map<Integer, PieceMoves> allMoves = new HashMap<>();
         for (Piece piece : game.getCurrentPlayer().getPieces()) {
@@ -67,7 +68,6 @@ public class ChessGameService {
                 : new PieceMoves(validMoves, specialMoves);
             allMoves.put(piece.location(), movesWithAnySpecials);
         }
-        log.info("all moves - {}", allMoves);
         return allMoves;
     }
 

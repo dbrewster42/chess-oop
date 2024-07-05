@@ -7,12 +7,10 @@ import lombok.Data;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +30,6 @@ public class ChessGame {
     @OneToOne(cascade = CascadeType.ALL)
     private final Player blackPlayer;
     @ElementCollection
-//    private List<String> moves;
-
-//    @Embedded
-//    @OneToMany(cascade = CascadeType.ALL)
     private List<Move> moves;
 
     private boolean isWhitesTurn = true;
@@ -45,8 +39,6 @@ public class ChessGame {
     public ChessGame(User user1, User user2) {
         this.whitePlayer = new WhitePlayer(user1, this);
         this.blackPlayer = new BlackPlayer(user2, this);
-//        user1.addPlayer(whitePlayer);
-//        user2.addPlayer(blackPlayer);
         moves = new ArrayList<>();
     }
     public ChessGame(){
