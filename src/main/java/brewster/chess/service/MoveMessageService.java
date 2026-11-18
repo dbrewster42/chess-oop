@@ -19,6 +19,10 @@ public class MoveMessageService {
 //        game.getMoves().add(message.toString());
     }
 
+    public String checkmateMessage(String player1, String player2) {
+        return "\n" + player1 + " has checkmated " + player2 + "! " + player1 + " wins!!!";
+    }
+
     private String addSpecialMoveMessage(MoveRequest request) {
         switch (request.getSpecialMove()) {
             case Castle:

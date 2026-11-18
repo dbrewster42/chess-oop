@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins= "http://localhost:3000")
 @RestController
-@RequestMapping("/chess")
+@RequestMapping("/game")
 @Slf4j
 public class ChessController {
     public final UserService userService;

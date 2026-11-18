@@ -9,8 +9,7 @@ import java.util.Map;
 import static brewster.chess.util.ImageMatch.getPiecesMap;
 
 @Data
-public class
-GameResponse {
+public class GameResponse {
     private StatusResponse status;
 //    private List<String> moves;
     private String move;
@@ -26,12 +25,13 @@ GameResponse {
         this.move = move;
     }
 
-    public GameResponse(String player1, String player2) {
+    public GameResponse(ChessGame game, String move) {
+        this.pieces = getPiecesMap(game);
+        this.move = move;
         this.status = new StatusResponse();
-        this.move = player1 + " has checkmated " + player2 + "! " + player1 + " wins!";
     }
     public GameResponse() {
         this.status = new StatusResponse();
-        this.move ="The game has ended in a draw";
+        this.move = "The game has ended in a draw";
     }
 }
