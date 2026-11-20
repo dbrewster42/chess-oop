@@ -100,7 +100,6 @@ public class ChessGameService {
             potentialFoe.ifPresent(foe -> game.getFoesPieces().add(foe));
             throw new InvalidMoveException(game.isCheck());
         }
-//        game.setCheck(false);
         game.getMoves().add(new Move(piece.getType(), request, potentialFoe));
 
         Optional.ofNullable(request.getSpecialMove())
@@ -109,7 +108,7 @@ public class ChessGameService {
 //        log.info("The piece is a {}", piece.getClass().getSimpleName());
         checkForCheck(game, dto);
         String moveMessage = moveMessageService.getMoveMessage(piece, request, game.isCheck(), potentialFoe);
-        return endTurn(game, moveMessage, game.isCheckMate());
+        return endTurn(game, moveMessage);
     }
 
     private void checkForCheck(ChessGame game, GamePiecesDto dto) {
@@ -118,10 +117,14 @@ public class ChessGameService {
             log.info("CHECK");
             if (checkService.didCheckMate(dto)){
                 log.info("CHECKMATE!");
-                game.setCheckMate(true);
+                game.setActive(false);
             }
         } else {
             game.setCheck(false);
+            if (checkService.isStaleMate(dto)) {
+                log.info("Stalemate!");
+                game.setActive(false);
+            }
         }
     }
 
@@ -148,7 +151,7 @@ public class ChessGameService {
             if (!game.isCheck()) {
                 return draw(game);
             } else {
-                log.warn("ERROR. YOU DONE MESSED UP and missed the checkmate BUT I'M SAVING YOUR SORRY SELF");
+                log.info("ERROR. YOU DONE MESSED UP and missed the checkmate BUT I'M SAVING YOUR SORRY SELF");
                 return checkMate(game.changeTurn(), "");
             }
         }
@@ -164,14 +167,18 @@ public class ChessGameService {
         return repository.findGameWithMoves(id).orElseThrow(GameNotFound::new);
     }
 
-    private GameResponse endTurn(ChessGame game, String moveMessage, boolean isCheckMate) {
-        if (isCheckMate) {
-            return checkMate(game, moveMessage);
+    private GameResponse endTurn(ChessGame game, String moveMessage) {
+        if (!game.isActive()) {
+            if (game.isCheck()) {
+                return checkMate(game, moveMessage);
+            } else {
+                return draw(game);
+            }
         }
         repository.save(game.changeTurn());
         return new GameResponse(game, getAllMoves(game), moveMessage);
     }
-    private GameResponse checkMate(ChessGame game, String moveMessage) { //todo include move?
+    private GameResponse checkMate(ChessGame game, String moveMessage) {
         User winner = game.getCurrentPlayer().getUser().addWin();
         User loser = game.getOpponent().getUser().addLoss();
         endGame(game, winner, loser);
@@ -182,7 +189,7 @@ public class ChessGameService {
         User player1 = game.getCurrentPlayer().getUser().addDraw();
         User player2 = game.getOpponent().getUser().addDraw();
         endGame(game, player1, player2);
-        return new GameResponse();
+        return new GameResponse(game, "The game ends in a draw");
     }
 
     private void endGame(ChessGame game, User player1, User player2) {

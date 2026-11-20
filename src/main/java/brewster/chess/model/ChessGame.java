@@ -33,9 +33,8 @@ public class ChessGame {
     private List<Move> moves;
 
     private boolean isWhitesTurn = true;
-//    private boolean isActive = true;
+    private boolean isActive = true;
     private boolean isCheck = false;
-    private boolean isCheckMate = false;
 
     public ChessGame(User user1, User user2) {
         this.whitePlayer = new WhitePlayer(user1, this);
